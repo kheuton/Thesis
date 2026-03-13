@@ -1,0 +1,50 @@
+\section{Prior Work}
+Below, we review several lines of work addressing either missingness or irregular timing.
+
+~\\ \noindent
+\textbf{Types of missingness.}
+Foundational work in defining the 3 different missing data scenarios MAR (missing at random), MCAR (missing completely at random) and MNAR (missing  not-at random) was done by \citet{rubin1976inference}. 
+We situate our proposed model in the MAR category.
+
+~\\ \noindent \textbf{Missngness and deep generative models.} 
+\citet{mattei2019miwae} introduced an approach for training deep generative models using importance weighted autoencoders (IWAE) under MAR assumptions. \citet{ipsen2020not} extended that work to cover MNAR assumptions with their not-MIWAE method, which was later specialized to supervised tasks~\citep{ipsen2022deal}. 
+Another model called GINA, introduced by \cite{ma2021identifiable} provides identifiability guarantees 
+%under mild assumptions, 
+for a wide range of MNAR mechanisms. All these works assume  \emph{static} data and are not designed to handle time series. 
+
+~\\
+\noindent \textbf{RNNs for regular time series with missing data.} Several prior works tackle missing values with variants of recurrent neural networks (RNNs). \cite{liptonModelingMissingData2016} feed missing value indicators as additional inputs to the model together with forward-fill imputation to enable the model to learn 'real' vs 'filled-in' values. \cite{che2018recurrent} proposed the GRU-D, which extends the well-known GRU architecture \citep{cho2014properties} by incorporating a trainable decay that imputes missing features in a way that interpolates over time between two strategies: forward-fill and the population mean. GRU-D allows the time since the last observation to impact representations in a way that usual regular-grid RNNs do not. However, their experiments required an input time series aligned to a regularly spaced grid.
+\cite{caoBRITSBidirectionalRecurrent2018} designed a bidirectional RNN called BRITS that performs imputation and classification/regression jointly in one neural graph. \cite{futomaLearningDetectSepsis2017} proposed a hybrid approach which uses a Gaussian process to impute values which are later fed into an RNN.
+More recently, \cite{kim2023probabilistic} proposed a probabalistic  model for regularly spaced time-series with a missing not at random assumption. They extend the not-MIWAE deep generative model \citep{ipsen2022deal} to time-series with a GRU backbone and introduce a novel regularization strategy to enable learning missing values for better downstream classification. Unlike all of these methods, our model does not rely on aligning data to a regularly spaced grid, thereby enabling learning from the raw irregularly spaced time-points.  
+
+~\\
+\noindent \textbf{Models for irregular time-series.}
+Models for irregular time series belong to several types: (1) interpolation-based models and (2) ODE/SDE-based models, (3) Graph based models, (4) Diffusion based models, (5) Large language models (LLM) based models discussed below and (6) Tensor factorization based models
+
+\emph{Interpolation-based models.} \citet{shukla2019interpolation} propose a semi-parametric  interpolation network where irregularly spaced observations are interpolated to a grid of regularly spaced timepoints before prediction with any standard downstream predictor. \citet{li2020learning} propose an encoder-decoder architecture where the irregularly sampled time-series is assumed to be sampled from a continuous unobserved function. The encoder is a continuous convolution layer to accommodate irregularly sampled inputs, while their decoder uses a kernel smoother to learn a function over a reference set of uniformly spaced times. \cite{shukla2021multitime} propose an attention-based model that converts the irregular time series to a regular grid before prediction. 
+%They use a multi time attention model with query time point $t$ and a set of keys and values in the form of a $D$-dimensional multivariate sparse and irregularly sampled time series. 
+For all these models, missing values are zero-encoded before training. There is no emphasis on data-dependent missingness.
+
+\emph{ODE/SDE-based models.} \citet{rubanova2019latent} propose a generative model where the latent state is driven by a latent ordinary differential equation (ODE).  
+\citet{kidger2020neural} extends that work via a neural-controlled differential equation instead of an ordinary differential equation. 
+This allows the model to update the latent state trajectory with incoming observed data. \cite{de2019gru} extends the GRU architecture to incorporate input from an ODE, also in a way that allows observations to influence the latent trajectory. A similar ODE based model has also been proposed by \citet{jia2019neural}.
+\cite{chauhan2022coper} extend the continuous state perceiver network \citep{jaegle2021perceiver} to learn the continuous dynamics of a patient, requiring 2 ODE solvers. 
+All these works require expensive numerical solvers for training and prediction.
+
+\emph{Graph-based models.} 
+\citet{zhang2021graph} introduced RAINDROP, a graph neural network that handles asynchronous and irregularly recorded observations from multiple sensors. It considers sensor dependencies for message passing and generates multi-scale embeddings using hierarchical attention. However, the model estimates missing values using observational embeddings from neighboring vertices without learning a probabilistic model for missingness. Further, it is hard to assess the quality of imputations by their model, since only classification performance on downstream tasks are presented.
+
+\emph{Diffusion based models.}
+\citet{tashiro2021csdi} propose a score-based diffusion model trained via self-supervision and is conditioned on observed data for imputation. While their model claims to reduce absolute errors by a $5-20\%$ margin compared to other models, their evaluation depends on intricate adjustments to the denoising function and a self-supervised learning strategy that separates observed values into conditional information and imputation targets for training.
+
+\emph{Large language models.} Recently, \citet{gruver2023large} demonstrated that zero-shot extrapolation with Large Language Models (LLMs) outperform numerous time-series forecasting baselines in performance. However, their approach forecasts each dimension independently and ignores the actual timestamps of measurements. This limitation renders their model ineffective for datasets containing irregular timestamps and correlations between channels. We add the LLMTime baseline to our toy data experiment in Figure \ref{fig:models_generated_seq} and highlight the poor extrapolation performance on synthetic data.
+
+\emph{Tensor factorization based models.} \citep{yin2020logpar} introduced Logistic PARAFAC2, a model designed to handle binary data with missing values by using Bernoulli distributions and a positive-unlabeled learning loss function. This approach improves tensor completion and predictive performance by incorporating uniqueness and temporal smoothness regularization. However, their MIMIC-III dataset is constructed on an eight-hour basis by accumulating clinical features in consecutive time windows. This may not capture all relevant temporal dynamics and could limit the applicability to clinical features that vary within shorter time frames.
+
+~\\ \noindent
+Our work directly builds upon the continuous recurrent unit (CRU) by \citet{schirmer2022modeling}. 
+%The CRU is designed to perform representation learning for irregular time series. 
+As detailed in Sec.~\ref{sec:CRU}, the CRU is an SDE-based method for representation learning on irregular time series.
+Hidden representations evolve via a linear time-invariant stochastic differential equation (SDE), with encoder/decoder mappings for added flexibility. 
+However, the off-the-shelf CRU model does not model \emph{missingness} at all. Our proposed method extends the CRU to handle data-dependent missingness scenarios.
+Recent work by \citet{ansari2023neural} propose a neural continuous discrete state space model (NCDSSM). This is similar to the CRU but it avoids the CRU's restriction to linear time-invariant SDEs. Again, that work does not address learning  missing mechanisms.

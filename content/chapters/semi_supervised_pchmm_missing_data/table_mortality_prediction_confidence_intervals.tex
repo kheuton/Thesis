@@ -1,0 +1,15 @@
+\begin{table*}[!h]
+\begin{tabular}{|l|l|l|l|l|l|l}
+\hline
+         & \multicolumn{5}{l|}{Confidence Intervals for AUPRC for mortality prediction (100\% labelled)}                                  \\ 
+         \hline
+         & PC-HMM & GRU-D & MixMatch & FixMatch & BRITS \\ 
+         \hline
+MIMIC-IV & 0.341 (\scriptsize{0.332, 0.351}) & 0.306 (\scriptsize{0.301, 0.315}) & 0.212 (\scriptsize{0.207, 0.218}) & 0.180 (\scriptsize{0.177, 0.189}) & 0.322 (\scriptsize{0.320, 0.325})  \\ 
+\hline
+eICU    & 0.243 (\scriptsize{0.239, 0.251}) & 0.211 (\scriptsize{0.209, 0.214}) &  0.126 (\scriptsize{0.120, 0.129})&  0.124 (\scriptsize{0.122, 0.129})&  0.218 (\scriptsize{0.213, 0.220}) \\ 
+\hline
+\end{tabular}
+  \caption[AUPRC with confidence intervals for mortality prediction with all labels known]{AUPRC with confidence intervals for mortality prediction with all labels known. The confidence intervals are obtained by bootstrapping on the test set. We resample 10 different subsets of the test set, and compute AUPRC for each subset. The median (5th, 95th) of the AUPRC across subsets are shown in the table. We find that the variance in prediction across subsets is fairly low and thus only show the performance on the full test set in figures \ref{fig:mortality_prediction_results} and \ref{fig:MIMIC_los_prediction_results}}
+    \label{table: CI_performance}
+\end{table*}

@@ -1,0 +1,15 @@
+\paragraph{MIMIC} In order to realistically assess our proposed method as an early warning alert for patients at risk of deterioration, we consider now evaluating predictions made \emph{every 12 hours} throughout a patient's stay, with the outcome set to in-hospital mortality \emph{within the next 24 hours}.
+For a patient stay lasting just over two days, we would create and evaluate four feature vectors, representing predictions made after 12, 24, 36, and 48 hours.
+This realistic setting exaggerates class imbalance (only 3\% of examples are positive). To compensate, we lower the desired minimum precision to $\alpha=0.7$ on train and $\alpha'=0.6$ on validation.
+For simplicity, we featurize by applying the same summary functions used above on 2 windows (0-100\% and 90-100\%). 
+
+Fig.~\ref{fig:results_per_stay_slice_mimic} illustrates the precision-recall tradeoff on test data for LR models in this scenario. At the chosen operating threshold (marked as a cross), our proposed sigmoid bound achieves better recall and precision than alternatives. We show a similar improvement in recall and precision in the deployment scenario for eICU in Fig. \ref{fig:results_per_stay_slice_eicu} in the appendix.
+
+
+%create multiple slices containing featurized representations of various time-points of the stay. For example, if a patient stays for 2 days and dies at the end of the 5th day, we generate 4 slices containing featurized representations of (hour 0 - hour 12), (hour 0 - hour 24), (hour 0 - hour 36) and (hour 0 - hour 48).
+
+ %evaluation during real time deployment, we train a logistic regression model to generate continuous prediction of risk of in-hospital mortality within the next 24 hours.
+ % Therefore, for each patient stay we create multiple slices containing featurized representations of various time-points of the stay. For example, if a patient stays for 2 days and dies at the end of the 5th day, we generate 4 slices containing featurized representations of (hour 0 - hour 12), (hour 0 - hour 24), (hour 0 - hour 36) and (hour 0 - hour 48). Since the goal of the deployed classifier to predict risk of mortality in the next 24 hours, only the outcomes corresponding to the 3rd and 4th slice will be labeled as 1. Note that, here we featurize by applying the seven summary functions on 2 time windows (90-100\%, 0-100\%). Results are shown in Figure \ref{fig:results_per_stay_slice_mimic}
+
+% Since this formulation results in a much higher class imbalance than the sequence level predictions case, our training goal is to maximize recall subject to precision $\geq$ 0.7. 
+

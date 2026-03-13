@@ -1,0 +1,30 @@
+\section{Discussion and Conclusion}
+\label{sec:conclusion}
+We have developed new bounds based on the sigmoid function that allow tractable gradient-based optimization of any differentiable classifier to meet a desired precision constraint. Our experiments evaluating in-hospital mortality prediction on two large hospital datasets suggest the feasibility of our approach in real early warning applications.
+
+\textbf{Limitations.} A key drawback of our method is vulnerability to local optima due to non-convexity of the sigmoid bound.
+Given reasonable compute power at training time, we find we can mitigate local optima by taking the best of many runs.
+%For MLPs, cold starts using Glorot initialization~\citep{glorot2010understanding} satisfy the false alarm contraint more often than warm starts from a BCE solution (see Tables~\ref{table:mimic_performance}-\ref{table:eicu_performance}).
+
+% The chosen value of $\alpha$, the desired minimum precision to enforce, is critical. While the $\alpha$ values used in our experiments are reasonable, in practice $\alpha$ needs to be chosen in collaboration with stakeholders. 
+
+For a deployment, setting $\alpha$ requires input from stakeholders (at what false alarm rate would alerts be ignored or not add value?). 
+As in most real-world ML, we expect a modest but noticeable drop between train and heldout performance.
+As a rule of thumb, if the desired heldout precision is 0.5, we recommend setting $\alpha$ a bit higher (say $\alpha = 0.6$) for training then enforce $\alpha' = 0.5$ on a validation set to be sure desired performance is achieved.
+Our method is sensitive to other hyperparameters, including the penalty $\lambda > 0$ and the tolerances $\gamma, \delta, \epsilon$ that govern the tractability-tightness tradeoff for our bound. 
+While we found reasonable values for our tasks, future applications may need to tune values for better performance.
+
+%In this work, we fixed the parameters of the sigmoid bound to ensure a reasonably tight bound, and also ran our experiments with a pre-defined $\alpha$. In practice however, $\alpha$ needs to be chosen in collaboration with experienced clinical staff, and $\lambda, \gamma, \delta, \epsilon$ need to be searched over a hyperparameter grid to guarantee optimal performance. The vast space of hyper-parameters would require large computational capacity. 
+
+Finally, although our objective can control false alarms on the training set, this does not guarantee this constraint will be satisfied on heldout data.
+Guaranteeing generalization is an open research question. 
+%Perhaps  tightening the bounds gradually during training could overcome this issue.
+
+
+\textbf{Advantages.}
+The primary advantage of our method is the ability to steer models to satisfy a maximum desired false alarm rate, in order to avoid alarm fatigue, while maintaining linear runtime.
+As demonstrated throughout our experiments, our objective clearly outperforms alternatives like post-hoc threshold search at maximizing recall at a desired minimum precision.
+
+% Our bounds can work with any classifier trained via SGD. 
+Future work could use our bounds on more flexible classifiers that are trainable via SGD, such as recurrent NNs, convolutional NNs, or graph NNs.
+For improved interpretability, one could explore integrating our loss with L0 and L1 norm weight sparsity penalties~\citep{tibshirani1996regression, ustunSupersparseLinearInteger2016}.

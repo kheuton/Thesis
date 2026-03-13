@@ -1,0 +1,13 @@
+\begin{table}[H]
+\centering
+\caption{MIMIC-IV Dataset Split and Statistics}
+\label{tab:mimic-dataset-split}
+\begin{tabular}{|l|l|c|c|c|c|c|c|}
+\hline
+\multirow{2}{*}{Dataset} & \multirow{2}{*}{Split} & \multirow{2}{*}{Stays} & \multirow{2}{*}{Patients} & \multicolumn{3}{c|}{Fraction of Stays} & \multirow{2}{*}{In-ICU mortality}\\ \cline{5-7}
+ &  &  &  & LOS $\geq$ 3 days & LOS $\geq$ 7 days & LOS $\geq$ 11 days & \\ \hline
+\multirow{3}{*}{MIMIC-IV} & Train & 33,506 & 27,084 & 0.46 & 0.16 & 0.08 &0.08 \\ \cline{2-8}
+ & Valid & 8,377 & 7,821 & 0.46 & 0.16 & 0.08 & 0.08\\ \cline{2-8}
+ & Test & 10,471 & 9,673 & 0.47 & 0.17 & 0.08 & 0.08 \\ \hline
+\end{tabular}
+\end{table}

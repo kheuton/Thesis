@@ -1,0 +1,18 @@
+\begin{table*}[!h]
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+Beliefs aggregation  & \multicolumn{5}{l|} {AUPRC for MIMIC-IV mortality prediction varying $p$($\%$ labeled sequences)}\\
+\hline
+         & $p=1.2$\%      & $p=3.7\%$      & $p=11.1\%$      & $p=33.3\%$      & $p=100\%$     \\
+\hline
+Average     & 0.19 (\scriptsize{0.18, 0.20})       & 0.23 (\scriptsize{0.22, 0.23})      & 0.29  (\scriptsize{0.29, 0.30})        & 0.32 (\scriptsize{0.32, 0.34})        & 0.34 (\scriptsize{0.33, 0.35})      \\
+\hline
+1 Conv layer + Max & 0.14 (\scriptsize{0.13, 0.14})       & 0.19 (\scriptsize{0.19, 0.20})      & 0.27  (\scriptsize{0.26, 0.28})        & 0.27 (\scriptsize{0.27, 0.28})        & 0.28 (\scriptsize{0.27, 0.29}) \\
+\hline
+First + Last Step concat & 0.15 (\scriptsize{0.15, 0.16})       & 0.19 (\scriptsize{0.18, 0.19})      & 0.20  (\scriptsize{0.20, 0.21})        & 0.21 (\scriptsize{0.21, 0.22})        & 0.25 (\scriptsize{0.24, 0.25}) \\
+\hline
+\end{tabular}
+  \caption[Comparison of aggregation strategies of the HMM beliefs, before be-
+ing passed as features to the predictor]{Comparison of aggregation strategies of the HMM beliefs, before being passed as features to the predictor. We compare 3 stategies : (1)averaging beliefs across time (2) convolutional transformation of the belief sequence followed by max-pooling \citep{hopePredictionConstrainedHiddenMarkov2021} and (3)concatenating the beliefs at the first and last time steps. Across all levels of missing labels, we observe that averaging the beliefs performs best \citep{sotoodeh2019improving}.}
+    \label{table: avg_vs_max_pooling}
+\end{table*}

@@ -1,0 +1,100 @@
+\documentclass[11pt,final,letterpaper,openany]{mytuftsthesis}
+% \documentclass[11pt,draft,letterpaper,openany]{mytuftsthesis}
+\usepackage{matscript}
+\usepackage{natbib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% set real paper size for PDF (A4 or letter)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \pdfpagewidth=210mm
+% \pdfpageheight=297mm
+\pdfpagewidth=8.5in
+\pdfpageheight=11in
+
+
+
+\usepackage{scalerel}
+\usepackage{bm}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage{mathtools}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACROS %%%%%%%%%%
+\newcommand{\tpc}[0]{\text{tpc}}
+\newcommand{\fpc}[0]{\text{fpc}}
+\newcommand{\til}[1]{\tilde{#1}}
+\newcommand{\xobs}{\mathbf{X}^{\mathcal{O}}}
+\newcommand{\compactsum}[2]{\smashoperator[r]{\sum_{#1}} {#2}}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title Page, abstract, acknowledgements,
+% table of contents, list of tables, list of 
+% figures
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Time series machine learning for hospitalized patient monitoring:
+Addressing missing data, missing labels, and high false alarm rates}
+\author{Preetish Rath}
+\adviser{Professor Michael C. Hughes}
+% \committee{Dr. Eric Miller, Dr. Donna Slonim, Dr. Joyce Ho, Dr. Liping Liu}
+\institute{Tufts University}
+\degreedate{August 2024}
+\copyrightyear{2024}
+
+\myabstract{content/abstract.tex}
+\myacknowledgements{content/acknowledgements.tex}
+\mydedication{\bigskip\\Dedicated to my dear mother. The ones we love are always in our hearts.}
+
+\beforethesisproper
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% main body of thesis
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Executive Summary}
+\input{content/exec_summary}
+
+\chapter{Introduction}
+\input{content/introduction}
+
+\chapter{Optimizing Early Warning Classifiers to Control False Alarms via a Minimum Precision Constraint}
+\input{content/chapters/false_alarm_control/intro}
+\input{content/chapters/false_alarm_control/background}
+\input{content/chapters/false_alarm_control/related_work}
+\input{content/chapters/false_alarm_control/fig_bounds_line_plot}
+\input{content/chapters/false_alarm_control/methods}
+\input{content/chapters/false_alarm_control/experiments}
+\input{content/chapters/false_alarm_control/conclusion}
+
+\chapter{Predicting In-Hospital Patient Outcomes from Time Series with Missing Data via a Semi-supervised Hidden Markov Model}
+\label{chap:pchmm}
+\input{content/chapters/semi_supervised_pchmm_missing_data/intro}
+\input{content/chapters/semi_supervised_pchmm_missing_data/methods}
+\input{content/chapters/semi_supervised_pchmm_missing_data/results}
+\input{content/chapters/semi_supervised_pchmm_missing_data/conclusion}
+
+\chapter{Probabilistic Modeling of Data-Driven Missingness in Irregular Time Series Medical Records}
+\input{content/chapters/irregular_time_series_data_driven_missingness/intro}
+\input{content/chapters/irregular_time_series_data_driven_missingness/related_work}
+\input{content/chapters/irregular_time_series_data_driven_missingness/background}
+\input{content/chapters/irregular_time_series_data_driven_missingness/methods}
+\input{content/chapters/irregular_time_series_data_driven_missingness/results}
+\input{content/chapters/irregular_time_series_data_driven_missingness/conclusion}
+
+\chapter{Conclusion and Outlook}
+\input{content/conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{plainnat}
+{
+\singlespacing
+% \newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+% % The following assumes your references are in .bib format.  
+\bibliography{refs/thesisbib}
+}
+
+\end{document} 

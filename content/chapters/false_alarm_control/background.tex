@@ -1,0 +1,165 @@
+\section{Background}
+When developing an early warning alarm system, our goal is to estimate a prediction model with parameters $\theta$ that can consume a feature vector $x \in \mathbb{R}^D$ and produce a real-valued score $f_{\theta}(x)$ indicating confidence that some (rare) outcome will occur. 
+Large negative scores indicate certainty the outcome will not occur and large positive scores indicate certainty it will occur.
+Using a scalar threshold $b$, we can translate this score into a binary \emph{decision} $\hat{y}(x)$, which equals 1 if $f_{\theta}(x) > b$ and 0 otherwise. 
+%A common default is to set $b=0$.
+In the intended use case, a positive decision causes the early warning system to trigger an \emph{alarm}.
+
+To train this model, we'll assume we have a dataset $X,Y$ of $N$ labeled examples: $X = \{x_n\}_{n=1}^N, Y = \{y_n\}_{n=1}^N$, with known binary label $y_n \in \{0, 1\}$ indicating which outcome happened to the example at index $n$ with features $x_n \in \mathbb{R}^D$. 
+In many cases, the outcome of interest (such as mortality) is rare. 
+We'll refer to the rare label of interest as ``positive'' or 1, and the common label as ``negative'' or 0.
+Let $N_+$ denote the total count of positive true labels in a dataset: $N_+ = \sum_{n=1}^N y_n$. Similarly, $N_-$ gives the count of negative true labels.
+
+\subsection{Evaluation metrics for binary classifiers}
+Many performance metrics exist for binary classifiers, each  appropriate for different goals~\citep{romero-brufauWhyCstatisticNot2015}. We review relevant metrics here.
+
+\textbf{Binary cross entropy} (BCE) is defined as
+\begin{align}
+{\scriptsize  
+\text{BCE}(\theta, X, Y)} = \sum_{n=1}^N \log
+	\left(
+	\sigma( f_{\theta}(x_n) )^{y_n}
+	(\sigma(-f_{\theta}( x_n)) )^{1-y_n}
+	\right).
+	\notag
+\end{align}
+Here, $\sigma(f) = \frac{1}{1+e^{-f}}$ is the logistic sigmoid function, which maps real-valued inputs $f\in\mathbb{R}$ to the unit interval $0 \leq \sigma(f) \leq 1$.
+BCE is the most common loss used to train binary classifiers, motivated as a smooth upper bound on error rate (after scaling by $\frac{1}{N}$) as well as via maximum likelihood arguments. However, for problems where the positive class is rare but critical, neither error rate nor BCE can capture the key applied questions as all types of mistakes are treated equally.
+
+\textbf{True positive count.} A ``true positive'' is an example whose true label is positive and predicted label is also positive. We define a dataset's true positive count as:
+\begin{align}
+\text{tpc}(\theta, X, Y) 
+	= \sum_{n: y_n=1} \hat{y}_{\theta}(x_n)
+	= \sum_{n: y_n=1} z(f_{\theta}(x_n) - b).
+	\notag 
+\end{align}
+Here, $z(\cdot)$ is the zero-one function, which is one if its argument has positive sign and zero otherwise.
+This count is bounded: $0 \leq \text{tpc} \leq N_{+}$.
+
+\textbf{False positive count.} A ``false positive'' is an example whose true label is negative but whose predicted label is positive. False positives mean the early warning system produces a false alarm. We define a dataset's false positive count as:
+\begin{align}
+\text{fpc}(\theta, X, Y)
+	{=} \sum_{n : y_n = 0} \hat{y}_{\theta}(x_n)
+	= \sum_{n : y_n = 0} z(f_{\theta}(x_n) - b).
+	\notag 
+\end{align}
+This count is also bounded: $0 \leq \text{fpc} \leq N_{-}$.
+
+\textbf{Recall.} Recall is the fraction of all truly positive examples that are also called positive by the classifier:
+\begin{align}
+\text{recall}(\theta, X, Y) = \frac{\text{tpc}(\theta, X, Y)}{N_+(Y)},
+\end{align}
+where $N_+(Y)$ counts the positive labels in dataset $Y$.
+
+\textbf{Precision (aka True Alarm Rate).}
+Precision is defined as the fraction of all positive alerts produced by the classifier that are truly positive,
+\begin{align}
+\text{prec}(\theta, X, Y) = \frac{\text{tpc}(\theta, X, Y)}{\text{tpc}(\theta, X, Y) + \text{fpc}(\theta, X, Y)},
+\notag
+\end{align}
+where the denominator counts all alerts (positive calls), which must either be true positive or false positive.
+Another name for precision is the ``true alarm rate''. Precision is equal to one minus the false alarm rate.
+
+\subsection{Suggested Optimization Objective}
+
+Consider a clinical prediction task trying to identify patients at risk of a rare adverse outcome, so that additional interventions can be prioritized for these patients.
+Interventions are a limited resource with a cost (otherwise they could be applied to all patients).
+At minimum, hospital staff time is limited, and thus an alarm raised for a patient who does not need extra care means that other (perhaps more needy) patients do not get attention.
+Furthermore, if staff become habituated to viewing alarms as rarely related to the intended outcome and thus unhelpful, they may be inclined to ignore them. Similar concerns about false alarms shape early warning systems in many other domains. 
+
+It is thus critical to view designing an effective early warning system as satisfying two goals. First, guaranteeing the false alarm rate is below some critical value established in conversation with stakeholders to ensure utility and avoid alarm fatigue. Second, achieving alerts that would successfully alarm (and hopefully help mitigate) the most possible adverse events.
+
+These goals can be naturally formalized as the following optimization problem:
+\begin{align}
+\label{eq:max_recall_st_precision}
+\max_{\theta} ~\text{recall}(\theta, X, Y),
+~\text{s.t.}~ \text{prec}(\theta, X, Y) \geq \alpha,
+\end{align}
+where $\alpha$ is set to the minimum desired precision (equivalently, $1-\alpha$ is the maximum false alarm rate).
+While this objective has been suggested before~\citep{ebanScalableLearningNonDecomposable2017}, in practice most ML early warning systems are not trained to satisfy some target minimum precision. 
+
+One could ask why we intend on constraining precision rather than recall. To answer this, we argue that our proposed precision constraint reflects the limited resources of the system (staff time and trust), while constraining recall does not. If we constrained recall to at least 85\%, the system could only alarm for 85\% of needy patients when 90\% or 95\% could be saved with little degradation of precision.
+
+% \subsection{Comparison of our proposed objective to Neyman Pearson Theory :} The Neyman Pearson paradigm for binary classification seeks to maximize the type II error while controlling type I error to be below a user specified threshold $\alpha$ \citep{tong2020neyman}. In other words, the optimization objective is to : 
+% \begin{align}
+% \label{eq:neyman_pearson}
+% \max_{\theta} ~\text{recall}(\theta, X, Y),
+% ~\text{s.t.}~ \text{tnr}(\theta, X, Y) \geq \alpha,
+% \end{align}
+
+% where tnr$(\theta, X, Y)$ refers to the true negative rate. While this is a valid objective, our proposed objective's constraint on precision rather than true negative rate ensures that the emphasis is on the correctly identifying the positive class, rather than achieving a high true negative rate. Identifying the negative class (normal patients) correctly is not our primary objective; rather our priority is to classify the positive class (at-risk patients) correctly, especially in heavily imbalanced medical datasets. 
+
+\subsection{Comparison of Our Proposed Objective to Neyman-Pearson Theory}
+The Neyman-Pearson paradigm for binary classification focuses on maximizing the recall (i.e., minimizing the type II error) while ensuring that the type I error is controlled below a user-specified threshold \(\alpha\) \citep{tong2020neyman}. The optimization objective can be formally expressed as:
+\begin{align}
+\label{eq:neyman_pearson}
+\max_{\theta} ~\text{recall}(\theta, X, Y), 
+~\text{s.t.}~ \text{tnr}(\theta, X, Y) \geq \alpha,
+\end{align}
+where \(\text{tnr}(\theta, X, Y)\) refers to the true negative rate, representing the proportion of correctly identified negatives.
+
+While this objective is valid, our proposed objective focuses on precision rather than the true negative rate. The emphasis on precision ensures that the model prioritizes correctly identifying the positive class (at-risk patients) rather than merely achieving a high true negative rate. This distinction is critical in heavily imbalanced medical datasets, where the negative class (normal patients) is often the majority. Our primary objective is to maximize the effectiveness of identifying the positive class, which directly impacts patients at-risk.
+
+\paragraph{\textbf{Confusion Matrix Comparison}}
+
+To illustrate this difference, consider the confusion matrix below:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+& Predicted Positive & Predicted Negative \\ \hline
+Actual Positive & True Positive (TP) & False Negative (FN) \\ \hline
+Actual Negative & False Positive (FP) & True Negative (TN) \\ \hline
+\end{tabular}
+\caption{Confusion Matrix}
+\end{table}
+
+In the Neyman-Pearson framework, the focus is on controlling the true negative rate (TNR), defined as:
+
+\[
+\text{TNR} = \frac{\text{TN}}{\text{TN} + \text{FP}}
+\]
+
+This approach emphasizes minimizing the false positive rate to maintain a high true negative rate. However, in clinical settings, especially with imbalanced datasets, the number of true negatives (TN) is typically much larger than the number of true positives (TP). Thus, even a model with a high TNR might still have a low precision if the number of false positives (FP) is relatively high compared to true positives.
+
+Our proposed objective, which focuses on precision, is defined as:
+
+\[
+\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}
+\]
+
+By constraining precision, our model ensures that the majority of positive predictions are correct, thereby directly reducing the false positive rate in a more balanced manner relative to the true positives. This focus is crucial for clinical applications where false alarms (false positives) can lead to alarm fatigue among healthcare providers, reducing the overall effectiveness of the monitoring system.
+
+While the Neyman-Pearson approach ensures a high true negative rate, our precision-constrained objective better addresses the practical needs of clinical settings by prioritizing the accurate identification of at-risk patients, thus providing more reliable and actionable predictions.
+
+%\subsection{Baseline: Exhaustive Grid Search}
+
+%Explain how when data dimension is small, we can do exhaustive grid search for a linear decision boundary.
+
+
+\subsection{Baseline: Post-Hoc Threshold Search}
+
+After training a binary classifier to minimize cross entropy (or some other suitable objective), we can always perform a post-hoc search procedure to better identify a decision-making threshold $b$ that meets desired performance criteria. In our applications, if we have a maximum allowable false alarm rate in mind, we can fix the parameterized score function $f_{\theta}(\cdot)$ obtained via training and simply select among a grid of candidate threshold values the one that best satisfies the original objective in Eq.~\eqref{eq:max_recall_st_precision}.
+Graphically, for a linear classifier this is akin to trying all possible decision boundary hyperplanes parallel to the one produced via original training.
+As a one-dimensional grid search, precision and recall at each threshold can be easily computed, without any gradients or bounds needed.
+%No gradients or bounds are needed.
+
+This approach is helpful but far from optimal, as shown in Fig.~\ref{fig:toy_data_precision_90}, where we consider a synthetic dataset with $D=2$ features where we wish to achieve a minimum precision of $\alpha=0.9$.
+Even with this post-hoc search, the optimal linear classifier trained via BCE cannot exceed a precision of 0.68, 
+well below the desired precision of 0.9.
+Later experiments show that post-hoc search also delivers sub-par results in real clinical tasks.
+
+%While the post-hoc search certainly improves recall compared to not performing the search, compared to our method it delivers sub-optimal precision (the 0.68 precision from threshold search is much worse than the 0.81 delivered by our method).
+%If the target false alarm rate was 20\% (meaning searching for precision above 0.8), there simply is no boundary parallel to the BCE-optimal boundary that can meet that standard.
+%Thus, one-dimensional post-hoc search is inadequate, which we later further demonstrate on real clinical tasks.
+
+%This is evident is Figure 2, where BCE + threshold search would vary the intercept of the decision boundary but could never achieve the required precision of 90\%.
+
+%An alternative method for training binary classifiers to achieve the required precision is by varying the decision thresholds, after minimizing the cross entropy loss (BCE + threshold search). In this section, we demonstrate that training with our surrogate loss objective is better than BCE + threshold search in 2 ways.
+%\begin{itemize}
+%    \item Our surrogate loss objective inherently chooses a decision boundary that simultaneously achieves the desired precision and maximizes recall, due to the tight bounds on the true positive and false positives.
+%    
+%    \item BCE + threshold search merely offsets the decision boundary by a scalar value, but has no impact on the orientation of the boundary itself. On the other hand, our surrogate loss objective forces the classifier to orient the decision boundary such that recall is maximized at a fixed precision. This is evident is Figure 2, where BCE + threshold search would vary the intercept of the decision boundary but could never achieve the required precision of 90\%.
+%\end{itemize}
+
