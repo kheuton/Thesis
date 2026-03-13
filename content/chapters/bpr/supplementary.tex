@@ -1,0 +1,49 @@
+\section{Supplementary Material}\label{supplementary-material}
+
+\subsection{Additional Model details}\label{additional-model-details}
+
+Model hyperparameters are selected using the year prior to the test years as a validation year: 2019 for Massachusetts and 2020 for Cook County. When validating, models are trained through the year prior to the validation year. For evaluation on the test years, models are retrained through the validation year. Hyperparameters are selected by selecting the model with the highest BPR. In Massachusetts, we consider using up to 10 years of historical data when training (2010-2019). In Cook County there are fewer years of available historical data, and so training is limited to 2016-2020.
+
+\subsubsection{All-Zeroes}\label{all-zeroes}
+
+The All-Zeroes model is presented to highlight two things: the BPR of a naive policy, and the RMSE and MAE of a naive model. This model is very simple: every prediction is always 0 fatal overdoses. However, this presents a challenge for calculating BPR: what are the top K locations if every location is tied? In this case, we take 10,000 samples, and randomly pick the K locations to serve as the numerator for BPR. We then calculate the BPR for each of 10,000 samples, and report the average.
+
+\subsubsection{Last Year}\label{last-year}
+
+For this model, the prediction is simply the previous year's fatal overdose count. When predicting for the second evaluation year (2021 in Massachusetts and 2022 in Cook County), the fatal overdose count from the first evaluation year is used. This is subtly different from the behavior of the regression models, where the models are trained using no data from the evaluation years.
+
+\subsubsection{Historical Average}\label{historical-average}
+
+In this model, the output is an un-weighted average of historical mortality. For both Massachusetts and Cook County 4 years are selected. These are both selected via the validation year. When predicting for the second evaluation year (2021 in Massachusetts and 2022 in Cook County), the fatal overdose count from the first evaluation year is used. This is subtly different from the behavior of the regression models, where the models are trained using no data from the evaluation years.
+
+\subsubsection{Weighted Historical Average}\label{weighted-historical-average}
+
+This model is a linear regression on historical fatal overdose count using only past years mortality as a predictor. Scikit-learn's\citep{buitinckAPIDesignMachine2013} ridge regression is used, which performs L2-regularized regression. The regularization strength α is selected via hyperparameter search by trying 29 evenly spaced values on a log scale between 10\textsuperscript{-6} and 10\textsuperscript{8}. For Massachusetts, 10 years of historical data and an α of 10\textsuperscript{4.5} is used. For Cook County, 3 years of historical data are used and an α of 10\textsuperscript{4.5} is selected.
+
+\subsubsection{Linear Poisson GLM}\label{linear-poisson-glm}
+
+This uses Scikit-learn's\citep{buitinckAPIDesignMachine2013} Generalized Linear Model with a Poisson Likelihood and a log link. The hyperparameters explored are the number of prior years of mortality to include in the model and the L2 regularization strength α. Up to 10 years of previous mortality were considered for Massachusetts and 6 years for Cook County. The model is run with and without social vulnerability covariates.
+
+\textbf{Without social vulnerability covariates:} In Massachusetts 10 years of prior mortality are used in the model with an α of 1. In Cook County, 5 years of historical data are used with an α of 10\textsuperscript{0.5}.
+
+\textbf{With social vulnerability covariates:} In Massachusetts 6 years of prior mortality are used in the model with an α of 1. In Cook County, 5 years of historical data are used with an α of 10.
+
+\subsubsection{Gradient Boosted Trees}\label{gradient-boosted-trees}
+
+This uses Scikit-learn's\citep{buitinckAPIDesignMachine2013} Histogram-basedGradient Boosted Trees model. We considered both squared-error and Poisson loss functions. We tested using both 32 and 128 maximum iterations. For the minimum samples per leaf we used 9 equally spaced values between 2\textsuperscript{0} and 2\textsuperscript{8} on a log-2 scale. The maximum number of leaf nodes tested were 5 equally spaced values between 2\textsuperscript{4} and 2\textsuperscript{8} on a log-2 scale. Up to 10 years of previous mortality were considered for Massachusetts and 6 years for Cook County.
+
+\subsubsection{Gaussian Process Models}\label{gaussian-process-models}
+
+Here we use Scikit-learn's\citep{buitinckAPIDesignMachine2013} Gaussian Process (GP) implementation. Due to the high computational cost of GP models, and following prior work\citep{allenTranslatingPredictiveAnalytics2023}, we only consider up to 5 years of historical data for both Massachusetts and Cook County, and we omit social vulnerability covariates. As in the prior work,we use a kernel that additively combines a Radial-Basis Function (RBF) kernel with a white noise kernel. The initial length scale of the RBF kernel is set to 0.5, and the noise level bounds on the white noise are set to (10\textsuperscript{-5}, 10\textsuperscript{1}). The outcomes are normalized to 0-mean and unit variance. Up to 9 restarts of the optimizer are used.
+
+\subsubsection{CASTNet}\label{castnet}
+
+While we attempted to follow the original implementation of CASTNet\citep{ertugrulCASTNetCommunityAttentiveSpatioTemporal2019} as closely as possible, there are some significant modifications. The original CASTNet was concerned with predictions at a fine temporal-resolution, weekly. However, our initial experiments found little benefit at this scale, and we consider a much coarser scale: annual predictions. We lack the high-resolution crime data that the original CASTNet project uses as dynamic covariates. Furthermore, while we do have demographic and economic variables (the 5-dimensional Social Vulnerability index), these are not static at the annual scale but dynamic, accordingly these are used as the only dynamic covariates. For static covariates, only the latitude and longitude of the census tract are used. We use the hyperparameters selected by the original work: the LSTMs have a hidden unit size of 32 with a dropout value of 0.1, the group-level regularization coefficient is 0.0025, and the optimizer used was Adam with a learning rate of 0.5. Given that we have 2 evaluation years, we train the model twice, once with a lag time of 1-year and again with a lag time of 2-years. The 1-year lag model is used to predict for the first evaluation year (2020 in MA and 2021 in Cook County) and the 2-year lag model is used to predict for the second. This way no training data leaks into the model.
+
+\subsubsection{Bayesian Spatiotemporal Models}\label{bayesian-spatiotemporal-models}
+
+In the original work\citep{bauerSmallAreaForecasting2023} on Bayesian Spatiotemporal models for opioid overdose forecasting, three separate models are proposed. All three models use an Autoregressive-1 term to model temporal dependence, and two of the models use spatial correlations. Because all three models are reported to behave similarly, we use what is called ``Model 1'', lacking spatial correlations. Furthermore, the authors state that any number of temporal terms could be used, but do not specify which. Here, we choose a linear temporal term.This model is implemented using R-INLA\citep{rueApproximateBayesianInference2009}. Linear coefficients are used when adding the social vulnerability covariates.
+
+\subsubsection{Negative Binomial Regression with Spatially Lagged Covariates}\label{negative-binomial-regression-with-spatially-lagged-covariates}
+
+The authors of this method\citep{marksIdentifyingCountiesRisk2021} helpfully provide code to run this model which we were able to use with little modification. Census tract level population estimates are taken from the same survey data as the social vulnerability covariates. The carrying capacity is initialized to 5\% of the population in the first year of training data (2010 for MA, 2015 for Cook County).

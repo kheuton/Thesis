@@ -1,0 +1,19 @@
+\section{Results}\label{results}
+
+Results from the experiments conducted on Massachusetts and Cook County data are summarized in Table~\ref{tab:bpr_massachusetts} and Table~\ref{tab:bpr_cookcounty}, respectively. The best model(s) can vary depending on the chosen evaluation metric.
+
+In both catchment areas, we see reasons to prefer our proposed BPR metric to alternatives when the goal is effectively prioritizing where to intervene. First, in Massachusetts, both the Gaussian Process (GP) and Bayesian Spatiotemporal model (BST) have top performance as assessed by MAE and RMSE. However, the BST has higher \%BPR than the GP (62.0\% compared to 58.2\%). Interventions guided by the BST model would have the potential to preemptively identify 18 additional fatal overdoses per year in the top 100 census tracts. Similarly, in Cook County the Gradient Boosted Trees model with SVI covariates has superior MAE and RMSE to the GLM model, yet has worse \%BPR (77.1\% versus 79.4\% for GLM). Interventions guided by the GLM model (preferred via the \%BPR metric) could reach 15 more fatal overdose events annually in Cook County.
+
+We also observe that while complex models like BST do well in both catchment areas, so does the simple \emph{historical average} baseline and its weighted extension. In Massachusetts, \emph{historical average} delivers a BPR and MAE that fall within the uncertainty intervals of the best performing models. The weighted extension's ultimate \%BPR is so close to the top method (NPSpLag) that the difference amounts to identifying fewer than 2 additional overdose events annually. In Cook County, the \emph{historical average} baseline delivers competitive scores (within the intervals of the best models) as assessed by all three metrics (BPR, MAE, and RMSE); the best model (BST) here would reach less than 1 additional overdose event annually.
+
+\input{content/chapters/bpr/table1}
+
+Here BPR (higher is better) is our new intervention-aware metric, computed assuming an intervention budget for K=100 of 1620 possible tracts in Massachusetts. MAE (lower is better) and RMSE (lower is better) are common error-based metrics. For each metric, the best model mean is bolded, along with any other model whose uncertainty interval overlaps this mean (intervals are computed via resampling methods). The column titled ``Total Overdoses Identified in top 100 tracts'' contains the \emph{true} number of observed fatal overdoses in the top 100 locations identified by the corresponding model.
+
+Abbreviations: \textbf{BPR}: Best Possible Reach. \textbf{MAE}: Mean Absolute Error. \textbf{RMSE}: Root Mean Squared Error. \textbf{SVI}: Social Vulnerability Index covariates. \textbf{GLM}: Generalized Linear Model. \textbf{GP}: Gaussian Process. \textbf{NBSpLag}: Negative binomial regression with spatially-lagged features. \textbf{BST}: Bayesian spatiotemporal model
+
+\input{content/chapters/bpr/table2}
+
+Here \%BPR (higher is better) is our new intervention-aware metric, computed assuming an intervention budget for K=100 of 1328 possible tracts in Cook County. MAE (lower is better) and RMSE (lower is better) are common error-based metrics. For each metric, the best model mean is bolded, along with any other model whose uncertainty interval overlaps this mean (intervals are computed via resampling methods). The column titled ``Total Overdoses Identified in top 100 tracts'' contains the \emph{true} number of observed fatal overdoses in the top 100 locations identified by the corresponding model.
+
+Abbreviations: \textbf{BPR}: Best Possible Reach. \textbf{MAE}: Mean Absolute Error. \textbf{RMSE}: Root Mean Squared Error. \textbf{SV}: Social Vulnerability covariates. \textbf{GLM}: Generalized Linear Model. \textbf{GP}: Gaussian Process. \textbf{NBSpLag}: Negative binomial regression with spatially-lagged features. \textbf{BST}: Bayesian spatiotemporal model
