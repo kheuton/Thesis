@@ -1,6 +1,0 @@
-\paragraph{eICU} In order to assess our proposed method realistically as an early warning alert for patients at risk of deterioration, we consider now evaluating predictions made \emph{every 12 hours} throughout a patient's stay, with the outcome set to in-hospital mortality \emph{within the next 24 hours}.
-For a patient stay lasting just over two days, we would create and evaluate four feature vectors, representing predictions made after 12, 24, 36, and 48 hours.
-This realistic setting exaggerates class imbalance (only 2.3\% of examples are positive). To compensate, we lower the desired minimum precision to $\alpha=0.7$ on train and $\alpha'=0.6$ on validation.
-For simplicity, we featurize by applying the same summary functions used above on 2 windows (0-100\% and 90-100\%). 
-
-Fig.~\ref{fig:results_per_stay_slice_eicu} illustrates the precision-recall tradeoff on test data for LR models in this scenario. At the chosen operating point (marked as a cross), our proposed sigmoid bound achieves better recall and precision than alternatives.
