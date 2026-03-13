@@ -32,11 +32,12 @@ To evaluate model forecasting accuracy against observed mortality in a test peri
 
 Model performance is often assessed via summary statistics of the errors between predicted and observed mortality across all S spatial regions in the test period. Within this category, two common metrics are Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE), both defined in Equation 1 below. RMSE calculates the square root of the average squared errors, while MAE computes the average of absolute errors.
 
-% FIXME: RMSE formula did not port from Pandoc -- only the MAE half is present below; restore the RMSE expression (sqrt of mean squared errors) before the comma
-\(RMSE\  = \ ,\ \ \ \ \ MAE\  = \frac{1}{S}\sum_{s = 1}^{S}|y_{s} - \widehat{y_{s}}|\) (1)
+\begin{equation}
+    \text{RMSE} = \sqrt{\frac{1}{S}\sum_{s = 1}^{S}(y_{s} - \widehat{y_{s}})^{2}},\ \ \ \ \text{MAE} = \frac{1}{S}\sum_{s = 1}^{S}|y_{s} - \widehat{y_{s}}|
+\end{equation}
 
 Both RMSE and MAE have been concretely used as the primary metrics to assess opioid overdose forecasting\citep{ertugrulCASTNetCommunityAttentiveSpatioTemporal2019,bauerSmallAreaForecasting2023, sumetskySpatiotemporalModelingOpioid2017}
-. RMSE can be more sensitive to large errors due to its use of squaring.
+. RMSE is more sensitive to outliers because it squares large errors.
 
 \subsubsection{Intervention-focused metric}\label{intervention-focused-metric}
 
@@ -46,7 +47,9 @@ To evaluate such intervention recommendations, we need new metrics. The error-ba
 
 Our proposed metric, ``best possible reach'' (BPR), assesses a model's recommendations via a ratio of two numbers. First, the numerator counts how many opioid-related fatalities actually occurred in the model's recommended set \emph{I} of size K. Second, the denominator counts the total number of opioid-related fatalities in the K regions that would be chosen with perfect hindsight of the actual count vector y = {[}y\textsubscript{1}, \ldots, y\textsubscript{S}{]} of fatalities in the test period. Mathematically, we define BPR as follows
 
-\(BPR\  = \ \frac{\sum_{k \in I}^{}y_{k}}{\sum_{k \in TopKInds(y)}^{}y_{k}}\) = \(\frac{\ \#\ events\ in\ K\ regions\ picked\ by\ model}{\#\ events\ in\ actual\ K\ highest\ count\ regions}\)
+\begin{equation}
+    \text{BPR} = \frac{\sum_{k \in I}^{}y_{k}}{\sum_{k \in \text{TopKInds(y)}^{}y_{k}}} = \frac{\text{$\#$ events in K regions picked by model}}{\text{$\#$ events in actual K highest count regions}}
+\end{equation}
 
 where TopKInds(y) denotes a function that returns the distinct indices of the K largest elements of vector \emph{y}.
 
