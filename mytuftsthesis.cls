@@ -113,7 +113,9 @@
 }
 
 \usepackage{etex}
-\reserveinserts{28}
+\ifdefined\reserveinserts
+  \reserveinserts{28}
+\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Abstract, acknowledgements
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
