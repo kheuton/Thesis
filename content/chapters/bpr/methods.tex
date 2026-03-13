@@ -2,7 +2,8 @@
 
 \subsection{Data Sources and Preparation}\label{data-sources-and-preparation}
 
-To assess models, we assembled two datasets suitable for forecasting opioid-related fatal overdoses annually at the census tract level. Our relatively coarse annual temporal scale was chosen to match the frequency at which decision-makers might set new priorities and at which new reliable data become available. We chose the census tract spatial scale due to its potential for targeted interventions at a sub-municipality level. Each census tract by design contains a mean count of 4000 people (with a range of 1200-8000\textsuperscript{24}% FIXME: no bib match for ref 24 (US Census Bureau Glossary -- add bib entry then replace with \citep{})
+To assess models, we assembled two datasets suitable for forecasting opioid-related fatal overdoses annually at the census tract level. Our relatively coarse annual temporal scale was chosen to match the frequency at which decision-makers might set new priorities and at which new reliable data become available. We chose the census tract spatial scale due to its potential for targeted interventions at a sub-municipality level. Each census tract by design contains a mean count of 4000 people 
+(with a range of 1200-8000 \citep{uscensusbureauGlossary2022}
 ) . For many (but not all) interventions, costs scale with population size, and thus the cost of deploying an intervention in any tract is roughly uniform.
 
 \subsubsection{\texorpdfstring{Data source 1: Cook County, Illinois }{Data source 1: Cook County, Illinois }}\label{data-source-1-cook-county-illinois}
@@ -15,10 +16,12 @@ We obtained death certificate data from the Massachusetts Registry of Vital Reco
 
 \subsubsection{Dataset Preparation}\label{dataset-preparation}
 
-For each dataset, we computed the observed number of fatal overdose events \(y_{s,t}\) at time unit \(t\) for individuals residing in spatial tract \(s\). We employed open tools\textsuperscript{26}% FIXME: no bib match for ref 26 (Freeman censusgeocode Python library -- add bib entry then replace with \citep{})
+For each dataset, we computed the observed number of fatal overdose events \(y_{s,t}\) at time unit \(t\) for individuals residing in spatial tract \(s\). 
+We employed open tools \citep{freemanCensusgeocodeThinPython}
 \ that utilize the US Census Geocoding API to map locations (street address or latitude/longitude) to its corresponding census tract, using the tract boundaries for the states of Massachusetts and Illinois defined by the U.S. Census Bureau in 2020.
 
-In each dataset, a uniform set of covariates is available as input for prediction models. At each time period \emph{t} and spatial region \emph{s}, we provide the history of fatal overdose counts from previous times in that region, as well as the spatial location (numerical latitude and longitude of the tract), and timestamp (numerical time, measured in years since the first available year for that dataset). Further, for each census tract \emph{s} at time \emph{t}, an optional covariate vector represents social vulnerability across socioeconomic status, age-related demographics, minority status, housing, and composite dimensions using percentile ranking across all census tracts in that state. These features stem from the five dimensions of the Social Vulnerability Index (SVI)\citep{CDCATSDRSVI2022}% FIXME: verify this matches ref 27 (CDC ATSDR SVI -- ref says "Social Vulnerability Index 2018 Database for Massachusetts")
+In each dataset, a uniform set of covariates is available as input for prediction models. At each time period \emph{t} and spatial region \emph{s}, we provide the history of fatal overdose counts from previous times in that region, as well as the spatial location (numerical latitude and longitude of the tract), and timestamp (numerical time, measured in years since the first available year for that dataset). Further, for each census tract \emph{s} at time \emph{t}, an optional covariate vector represents social vulnerability across socioeconomic status, age-related demographics, minority status, housing, and composite dimensions using percentile ranking across all census tracts in that state. 
+These features stem from the five dimensions of the Social Vulnerability Index (SVI)\citep{CDCATSDRSVI2022}
 \ published between 2000 and 2018 for every U.S. state. Published tract values are updated every five years; we selected the closest value to each time period t. These SVI features were chosen for their simplicity and portability, mirroring the role of higher-dimensional socioeconomic covariates in previous studies \citep{bauerSmallAreaForecasting2023,marksIdentifyingCountiesRisk2021}.
 
 \subsection{Metrics}\label{metrics}
@@ -31,7 +34,7 @@ Model performance is often assessed via summary statistics of the errors between
 
 \(RMSE\  = \ ,\ \ \ \ \ MAE\  = \frac{1}{S}\sum_{s = 1}^{S}|y_{s} - \widehat{y_{s}}|\) (1)
 
-Both RMSE and MAE have been concretely used as the primary metrics to assess opioid overdose forecasting\citep{ertugrulCASTNetCommunityAttentiveSpatioTemporal2019,bauerSmallAreaForecasting2023}% FIXME: ref 29 has no bib match (Sumetsky 2017 master's thesis -- add bib entry then include in \citep{})
+Both RMSE and MAE have been concretely used as the primary metrics to assess opioid overdose forecasting\citep{ertugrulCASTNetCommunityAttentiveSpatioTemporal2019,bauerSmallAreaForecasting2023, sumetskySpatiotemporalModelingOpioid2017}
 . RMSE can be more sensitive to large errors due to its use of squaring.
 
 \subsubsection{Intervention-focused metric}\label{intervention-focused-metric}
@@ -48,7 +51,7 @@ where TopKInds(y) denotes a function that returns the distinct indices of the K 
 
 For public health applications, BPR holds a practical interpretation as the proportion of fatal overdose events the current model's interventions would reach, compared to the perfect foresight of future events. BPR's numerical value by definition will have a minimum of 0.0 and a maximum of 1.0. We typically convert the fractional BPR to a percentage ranging from 0-100\%, denoted as \%BPR. A higher \%BPR value signifies a more effective model at deciding where to intervene. A value of 100\% indicates perfect decision-making given a limited budget: there is no other set of K regions any model could have recommended that would reach more events.
 
-Although independently developed by our team (see our preliminary workshop paper\textsuperscript{21}% FIXME: no bib match for ref 21 (Heuton et al. 2022 NeurIPS workshop -- this is your own prior work; add bib entry then replace with \citep{})
+Although independently developed by our team (see our preliminary workshop paper \citet{heutonZIGP2022}
 ), our proposed BPR metric closely resembles the metric suggested by a recent pre-registered trial\citep{marshallPreventingOverdoseUsing2022} and a later feasibility study\citep{allenTranslatingPredictiveAnalytics2023} to evaluate opioid overdose forecasts in Rhode Island. The primary distinction lies in the denominator: our BPR sums only the top K indices, while the alternative includes all S regions. We prefer our definition due to \%BPR's consistent range of 0-100\%, with 100\% representing a model that could not have made a better decision given the limited budget of K regions. In contrast, the alternative definition's maximum value fluctuates based on observed data in the test period, making it difficult to know if another model could have done better.
 
 \subsection{Models}\label{models}
