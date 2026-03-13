@@ -18,15 +18,15 @@ In this model, the output is an un-weighted average of historical mortality. For
 
 \subsubsection{Weighted Historical Average}\label{weighted-historical-average}
 
-This model is a linear regression on historical fatal overdose count using only past years mortality as a predictor. Scikit-learn's\citep{buitinckAPIDesignMachine2013} ridge regression is used, which performs L2-regularized regression. The regularization strength α is selected via hyperparameter search by trying 29 evenly spaced values on a log scale between 10\textsuperscript{-6} and 10\textsuperscript{8}. For Massachusetts, 10 years of historical data and an α of 10\textsuperscript{4.5} is used. For Cook County, 3 years of historical data are used and an α of 10\textsuperscript{4.5} is selected.
+This model is a linear regression on historical fatal overdose count using only past years mortality as a predictor. Scikit-learn's\citep{buitinckAPIDesignMachine2013} ridge regression is used, which performs L2-regularized regression. The regularization strength $\alpha$ is selected via hyperparameter search by trying 29 evenly spaced values on a log scale between 10\textsuperscript{-6} and 10\textsuperscript{8}. For Massachusetts, 10 years of historical data and an $\alpha$ of 10\textsuperscript{4.5} is used. For Cook County, 3 years of historical data are used and an $\alpha$ of 10\textsuperscript{4.5} is selected.
 
 \subsubsection{Linear Poisson GLM}\label{linear-poisson-glm}
 
-This uses Scikit-learn's\citep{buitinckAPIDesignMachine2013} Generalized Linear Model with a Poisson Likelihood and a log link. The hyperparameters explored are the number of prior years of mortality to include in the model and the L2 regularization strength α. Up to 10 years of previous mortality were considered for Massachusetts and 6 years for Cook County. The model is run with and without social vulnerability covariates.
+This uses Scikit-learn's\citep{buitinckAPIDesignMachine2013} Generalized Linear Model with a Poisson Likelihood and a log link. The hyperparameters explored are the number of prior years of mortality to include in the model and the L2 regularization strength $\alpha$. Up to 10 years of previous mortality were considered for Massachusetts and 6 years for Cook County. The model is run with and without social vulnerability covariates.
 
-\textbf{Without social vulnerability covariates:} In Massachusetts 10 years of prior mortality are used in the model with an α of 1. In Cook County, 5 years of historical data are used with an α of 10\textsuperscript{0.5}.
+\textbf{Without social vulnerability covariates:} In Massachusetts 10 years of prior mortality are used in the model with an $\alpha$ of 1. In Cook County, 5 years of historical data are used with an $\alpha$ of 10\textsuperscript{0.5}.
 
-\textbf{With social vulnerability covariates:} In Massachusetts 6 years of prior mortality are used in the model with an α of 1. In Cook County, 5 years of historical data are used with an α of 10.
+\textbf{With social vulnerability covariates:} In Massachusetts 6 years of prior mortality are used in the model with an $\alpha$ of 1. In Cook County, 5 years of historical data are used with an $\alpha$ of 10.
 
 \subsubsection{Gradient Boosted Trees}\label{gradient-boosted-trees}
 

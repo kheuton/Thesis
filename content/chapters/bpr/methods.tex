@@ -32,6 +32,7 @@ To evaluate model forecasting accuracy against observed mortality in a test peri
 
 Model performance is often assessed via summary statistics of the errors between predicted and observed mortality across all S spatial regions in the test period. Within this category, two common metrics are Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE), both defined in Equation 1 below. RMSE calculates the square root of the average squared errors, while MAE computes the average of absolute errors.
 
+% FIXME: RMSE formula did not port from Pandoc -- only the MAE half is present below; restore the RMSE expression (sqrt of mean squared errors) before the comma
 \(RMSE\  = \ ,\ \ \ \ \ MAE\  = \frac{1}{S}\sum_{s = 1}^{S}|y_{s} - \widehat{y_{s}}|\) (1)
 
 Both RMSE and MAE have been concretely used as the primary metrics to assess opioid overdose forecasting\citep{ertugrulCASTNetCommunityAttentiveSpatioTemporal2019,bauerSmallAreaForecasting2023, sumetskySpatiotemporalModelingOpioid2017}
@@ -74,7 +75,7 @@ Next, we consider several more flexible models with parameters that can be fit t
 
 The next model we consider is a Generalized Linear Model (GLM) with a Poisson likelihood. This model assumes that fatal overdose count \emph{y} for spatial tract \emph{s} at time \emph{t} is modeled by a Poisson distribution where the log of the mean parameter is a linear function of the covariate vector \emph{x} for that tract and time:
 
-\(y|\ x,{\mathbf{θ}}\  \sim \ Poisson(\lambda\  = e^{{\mathbf{θ}}^{T}x})\ \)
+\(y|\ x,\bm{\theta}\  \sim \ Poisson(\lambda\  = e^{\bm{\theta}^{T}x})\ \)
 
 GLMs have limited flexibility due to the assumption of a monotonic relationship between covariates and fatal event count. We thus also include a Gradient Boosted Trees\citep{friedmanGreedyFunctionApproximation2001} model, a popular more flexible ensemble of regression trees. Previous studies of opioid forecasting \citep{allenTranslatingPredictiveAnalytics2023,schellIdentifyingPredictorsOpioid2022} have used similar tree ensembles.
 
