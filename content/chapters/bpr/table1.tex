@@ -1,0 +1,167 @@
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2308}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1923}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1923}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1923}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1923}}@{}}
+\caption{Comparison of fatal opioid-related overdose prediction models trained on Massachusetts decedent data from 2010-2019, then evaluated on data from 2020 and 2021.}\label{tab:bpr_massachusetts}\\
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \multicolumn{4}{>{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.7692} + 6\tabcolsep}@{}}{%
+\begin{minipage}[b]{\linewidth}\centering
+Metric
+\end{minipage}} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Total overdoses identified
+
+in top 100 tracts
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\%BPR (K=100)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+MAE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+RMSE
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+All Zeros
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+124.1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\hl{25.1, (24.8-25.8)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\hl{1.24, (1.18-1.30)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\hl{1.92, (1.83-2.01)}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Last year
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+254.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\hl{51.8, (49.5-54.4)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\hl{1.09, (1.04-1.14)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\hl{1.58, (1.50-1.65)}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Historical Average
+
+(4 year)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+295.4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{\hl{59.8, (56.8-62.9)}}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{0.92, (0.90-0.94)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+1.28, (1.24-1.33)
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Weighted
+
+Historical Average
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+303.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{\hl{61.4, (56.1-66.9)}}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{0.94, (0.91-0.98)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+1.32, (1.27-1.38)
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Poisson GLM
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+304.7
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{61.6, (56.4-66.8)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{\hl{0.95, (0.91-0.98)}}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\hl{1.32, (1.25-1.39)}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Poisson GLM +SVI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+301.3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{61.0, (57.4-65.1)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\hl{1.10, (1.04-1.16)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\hl{1.38, (1.30-1.47)}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Gradient Boosted Trees +SVI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+293.6
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{59.5, (55.9-63.1)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{0.92, (0.89-0.96)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{1.24, (1.18-1.30)}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+GP
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+287.2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+58.2, (55.2-61.2)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{0.93, (0.91-0.95)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{1.28, (1.23-1.34)}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+CASTNet +SVI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+268.0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+54.4, (52.0-56.6)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+1.07, (0.99-1.16)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+1.47, (1.36-1.58)
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+BST: Bayesian spatiotemporal
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+301.0
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{61.1, (58.6-63.3)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+0.95, (0.93--0.96)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+1.26, (1.24-1.28)
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+BST + SVI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+305.4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{62.0, (60.0-63.7)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{0.92, (0.91-0.94)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{1.23, (1.21-1.25)}
+\end{minipage} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+NBSpLag + SVI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+305.4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{62.0, (60.3-64.0)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\textbf{0.92 (0.89-0.95)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+1.31, (1.27-1.35)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\end{longtable}
