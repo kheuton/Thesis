@@ -78,7 +78,10 @@ Next, we consider several more flexible models with parameters that can be fit t
 
 The next model we consider is a Generalized Linear Model (GLM) with a Poisson likelihood. This model assumes that fatal overdose count \emph{y} for spatial tract \emph{s} at time \emph{t} is modeled by a Poisson distribution where the log of the mean parameter is a linear function of the covariate vector \emph{x} for that tract and time:
 
-\(y|\ x,\bm{\theta}\  \sim \ Poisson(\lambda\  = e^{\bm{\theta}^{T}x})\ \)
+\begin{equation}
+    y|\ x,\bm{\theta}\  \sim \ \text{Poisson}(\lambda\  = e^{\bm{\theta}^{T}x})\
+\end{equation}
+
 
 GLMs have limited flexibility due to the assumption of a monotonic relationship between covariates and fatal event count. We thus also include a Gradient Boosted Trees\citep{friedmanGreedyFunctionApproximation2001} model, a popular more flexible ensemble of regression trees. Previous studies of opioid forecasting \citep{allenTranslatingPredictiveAnalytics2023,schellIdentifyingPredictorsOpioid2022} have used similar tree ensembles.
 
