@@ -8,10 +8,6 @@ Better decisions in public health with limited budgets
     \item The methods for training decision error are opaque and difficult to use.
 \end{itemize}
 
-The existing solutions to these problems in the modern analysis of EHRs are inadequate. Existing deep models handle feature missingness by either using overly simplistic imputation strategies \citep{purushotham2018benchmarking, harutyunyan2019multitask} or by imputing deterministically without uncertainty \citep{che2018recurrent, cao2018brits}. Moreover, these models often neglect data-dependent  missingness patterns (for e.g. certain lab measurements are only collected for critically ill patients), are sensitive to the initialization of missing values \citep{cao2018brits}, or require hundreds of thousands of parameters with a lack of clinical interpretability \citep{cao2018brits, purushotham2018benchmarking, harutyunyan2019multitask}. Later, when these models are deployed, they often lead up to 90$\%$ of all alarms being false alarms \citep{fernandes2020detecting}. Another common issue is that ML models rely heavily on labels and obtaining precise annotations of disease labels from clinicians is often laborious and expensive. 
-
-The goal of my thesis is to address these 3 barriers to deploying ML prediction systems in clinical care settings. I will introduce new probabilistic models to handle missing data, limited labels and new paradigms for training to address false alarms and unlabeled data.
- 
 First, in work published Epidemilogy we introduce BPR.
 
 My second project, ICML we show how train models
