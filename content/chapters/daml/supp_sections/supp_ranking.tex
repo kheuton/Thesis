@@ -1,0 +1,103 @@
+\subsection{Justification for ratio estimator}
+
+In the text, we propose the ratio estimator for ranking locations: $\bm{r} = \mathbb{E}[ \frac{ \bm{y} }{ \bm{1} \cdot \bm{y} } ]$ and justify its use by demonstrating that it is a better bound on our decision loss BPR than the mean estimator. However, a natural question is, why not use a ranking estimator which more closely resembles BPR, such as $\bm{r} = \mathbb{E}[ \frac{ \bm{y} }{ \text{TopKMask}(\bm{y},K)} \cdot \bm{y}  ]$. 
+In practice, this estimator is equivalent to the ratio estimator in expectation, and will select the same top-K locations. Accordingly, we use the ratio estimator for its improved computational speed and simplicity.
+
+
+\subsection{Demo experiment}
+To gain understanding about the problem of \emph{ranking} to optimize the fraction of best possible reach (BPR) performance metric, here we present detailed analysis of a toy problem with $S=9$ sites. We'll assume the true data-generating process for each site is completely known throughout and that each site can be modeled independently of other sites.
+\begin{align}
+    p( \bm{y}_{1:9} ) = \prod_{s=1}^9 p(y_s)
+\end{align}
+For each site, we select from 3 possible site-specific model archetypes, nicknamed type A, type B, and type C. 
+\begin{itemize}
+    \item sites \#1, \#2, and \#3 are each iid with type A PMF
+    \item sites \#4, \#5, and \#6 are each iid with type B PMF
+    \item sites \#7, \#8, and \#9 are each iid with type C PMF
+\end{itemize}
+Each type's PMF function over the non-negative integers is defined in the table below.
+
+\begin{table}[!h]
+    \begin{tabular}{r r r r}
+    & \multicolumn{1}{c}{Type A} 
+    & \multicolumn{1}{c}{Type B} 
+    & \multicolumn{1}{c}{Type C} 
+    \\
+    & \begin{minipage}[t]{.25\textwidth}
+    $$
+        p(y_s) = \begin{cases}
+        0.0 & \text{if}~ y_s = 0~
+        \\
+        1.0 & \text{if}~ y_s = 7~
+        \\
+        0.0 & \text{otherwise}
+    \end{cases}
+    $$
+    \end{minipage}
+    & \begin{minipage}[t]{.25\textwidth}
+    $$
+        p(y_s) = \begin{cases}
+        0.35 & \text{if}~ y_s = ~0
+        \\
+        0.65 & \text{if}~ y_s = 10
+        \\
+        0.0 & \text{otherwise}
+    \end{cases}
+    $$
+    \end{minipage}
+    & \begin{minipage}[t]{.25\textwidth}
+    $$
+        p(y_s) = \begin{cases}
+        0.90 & \text{if}~ y_s = ~0
+        \\
+        0.10 & \text{if}~ y_s = 80
+        \\
+        0.0 & \text{otherwise}
+    \end{cases}
+    $$
+    \end{minipage}
+    \\
+    Mean & 7.0 & 6.5 & 8.0
+    \\
+    Median & 7.0 & 10.0 & 0.0
+    \end{tabular}
+\end{table}
+
+
+We have now defined the joint PMF $p( \bm{y}_{1:9} )$ over the 9 sites. 
+
+We can compare two possible ways to compute a numerical ranking of the $S=9$ sites:
+\begin{itemize}
+    \item \textbf{Mean estimator}, which computes the per-site mean: $\bm{r} = \mathbb{E}[ \bm{y} ]$
+    \item \textbf{Ratio estimator}, which computes the expectation of $\bm{y}$ normalized by its sum: $\bm{r} = \mathbb{E}[ \frac{ \bm{y} }{ \bm{1} \cdot \bm{y} } ]$
+\end{itemize}
+
+For each possible ranking strategy, we repeated BPR calculations over 10000 trials. 
+To ensure accuracy of Monte Carlo estimates, we average over $M=50000$ samples to estimate the expectation defining each $\bm{r}$.
+
+Results are provided in the table below. We have two key findings. First, our proposed ratio estimator can select very different sites than the per-site mean, \emph{even when both estimators have access to the true data-generating model}. Using $K=3$, our estimator would select all type-A sites as the top 3; in contrast the per-site mean would select all type-C sites (\#7-9). Second, this can produce very different BPR values. Even in this simple example, we see an absolute difference in BPR of over 0.4 between the different rankings at $K=1$ and over 0.39 at $K=3$, which is a huge shift for a metric that is bounded between 0.0 and 1.0.
+
+\begin{tabular}{l l r r r || r r r r r r r r r}
+  & & \multicolumn{3}{c}{BPR }
+    & \multicolumn{9}{c}{fraction of trials each site in top $K{=}3$ of $\bm{r}$ }
+  \\
+                & & $K{=}1$ & $K{=}3$ & $K{=}6$
+                  & A:\#1 & A:\#2 & A:\#3 & B:\#4 & B:\#5 & B:\#6 & C:\#7 & C:\#8 & C:\#9
+\\
+ mean &
+ $\bm{r} = \mathbb{E}[ \bm{y} ]$ &
+      0.107 & 0.231 & 0.636
+      & 0.0 & 0.0 & 0.0
+      & 0.0 & 0.0 & 0.0
+      & 1.0 & 1.0 & 1.0
+\\
+ ratio &
+ $\bm{r} = \mathbb{E}[ \frac{ \bm{y} }{ \bm{1} \cdot \bm{y} }]$
+ &
+     0.538 & 0.625 & 0.810
+      & 1.0 & 1.0 & 1.0 
+      & 0.0 & 0.0 & 0.0
+      & 0.0 & 0.0 & 0.0
+\end{tabular}
+
+These results can be replicated via scripts provided in the code repository.

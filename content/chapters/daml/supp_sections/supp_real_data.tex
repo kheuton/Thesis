@@ -1,0 +1,32 @@
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|L{3cm}|L{2.6cm}|L{2.6cm}|L{2.6cm}|L{2.6cm}|}
+\hline
+& \# Spatial Sites & Temporal Scale & Outcomes $\bm{y}$ & Features \\
+\hline
+MA Fatal Overdoses 
+	& 1620 Census Tracts & 20 years, 2001-2021  
+	& Count of opioid-related fatal overdoses
+	& SVI, Past Deaths, Location, Time 
+\\
+\hline
+Cook County IL Fatal Overdoses 
+	& 1328 Census Tracts 
+	& 8 years, 2015-2022 
+	& Count of opioid-related fatal overdoses
+	& SVI, Past Deaths, Location, Time
+\\
+\hline
+Aransas TX Whooping Cranes 
+	& 1338 boxes, each 500m$\times$500m
+	& 60 years, 1952-2011 (last 10 years used)
+	& Count of bird spotted in aerial survey
+	& Past observations, Location, Time, Month \\
+\hline
+\end{tabular}
+\caption{Comparison of Real datasets, in terms of number of spatial sites $S$, temporal scales, outcomes $\bm{y}$, and features.
+}%endcaption
+\label{tab:comparison}
+\end{table}

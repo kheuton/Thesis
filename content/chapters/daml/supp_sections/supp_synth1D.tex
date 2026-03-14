@@ -1,0 +1,26 @@
+\textbf{Model details.} As explained in the main paper, we use a mixture of $L=2$ Gaussian distributions where each is \emph{truncated} to the positive reals. We give each of the $S$ locations their own mixture weights $\pi_{s,l}$ where  $\sum_{l=1}^2 \pi_{s,l} = 1$ and $\pi_{s,l} \geq 0$. Our model for an individual location is then:
+
+\begin{align}
+    p(y_s) &= \sum_{l=1}^2 \pi_{s,l} \cdot \mathcal{N}_+(y_s|\mu_l, \sigma_l^2)
+\end{align}
+
+Our parameter vector $\phi$ then consists of the set of all $\mu_l, \sigma_l$ and $\pi_{s,l}$. We have that both $\mu_l$ and $\sigma_l$ should be positive, as we are modeling positive counts and standard deviation is defined to positive. To accomplish this, we transform these variables using the softplus function when performing gradient based learning. Additionally, we constrain $\sigma_l \geq 0.2$ to avoid degeneracy. Finally, to make a valid pdf, we have that the mixture weights must sum to one: $\sum_{l=1}^L \pi_{s,l}=1$. To enforce this, we transform unconstrained variables using the softmax transform. This creates an subtle issue with model identifiability, as there are many unconstrained values that will lead to similar weights, but we do not find that this impacts our ability to train models effectively to achieve good likelihood or good BPR with the appropriate objective.  
+
+\textbf{Training Procedures.}
+We seek to train 7 models: one that optimizes only for model log likelihood, one that optimizes only BPR-5, and 5 models penalized to achieve certain threshold values of BPR. Each model is given 20 random initializations of the model parameters. We use a learning step-size of 0.1. For models with BPR in the objective, we try a perturbation noise of both 0.01 and 0.05, with 500 samples. In the hybrid models, we use $\lambda=30$, selected so that the likelihood term and the BPR penalty term are on the same order of magnitude after several epochs of training.
+
+\textbf{Tradeoffs between likelihood and BPR when L=2.}
+If this model had $L=7$ components, it would be well-specified and recover the true data generating process. However, with only 2 components, it is forced to group locations with distant mean values, which will come at a cost to likelihood and predictive capability as assessed by BPR.
+
+For this example, we will consider BPR-5 as our decision making metric. A model that correctly ranks the top-5 locations will achieve perfect BPR. Our misspecified model is capable of this by learning 2 distinct mean values $\mu_k$, one higher than the other. As long as the mixture weights for the top-5 locations $\pi_{s}$ assign all probability to the high component, and the mixture weights for the bottom 2 locations assign all probability to the low component, the model will have perfect BPR. 
+
+However, this is not what the model with the best possible likelihood looks like. To maximize likelihood, a model will assign the 6 low locations to one component, and the one high location to another, as in Fig.~\ref{fig:synth_data_and_results}.
+
+Our hybrid objective DAML can explore the Pareto frontier between maximizing for likelihood and BPR-5. By including more locations into the high-valued component, BPR-5 will increase as log likelihood slightly decreases. Our hybrid objective formulation allows us to control this tradeoff by specifying the threshold at which the penalty term takes effect.
+
+
+%To train each method, 20 random initialization of the parameters of the mixture of 2 Gaussians was chosen. Then, for each method, we trained a model with each initialization. We also searched 3 learning rates for every model. For models requiring estimating derivative of the TopK operator using perturbations, we tried 2 different perturbation noise levels. Finally, we used 5 different thresholds for the decision-constrained maximum likelihood procedure. 
+
+
+\textbf{Results.}
+Results are shown in Figure \ref{fig:synth_data_and_results} in the main paper. Here we see the ability of the hybrid Decision-aware object to traverse the Pareto frontier between the best possible likelihood and BPR. The lowest threshold of 0.5 is trivially satisfied by the maximum likelihood model. The highest threshold of 1.0 is only satisfied by perfect BPR, while the 3 intermediate thresholds were chosen to explore the solution frontier that is possible by including or excluding a particular component from one of the learned mixtures. We see that by using the decision-aware training objective, we can maximize BPR while still obtaining a highly likely model.

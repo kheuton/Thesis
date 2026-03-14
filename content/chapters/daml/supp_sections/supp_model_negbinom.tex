@@ -1,0 +1,27 @@
+Here we provide further detail on the model described in Eq.~\eqref{eq:neg_binom_mixed_effects}.
+
+For some elements of the parameters $\phi$, we have a prior that informs point estimation in MAP fashion. 
+The random effects are assumed to follow a multivariate normal prior
+\begin{equation}
+    \begin{pmatrix} b_{0s} \\ b_{1s} \end{pmatrix} \sim \mathcal{N}\left(\begin{pmatrix} 0 \\ 0 \end{pmatrix}, \mathbf{\Sigma}\right)
+\end{equation}
+where the covariance matrix $\mathbf{\Sigma}$ is parameterized as:
+\begin{equation}
+    \mathbf{\Sigma} = \begin{pmatrix} 
+    \sigma_0^2 & \rho\sigma_0\sigma_1 \\ 
+    \rho\sigma_0\sigma_1 & \sigma_1^2 
+    \end{pmatrix}
+\end{equation}
+Here, $\sigma_0$ is the standard deviation of the random intercepts, $\sigma_1$ is the standard deviation of the random slopes, and $\rho$ is the correlation between the random intercepts and slopes, where $-1 \leq \rho \leq 1$. We pack these hyperparameters into a separate vector $\eta = \{\sigma_0, \sigma_1, \rho \}$.
+
+\textbf{Transforming to unconstrained parameters.}
+To ensure parameter constraints are satisfied throughout gradient descent optimization, we employ invertible transformations that map constrained domains to unconstrained spaces. We reparameterize the correlation coefficient $\rho \in (-1, 1)$ using $u \gets \text{arctanh}(\rho)$, allowing $u$ to be optimized over $\mathbb{R}$ while ensuring $\rho = \tanh(u)$ remains within its valid bounds. For the strictly positive parameters $\sigma_0, \sigma_1 > 0$, we optimize unconstrained parameters $\xi_0, \xi_1 \in \mathbb{R}$ and apply the softplus transformation $\sigma_i \gets \ln(1 + e^{\xi_i})$, which guarantees positivity while maintaining smoothness. Similarly, for the probability parameter $q \in (0, 1)$, we optimize an unconstrained parameter $\zeta \in \mathbb{R}$ and apply the sigmoid transformation $q \gets 1/(1 + e^{-\zeta})$. During gradient descent, we optimize these unconstrained parameters, and transformed to the constrained version during forward sampling or pdf evaluation of the model.
+
+\textbf{MAP estimation.}
+Together, the parameters $\phi$ and hyperparameters $\eta$ comprise this model. 
+Both are point estimated to maximize the MAP objective. 
+Thus, what is marked in the paper as NLL optimization is really best viewed as MAP or penalized NLL estimation, where the loss is
+\begin{equation}
+    \mathcal{J}(\phi, \eta) = - \log p(\bm{y}_{1:T} |\bm{\phi}) - \log p( \phi | \eta)
+\end{equation}
+Similarly, when we fit this model with DAML, the above loss is what is minimized subject to the BPR constraint.

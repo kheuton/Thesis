@@ -1,0 +1,11 @@
+
+\subsubsection{Features}
+\label{supp:features_birds}
+
+The feature vector $\bm{x}_{st}$ for site $s$ and time $t$ includes the following variables: the past 5 count values at site $s$, latitude \& longitude of site $s$'s centroid, an enumerated timestep indicating time passed at $t$ since the starting timestamp of the dataset, and a monthly indicator variable. The dataset includes three bimonthly periods per wintering season: \texttt{Oct 20-Dec 24}, \texttt{Dec 25-Feb 27}, and \texttt{Feb 28-Apr 30}. The monthly indicator received a value of 1, 2, or 3, respectively, depending on which set of months an observation spanned. 
+
+\subsubsection{Hyperparameter ranges}
+
+%We consider 3 models: a weighted historical average as a competitive yet simple baseline, a negative binomial regression model, and ConvNext (one of the strongest models on traffic prediction on the OpenSTL benchmark). The weighted historical average will be optimized to minimize RMSE, and ConvNext will be trained with its original objective.
+
+The same hyperparameter and model selection was performed on Whooping Crane data as the opioid experiment in Section ~\ref{supp:results_opioids}.

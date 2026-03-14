@@ -1,0 +1,78 @@
+\newcommand{\Comment}[2][.45\linewidth]{%
+  \leavevmode\hfill\makebox[#1][l]{//~#2}}
+  
+\begin{algorithm}[!h]
+\caption{Decision-aware ML training}
+\label{alg:DA}
+\begin{flushleft}
+\textbf{Input}: 
+\begin{itemize}[align=left,style=nextline,leftmargin=1ex,labelsep=3\parindent,font=\normalfont,topsep=0pt,itemsep=-0.5ex,partopsep=1ex,parsep=1ex]
+    \item $\{ \bf{y}_{t} \}_{t=1}^T$, train data, each $\bm{y}_t \in \mathbb{R}_{\geq 0}^S$
+    \item $\phi \in \mathbb{R}^P$: parameter vector for model
+    \item $M$: int num MC samples for score func estimator
+    \item $J$: int num MC samples for stochastic smoothing estimator
+    \item $\sigma > 0$ : float stddev of stochastic smoothing estimator
+    \item $\epsilon \in (0,1)$ : Desired minimum BPR value. Will try to enforce constraint $\text{BPR} \geq \epsilon$.
+    \item $\lambda > 0$ : Strength multiplier when constraint is violated.
+\end{itemize}
+\textbf{Output}: Trained model parameter $\phi$
+\\
+\textbf{Procedure}:
+\end{flushleft}
+\begin{algorithmic}[1] % enables line numbers
+%\State $\xi \gets \textsc{CreateOptim}(\lambda)$ \Comment{Initialize stateful optimizer e.g., ADAM}
+\WHILE{not converged}
+    \STATE $\nabla_{\phi}{\mathcal{J}} \gets \bm{0}$ \Comment{$P\times 1$ vector to store grad wrt params}
+    \FOR{time $t \in \{1, 2, \ldots T\}$}
+        \STATE $\{ \mathbf{y}^m_t \}_{m=1}^M \sim p_{\phi}$
+        %( \mathbf{y}_t )$
+                    \Comment{$M$ Monte Carlo (MC) samples}
+        \STATE $\mathbf{r}_t \gets \frac{1}{M} \sum_{m} \frac{\bm{y}_t^m}{\bm{1} \cdot \bm{y}_t^m}$ 
+                    \Comment{$S \times 1$ ranking vector via MC}
+        \STATE 
+        \STATE $\mathbf{b}_t \gets \textsc{TopKMask}(\mathbf{r}_t)$
+        \STATE $L_t^{\text{BPR}} \gets -\frac{1}{\bm{y}_t \cdot \textsc{topKMask}(\bm{y}_t)} (\bm{y}_t \cdot  \mathbf{b}_t)$
+            \Comment{Scalar loss, -BPR}
+        \STATE $g_t^{\text{BPR}} \gets \epsilon + L_{t}^{\text{BPR}}$ \Comment{Scalar. Negative if BPR $\geq \epsilon$ is satisfied.}
+        \STATE $\mathcal{J}_t^{\text{BPR}} \gets \lambda \max ( g_t^{\text{BPR}}, 0)$ \Comment{Scalar ultimate loss for BPR}
+        \STATE
+        \STATE $\nabla_{\phi} r_t \gets \frac{1}{M} \sum_{m} [\nabla_{\phi} \log p_{\phi}(\bm{y}_t^m) ] \frac{\bm{y}_t^m}{\bm{1} \cdot \bm{y}_t^m}$ 
+            \Comment{$P\times S$ matrix, score func. est. of $\nabla_{\phi} r_t$}
+        \STATE $\{ \mathbf{z}_j \}_{j=1}^J \sim \mathcal{N}(0, I_S)$
+        \STATE $\nabla_{r_t} b_t \gets \frac{1}{\sigma}  \frac{1}{J} \sum_{j=1}^J \textsc{outer}( \textsc{TopKMask}(\mathbf{r}_t + \sigma \mathbf{z}_j), \mathbf{z}_j )$        \Comment{$S \times S$ matrix, perturbed estimate of $\nabla_{r_t} b_t$}
+        %\STATE $\delta \gets g_{t}^{\text{BPR}} - \epsilon < 0)$ \Comment{Binary Indicator: 0 if $-$BPR $< \epsilon$, 1 otherwise}
+        \STATE $\nabla_{b_t}\mathcal{J}^{\text{BPR}}_t \gets - \lambda \frac{1}{\bm{y}_t \cdot \textsc{topKMask}(\bm{y}_t)} \bm{y}_t \cdot \mathbf{1}[g_{t}^{\text{BPR}} > 0]$
+            \Comment{$S \times 1$ vector, nonzero if constraint unsatisfied.}
+        \STATE $\nabla_{\phi}\mathcal{J}^{\text{BPR}}_t \gets \left( \nabla_{\phi} r_t \right) \left( \nabla_{r_t} b_t \right) \left( \nabla_{b_t}\mathcal{J}^{\text{BPR}}_t\right)$ \Comment{$P \times 1$ vector}
+        %\STATE $\mathbf{g}_t^{\text{BPR}} \gets  \mathbf{H}_t \mathbf{G}_t \mathbf{g}_t$
+        %\STATE
+        %\STATE $g_t^\text{NLL} \gets -\nabla_\phi \log p_{\phi}(\bm{y}_t)$
+        \STATE        
+        \STATE $\mathcal{J}_t^\text{NLL} \gets -\log p_{\phi}(\bm{y}_t) $ \Comment{Scalar ultimate loss for NLL}
+        \STATE $\nabla_{\phi}\mathcal{J}_t^{\text{NLL}} \gets -\nabla_\phi \log p_{\phi}(\bm{y}_t)$
+        \STATE        
+        \STATE $\nabla_{\phi}{\mathcal{J}} \gets \nabla_{\phi}{\mathcal{J}} + \nabla_{\phi} \mathcal{J}^{\text{NLL}}_t + \nabla_{\phi}\mathcal{J}^{\text{BPR}}_t$
+    \ENDFOR
+    \STATE $\phi \gets \textsc{GradDescentUpdate}(\phi,  \nabla_{\phi}{\mathcal{J}})$ \Comment{Use steepest descent or Adam or ...}
+\ENDWHILE
+\STATE \textbf{return} $\phi$
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+    % \State $\{v, w\} \sim \textsc{InitWeights}$ \Comment{Initialize model weights}
+    % \For{epoch $e$ in $1, 2, \ldots, E$}
+    %     \State $m_e \gets \textsc{CalcPerf}(\mathbf{X}^{\text{val}}, \mathbf{Y}^{\text{val}}, v, w)$
+    %     \Comment{Record performance metric on val.}
+    %     \If{first try or $m_e > m_*$}
+    %         \State $v_*, w_* \gets v, w$
+    %         \State $\lambda_* \gets \lambda$
+    %         \State $m_* \gets m_e$
+    %         \Comment{Update best config found so far}
+    %     \EndIf
+    %     \If{\textsc{EarlyStop}($m_1, m_2, \ldots, m_e$) or time elapsed $> T$}
+    %         \State \textbf{break}
+    %     \EndIf
+    % \EndFor

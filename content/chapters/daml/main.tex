@@ -1,0 +1,182 @@
+\documentclass{article}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%\usepackage[preprint]{neurips_2023}
+\usepackage[accepted]{icml2025}
+
+
+\input{_packages_to_import}
+
+\icmltitlerunning{Decision-Aware Training of Spatiotemporal Forecasting Models}
+
+\begin{document}
+
+%% Config Table-of-Contents (which appears in the appendix) to NOT show main paper sections
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+
+\twocolumn[
+\icmltitle{Decision-aware Training of Spatiotemporal Forecasting Models\\to Select a Top-K Subset of Sites for Intervention}
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Kyle Heuton}{tuftscs}
+\icmlauthor{F. Samuel Muench}{tuftscs}
+\icmlauthor{Shikhar Shrestha}{tuftsmed}
+\icmlauthor{Thomas J. Stopka}{tuftsmed}
+\icmlauthor{Michael C. Hughes}{tuftscs}
+%\icmlauthor{}{sch}
+\end{icmlauthorlist}
+
+\icmlaffiliation{tuftscs}{Department of Computer Science, Tufts University, Medford, Massachusetts, United States}
+\icmlaffiliation{tuftsmed}{ Department of Public Health and Community Medicine, Tufts University School
+of Medicine, Boston, Massachusetts, United States}
+
+\icmlcorrespondingauthor{Kyle Heuton}{kyle.heuton@tufts.edu}
+
+% these populate the "keywords" metadata in PDF but will not show in the document
+\icmlkeywords{Machine Learning, ICML}
+
+\vskip 0.3in
+]
+
+
+\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+
+\begin{abstract}
+\input{abstract.tex}
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+\input{sections/intro.tex}
+
+\input{sections/intro_figure.tex}
+
+
+\section{Technical Background and Problem Setup}
+\label{sec:background}
+\input{sections/background.tex}
+
+\section{Methods for Ranking}
+\label{sec:methods_rank}
+\input{sections/methods_rank.tex}
+
+\section{Methods for Training}
+\label{sec:methods_train}
+\input{sections/methods_train.tex}
+
+
+
+\section{Experiments and Results}
+\label{sec:results}
+
+\input{sections/results_common.tex}
+
+\subsection{Synthetic Data}
+\label{sec:results_synth1D}
+\input{sections/results_synth1D.tex}
+
+\input{sections/frontier_figure.tex}
+
+\subsection{Opioid-related Overdose Forecasting}
+\label{sec:results_opioid}
+\input{sections/results_opioid.tex}
+
+\subsection{Endangered Bird Forecasting}
+\label{sec:results_birds}
+\input{sections/results_birds.tex}
+
+
+\section{Discussion}
+\label{sec:discussion}
+\input{sections/discussion.tex}
+\input{sections/acks.tex}
+\section*{Impact Statement}
+\input{sections/impact_statement.tex}
+
+
+\bibliographystyle{icml2025.bst}
+\bibliography{topk.bib,refs_from_zotero.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+\onecolumn
+
+%% Config Table-of-Contents to track the sections of the appendix
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+
+\counterwithin{table}{section}
+\setcounter{table}{0}
+\counterwithin{figure}{section}
+\setcounter{figure}{0}
+\counterwithin{algorithm}{section}
+\setcounter{algorithm}{0}
+
+%% Use ONE counter for all figs and tables to give unique identifiers in supplement
+\makeatletter 
+\let\c@table\c@figure
+\let\c@lstlisting\c@figure
+\let\c@algorithm\c@figure
+\makeatother
+
+
+%\makesupplementtitle
+\begin{center}
+{\large Appendix}
+% {\large Supplementary Material for  Decision-aware training of spatiotemporal forecasting models
+    % }
+\end{center}
+% \begin{abstract}
+This appendix includes additional experimental results and information for understanding and reproducing experiments. 
+
+Reproducible code used for all experiments is included in an open-source repository:
+
+\url{https://github.com/tufts-ml/decision-aware-topk/}
+% \end{abstract}
+
+\tableofcontents
+
+
+
+\newpage
+
+\section{Pseudocode for Training}
+\input{supp_sections/algo.tex}
+
+
+\section{Ranking Demo for BPR}
+\label{supp:ranking_demo}
+\input{supp_sections/supp_ranking.tex}
+
+
+\section{Experimental Details and Results from Real-World Data}
+\label{supp:real_data}
+\input{supp_sections/supp_real_data.tex}
+
+\subsection{Results on alternative models and metrics}
+\label{supp:metrics_models}
+\input{supp_sections/supp_metrics_table.tex}
+\subsection{Opioid-related Overdose Forecasting Results}
+\label{supp:results_opioids}
+\input{supp_sections/supp_results_opioids.tex}
+
+\subsection{Endangered Bird Forecasting Results}
+\label{supp:results_birds}
+\input{supp_sections/supp_results_birds.tex}
+
+
+\section{Experimental Details and Results from Synthetic Data}
+%\subsection{Synth 1D Experiments}
+\label{supp:synth1D}
+\input{supp_sections/supp_synth1D.tex}
+
+% \subsection{Synthetic Geospatial Experiments}
+% \input{supp_sections/supp_synthSpatial.tex}
+
+\section{Model for Negative Binomial Mixed-Effects}
+\label{supp:model_negbinom}
+\input{supp_sections/supp_model_negbinom.tex}
+
+\end{document}

@@ -1,0 +1,129 @@
+We now consider various ways to train the parameters of our probabilistic model on a training set that covers $T$ distinct time periods indexed by $t$.
+
+%both classic techniques and those that are aware of how the model will be used to make decisions via the loss $L$. 
+
+\subsection{Maximum likelihood (ML) estimation}
+Conventional training would maximize the likelihood, or equivalently minimize negative log likelihood (NLL):
+\begin{align}
+    \mathcal{J}^{\text{NLL}}(\phi) = 
+    - \textstyle \sum_{t=1}^T \log p_{\phi}( \bm{y}_t ).
+    \label{eq:ml_obj}
+\end{align}
+We assume $p_{\phi}$ is differentiable, so solving for a point estimate $\phi$ is possible via gradient descent. 
+If we add an optional prior term $\log p(\phi)$ to enforce an inductive bias or control over-fitting, this is known as \emph{MAP} estimation.
+
+If the model is \emph{well-specified} and training set size $T$ is large enough, this is a reliable strategy to estimate $\phi$. We could then use the ranking methods from Sec.~\ref{sec:methods_rank} for where-to-intervene decisions. However, popular wisdom reminds us that ``all models are wrong'' in some way for real-world data. As we will show in later experiments, fitting a \emph{misspecified} model via ML estimation can produce $\phi$ that deliver suboptimal BPR, even using the optimal ranking for that $\phi$.
+%produce sub-optimal top-K decisions when assessed by BPR, even with optimal ranking.
+
+\subsection{Direct loss minimization for BPR}
+
+Inspired by the broad goal of \emph{direct loss minimization}~\citep{weiDirectLoss2021}, another approach would be to find parameters that minimize our BPR-specific decision making loss $L^{\text{BPR}}$. In this strategy, we seek $\phi$ values that minimize
+\begin{align}
+    \mathcal{J}^{\text{BPR}}(\phi) =
+    ~ \textstyle \sum_{t=1}^T L^{\text{BPR}}( \bm{r}^*_t(\phi),  \bm{y}_t ),
+    % ~~\bm{r}_t(\phi) = \mathbb{E}_{p_{\phi}} \left[
+    %\frac{ \bm{y}_t }{\bm{1} \cdot \bm{y}_t}
+    %\right].
+    \label{eq:dlm_obj}
+\end{align}
+Here, for $\bm{r}^*(\phi)$ we use the ratio estimator in Eq.~\eqref{eq:ratio_estimator_for_ranking}. 
+
+To train with modern gradient methods, we'd need to compute the gradient $\nabla_{\phi} \mathcal{J} = \sum_t \nabla_{\phi} \bm{r}_t \cdot \nabla_{r_t} L_t$. 
+However, technical difficulties arise with each term in this chain rule expansion. Below, we propose practical estimators for each term that overcome these difficulties. 
+
+\textbf{Gradient $\nabla_{\phi} \bm{r}_t$.} The difficulty here is differentiating through the expectation in Eq.~\eqref{eq:ratio_estimator_for_ranking}, especially when $\bm{y}$ is a discrete random variable (integer counts in our later overdose or wildlife applications). We use the \emph{score function trick} \citep{mohamed2020MonteCarloGradient}, popularized by \citet{ranganath2014BBVI} yet dating back decades \citep{kleijnen1996OptimizationScoreFunction}, sometimes also called REINFORCE~\citep{williams1992reinforce}.
+We can draw $M$ samples $\bm{y}^{(m)}_t \sim p_{\phi}$, then compute
+\begin{align}
+\nabla_{\phi} \bm{r}_t = \frac{1}{M} \sum_{m=1}^M \frac{ \bm{y}_t^{(m)} }{ \bm{1} \cdot \bm{y}_t^{(m)}} \nabla_{\phi} \log p_{\phi}( \bm{y}_t ).
+\label{eq:grad_r_wrt_phi}
+\end{align}
+
+This estimator can reuse the $M$ i.i.d. samples already used to evaluate $\bm{r}_t$ in a forward pass. This is easy to implement for any model $p_{\phi}$ where sampling and evaluating the pdf is feasible, as we have assumed. We use automatic differentiation to compute $\nabla_{\phi} \log p_{\phi}(\bm{y}_t)$.
+
+A downside of this estimator is high variance. We mitigate this with large $M$ values, though future work may use \emph{control variates}~\citep{ranganath2014BBVI,mohamed2020MonteCarloGradient} or try other estimators for gradients of discrete expectations~\citep{maddison2017Concrete,dimitriev2021CARMS}.
+
+
+\textbf{Gradient $\nabla_{r_t} L_t$.}
+For losses $L$ defined in terms of \textsc{TopKMask} binary vectors, like BPR, it is difficult to compute useful gradients because this loss is flat almost everywhere with respect to the input rankings $\bm{r}$. To overcome this barrier, we leverage recent advances in \emph{perturbed optimization} \citep{berthetLearningDifferentiablePerturbed2020}, also referred to as \emph{stochastic smoothing}~\citep{abernethyPerturbationTechniquesOnline2016}.
+A recent computer vision method 
+\citep{cordonnierDifferentiablePatchSelection2021} shows how these ideas enable selecting a top-K set of patches from a high-resolution image for downstream prediction. We adapt this top-K approach to spatiotemporal forecasting for intervention.
+
+Concretely, \citet{cordonnierDifferentiablePatchSelection2021} obtain tractable $J$-sample Monte Carlo estimates of both the top-K indicator vector $\bm{b} = \textsc{TopKMask}(\bm{r}, K)$ and the Jacobian $\nabla_{\bm{r}} \bm{b}$ needed for backpropagation.
+First, we draw $J$ independent samples of a standard Gaussian noise vector of size $S$: $\bm{z}_j \sim \mathcal{N}(0, I_S)$. 
+Then, we compute
+\begin{align}
+        \bm{\hat{b}} &= \textstyle \frac{1}{J} \sum_{j=1}^J \bm{b}_j(\bm{r}),
+        \quad \bm{b}_j(\bm{r}) = \textsc{TopKMask}( \bm{r} + \sigma \bm{z}_j ).
+        \notag
+        \\ 
+	\label{eq:grad_b_wrt_r}
+    \nabla_{r} \bm{\hat{b}} &=
+        \textstyle \frac{1}{J \sigma} \sum_{j=1}^J \textsc{outer}(
+        \bm{b}_j(\bm{r}), \bm{z}_j).
+\end{align}
+The Jacobian $\nabla_{\bm{r}} \bm{\hat{b}}$ is an $S \times S$ matrix, where entry $j,k$ gives the scalar derivative $\frac{\partial \bm{b}_j}{\partial r_k}$. The conceptual justification for the Jacobian estimator comes from \citet{abernethyPerturbationTechniquesOnline2016} and \citet{berthetLearningDifferentiablePerturbed2020}.
+Noise level $\sigma > 0$ is a hyperparameter that sets the strength of stochastic smoothing. It must be carefully selected in practice to add enough noise so that indicators $\bm{b}_j$ change for different samples $z_j$, but not too much noise so the $\bm{b}_j$ preserve the signal in $\bm{r}$. 
+%overwhelming signal with too much noise.
+%. Tuning this value carefully is key to success on real data.
+
+Putting our score-function trick and perturbed optimizer estimators together, we compute the overall gradient of loss at index $t$ as a product of individual estimators:
+$\nabla_\phi L_t = \nabla_{\phi} \bm{r}_t \nabla_{\bm{r}_t} \bm{b}_t \nabla_{\bm{b}_t} L_t$.
+We compute the last term $\nabla_{\bm{b}_t} L_t$ via automatic differentiation.
+
+Armed with this gradient estimator, we can pursue direct minimization of $\mathcal{J}^{\text{BPR}}$ via stochastic gradient descent methods. Stochasticity here comes from both $M$ score function samples and $J$ perturbation samples. For convenience and reliability, we use all $T$ records in the training set in every estimate, avoiding minibatching over time.
+
+We assume the true data-generating distribution is unchanged across train and test time periods. If this does not hold, objectives that just average over $t$ as in Eq.~\eqref{eq:dlm_obj} may have disadvantages. Instead we could upweight later $t$, or  minimize out-of-sample error as in \citet{gupta_decision-aware_2024}.
+
+
+\textbf{Other methods for decision-aware training.}
+Our approach to direct BPR optimization here is an example of \emph{decision-aware} or decision-focused training.
+In the taxonomy of \citet{mandi_decision-focused_2024}, our approach is in the family of \emph{differentiable perturbed optimizers}. 
+Other work instead pursues \emph{surrogate losses}. 
+The \emph{SPO+} method~\citep{elmachtoubSmartPredictThen2022} finds a convex surrogate for the ``smart predict then optimize'' optimization problem. 
+The perturbed gradient (PG) method \cite{huang_decision-focused_2024} develops a more sophisticated surrogate, with theory and experiments suggesting utility even with misspecified models.
+In both cases, surrogate bounds make SGD-based learning tractable for a wide set of optimization tasks, including our knapsack-like BPR problem but also other tasks like shortest path finding.
+
+
+
+\textbf{Downsides of only fitting BPR.}
+When models are misspecified, directly estimating $\phi$ to minimize $\mathcal{J}^{\text{BPR}}$ should yield better BPR than some $\phi'$ fit via conventional loss $\mathcal{J}^{\text{NLL}}$, and better BPR means better decisions. 
+ However, probabilistic forecasts of near-future \emph{outcomes} $\bm{y}_{t+1}$ produced by BPR-trained $\phi$ have questionable utility.
+ Nothing in the $\mathcal{J}^{\text{BPR}}$ objective makes $p_{\phi}$ accurately reconstruct even the train set $\bm{y}_{1:T}$; only \emph{relative} ranking of sites matters. Even with high-quality decisions, a model which produces unlikely forecasts may be difficult to interpret or verify.
+
+\subsection{Decision-aware maximum likelihood}
+
+To jointly achieve the goals of good top-K decisions and accurate forecasts across all sites, we propose to find parameters that solve a constrained optimization problem:
+\begin{align}
+    \argmin_{\phi} - \textstyle & \sum_{t=1}^T \log p_{\phi}(\bm{y}_t),
+    \quad 
+    \text{s.t.}~ g_t(\phi) \leq 0 ~\forall~ t,
+    \\ \notag
+    & \text{where}~~
+    \textstyle
+    g_t(\phi) = \epsilon + L^{\text{BPR}}( \bm{r}_t(\phi),  \bm{y}_t ).
+\end{align}
+Here, $\epsilon$ is a desired \emph{lower bound} on a tolerable BPR for the decision task. Function $g_t(\phi)$ checks if the constraint is satisfied at time $t$, returning a non-positive value when $\text{BPR}_t \geq \epsilon$ and a positive value otherwise.
+A feasible solution $\phi$ must deliver BPR as good or better than $\epsilon$ on the provided training set. Practitioners can set $\epsilon$ to achieve a desired minimum value for BPR. For example, 
+if BPR below 60\% was unworkable to stakeholders, set $\epsilon = 0.6$ to
+ enforce $0.6 \leq \text{BPR}$, recalling by definition $\text{BPR} = -L^{\text{BPR}}$.
+
+We call this combined objective \emph{decision-aware ML estimation}, or DAML.
+If the model is well-specified and training data are plentiful, DAML should deliver the same parameters as ML estimation when $\epsilon$ is low enough.
+However, when the model is misspecified and $\epsilon$ is higher than the BPR delivered by ML-estimated $\phi$, we argue DAML's constraint will produce better top-K decisions than ML alone, trading lower likelihood for higher BPR.
+Compared to direct minimization of $\mathcal{J}^{\text{BPR}}$, DAML can deliver similar BPR but more accurate forecasts of $\bm{y}$ for \emph{all sites}. Additionally  including the ML objective offers the ability to include an optional prior term $\log{p(\phi)}$ to incorporate any prior knowledge.
+
+To solve in practice, we use the penalty method~\citep{chong_introduction_2013} to convert to an unconstrained loss:
+\begin{align}
+\mathcal{J}^{\text{DAML}}(\phi) {=} \textstyle \sum_{t=1}^T 
+    \lambda \max( g_t(\phi), 0) - \log p_{\phi}(\bm{y}_t).
+    \label{eq:hybrid_obj}
+\end{align}
+This DAML formulation makes estimating $\phi$ via gradient descent possible. Here, $\lambda > 0$ is a nuisance hyperparameter that must be tuned. When the constraint is not satisfied, larger $\lambda$ values force gradient updates to move parameters further in directions that might satisfy the constraint. In practice, we set $\lambda$ such that both components of the loss are of similar magnitude during early training.
+
+
+
+\textbf{Implementation.}
+Pseudocode for DAML training is provided in the supplement (Alg.~\ref{alg:DA}). There are several key hyperparameters. First,
+$M$ and $J$ are the number of Monte Carlo samples used during training to estimate gradients via the score function trick and perturbed optimizer method. Setting $M$ and $J$ larger produces lower variance estimates, but at the cost of runtime and memory. Consequently, we recommend setting $M$ and $J$ as high as affordable. We found setting both to 100 worked for tasks in Sec.~\ref{sec:results}.
+
+ Proper selection of $\sigma$, the standard deviation of the Gaussian noise in the perturbed estimator, is also vital. If too small, estimated gradients will be zero; too large will swamp out any data-driven signal for learning. In practice, we found that $\sigma$ values a bit smaller than the largest elements of rating $\bm{r}^*(\phi)$ worked well. Because our ratio estimator produces values between 0 and 1, we set $\sigma$ between $10^{-3}$ and $10^{-1}$.

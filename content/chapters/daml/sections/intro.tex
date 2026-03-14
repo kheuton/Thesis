@@ -1,0 +1,77 @@
+Statistical machine learning methods for spatiotemporal forecasting can play a vital role in high-stakes applications from mitigating overdoses in public health~\citep{marksMethodologicalApproachesPrediction2021} to forest fire management~\citep{cheng2008ForestFire} to wildlife monitoring~\citep{golden2022SpatialPredictionWhooping,hefley2017DynamicSpatiotemporalWastingDisease}.
+Across these domains, there is a pressing need for predictive models that can make accurate predictions of near-term future events at fine spatiotemporal resolutions.
+Such models can enable inform data-driven decisions about how to allocate limited resources to maximize utility.
+
+
+In this work, we seek to help decision-makers select \emph{where to intervene}. Given historical data for a fixed set of $S$ candidate spatial sites, we develop models that can recommend a specific subset of given size $K$ for some action or intervention. We think of hyperparameter $K$ as setting the budget for interventions. In an ideal world, decision-makers could afford interventions in all $S$ sites. However, when resource constraints allow only $K$ sites to receive interventions, a decision selecting a specific $K$-of-$S$ subset is required. While such decisions may often be heuristic in current practice, we hope to offer data-driven solutions.
+
+With this goal in mind, choosing a sensible performance metric is critical to assessing which models have real-world utility.
+Common metrics such as squared error or absolute error are not well matched to where-to-intervene decisions because they treat all sites equally.
+Recent work on overdose forecasting has suggested a metric termed the \emph{fraction of best possible reach}, or \emph{BPR}~\citep{heutonPredictingSpatiotemporalCounts2022,heutonSpatiotemporalForecastingOpioidrelated2024}. BPR measures a ratio of event counts. The numerator sums over the model's recommended $K$ sites, while the denominator sums over the best possible $K$ selected in hindsight. This type of evaluation has been used in a preregistered trial~\citep{marshallPreventingOverdoseUsing2022} for assessing forecasts of opioid overdoses in Rhode Island, as well as a follow-up feasability study~\citep{allenTranslatingPredictiveAnalytics2023}. BPR is applicable to many where-to-intervene problems beyond public health.
+\ifdefined\ispreprint
+\let\thefootnote\relax\footnotetext{\noindent Code: \href{https://github.com/tufts-ml/decision-aware-topk/}{https://github.com/tufts-ml/decision-aware-topk/}}
+\else
+\let\thefootnote\relax\footnotetext{\noindent Code: \href{https://github.com/tufts-ml/decision-aware-topk}{https://github.com/tufts-ml/decision-aware-topk}}
+\fi
+
+While some publications have reported BPR in evaluations, 
+we suggest that a natural goal would be for this performance metric to inform two other key parts of data-driven decision-making: model-based \emph{ranking} and 
+model \emph{training}. By ranking, we mean that given fixed model parameters, the knowledge of BPR as the metric of interest should impact the numerical score assigned to each site to determine the top $K$. By training, we mean how to update model parameters to achieve high BPR.
+This paper contributes new methods for solving both ranking and training problems when BPR is the preferred metric.
+
+
+Our work overcomes several technical barriers.
+The first barrier is in ranking. Given a fixed probabilistic model, determining how to compute a per-site score, which will later be sorted to find the top $K$, is not obvious. It may be tempting to use the model's per-site mean, but decision theory suggests not all loss functions recommend the per-site mean as the best estimator~\citep{berger2013StatisticalDecisionTheory,murphy2022Sec5_1DecisionTheory}. As a relatively new metric, the problem of how to assign a numerical ranking to sites for optimal BPR decision-making is currently open. We contribute a tractable ranking method that is provably best for a reasonable bound on BPR. We further show how the \emph{score function estimator}~\citep{kleijnen1996OptimizationScoreFunction,mohamed2020MonteCarloGradient} can be used to calculate gradients of this ranking with respect to parameters.
+
+The second barrier prevents training parameters to improve BPR. First-order gradient descent is a common, effective algorithm we would like to use. However, gradients of BPR with respect to parameters are problematic. 
+%The function producing the recommended $K$ sites given model parameters is piece-wise constant. 
+While small changes to parameters induce some changes to per-site scores, only changes large enough to move a site into or out of the top-K ranked sites will adjust BPR. Thus, gradients of BPR with respect to parameters will be zero almost everywhere, preventing gradient methods from ever moving beyond subpar initial parameters. To fix this, we leverage recent advances in \emph{perturbed optimizers} ~\citep{abernethyPerturbationTechniquesOnline2016,berthetLearningDifferentiablePerturbed2020} to yield effective and efficient gradient estimation for BPR.
+%Yet optimizing BPR only is insufficient. 
+Our team explored this idea for optimizing BPR alone in earlier non-archival work~\citep{heutonlearning_dlm}; this paper offers an expanded treatment with more accessible presentation, while addressing two more barriers.
+
+The final barrier is designing a training objective to achieve applied goals.
+We find that optimizing BPR alone can lead to predictions with far lower likelihood than conventional training. This raises concerns about overall model quality and generalization. To address this, we pose a constrained optimization problem to maximize likelihood subject to a BPR quality constraint. This combined objective delivers quality top-K recommendations \emph{and} good forecasts for all sites. 
+Our objective is reminiscent of past additive combinations of a regression loss and decision loss~\citep{kao_directed_2009}. Unlike that work, ours pursues non-convex losses and directly enforces decision quality via constraints.
+
+%ed framework where the loss changes once a minimum acceptable decision loss is reach
+% the authors similarly combine regression losses and decision losses, but limit consideration to convex, differentiable decision losses, and do not use a constrained framework where the loss changes once a minimum acceptable decision loss is reached. 
+
+We ultimately contribute methods for how-to-rank and how-to-train when making where-to-intervene decisions. Using these tools, a variety of models can be directly optimized to make effective top $K$ site recommendations. 
+We demonstrate these contributions first on synthetic data, where we reveal how off-the-shelf methods without our innovations can be suboptimal for decision-making.
+We further evaluate against alternatives on two applications: mitigating opioid-related fatal overdoses and monitoring endangered birds. 
+We hope our contributions spark interest in where-to-intervene problems in the methodological community and also lead to effective deployments of data-driven top-K decision-making in public health and beyond.
+
+\textbf{Related work.}
+The application of machine learning to decision-making problems is widely studied in operations research literature \citep{bertsimasPredictivePrescriptiveAnalytics2020a, sadana_survey_2025}, including the problem of how to train a model for downstream decision-making~\citep{mandi_decision-focused_2024}. 
+We review several model training approaches later in Sec. \ref{sec:methods_train}.
+
+Other researchers have used decision-aware objectives to solve limited resource allocation problems. 
+\citet{chung_decision-aware_2022} study how to allocate essential medicines in
+Sierra Leone across hospital sites.
+% MCH: updated focus to the limited resource task, not the methods
+%\citet{chung_decision-aware_2022} reweights the training data to approximate the decision loss. 
+\citet{gupta_decision-aware_2024} pursue a where-to-intervene task in urban planning,
+selecting where to build speed humps to reduce pedestrian injuries. Our work differs in its focus on the BPR metric, our hybrid decision-aware objective that preserves likelihood, and evaluations that forecast the \emph{future} given the recent past.
+
+Throughout this paper, a recurring takeaway is that conventional training based on maximizing likelihood can yield suboptimal decision-making for BPR, especially when forecasting models are misspecified. In this vein, our work shares similar goals as \emph{direct loss minimization} \citep{weiDirectLoss2021} and \emph{loss-calibrated} methods~\citep{lacoste-julienApproximateInferenceLosscalibrated2011}. We are inspired by the way these works combine task-specific losses and decision theory to improve probabilistic models. Others have extended loss-calibration to neural nets~\citep{cobbLossCalibratedApproximateInference2018a} and to continuous actions~\citep{kusmierczykVariationalBayesianDecisionmaking2019}. 
+Yet a tractable and scalable recipe that prioritizes top-$K$ where-to-intervene decision-making is not an immediate next step from this work.
+
+
+
+%In contrast, overcome technical barriers and making gradient-based training to optimize BPR possible. We hope this work sparks interest in such problems in the methodological research community, and also leads to more effective deployments of prediction models in public health and beyond.
+
+
+
+% Suppose our forecasting model has a scoring function $r_{\theta}(\mathbf{X}_{t}) \in \mathbb{R}^S$ that scores each of the $S$ regions with a real number given available features $\mathbf{X}_t$, which we design to include past counts $\mathbf{Y}_{1:t-1}$ as well as socioeconomic properties of each area~\citep{heutonPredictingSpatiotemporalCounts2022}.
+% Here, $\theta$ represents the learnable parameters of our model (e.g. weights of a neural network).
+% Using scores from $r$, we wish to select a size-$K$ set of high-risk regions, denoted $\mathcal{R}$, to recommend for further action. A natural way to do this is to keep the top $K$ highest scoring locations:
+% $\mathcal{R}_{\theta}(\mathbf{X}_t) = \textsc{TopKIDs}( r_{\theta}(\mathbf{X}_t) )    
+% $, where $\textsc{TopKIDs}$ returns indices for the $K$ largest entries.
+% Given $T$ pairs of input features and outcomes, training would then ideally solve the optimization problem
+% \begin{align}
+% \theta^* \gets \arg\!\max_{\theta}
+% \mathcal{L}(\theta), \quad \mathcal{L}(\theta) = \textstyle \sum_{t=1}^T \text{BPR}( \mathbf{Y}_t, \mathcal{R}_{\theta}(\mathbf{X}_t) ).
+% %}_{\mathcal{L}(\theta)}
+% \label{eq:bpr_training_objective}
+% \end{align}
+

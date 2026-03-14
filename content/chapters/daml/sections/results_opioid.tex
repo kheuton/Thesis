@@ -1,0 +1,76 @@
+\textbf{Motivation.}
+The ongoing opioid overdose epidemic in the United States has incurred over 500,000 deaths in the past decade, with more than 80,000 fatal opioid-related overdoses in 2023 alone~\citep{cdc_vrss_2025}.
+Possible evidence-based interventions to mitigate overdose fatalities include overdose education and nalaxone distribution. Scarce resources require local decision makers to allocate these interventions to \emph{small areas} that are \emph{high-risk} \cite{allen_provident_2024}, with co-incident education and support for proper follow-through. Public health agencies could use forecasting to help allocate limited resources towards the goal of harm reduction. 
+
+
+%Several efforts across the U.S. 
+Several efforts have developed small-area forecasting models of opioid-related events~\citep{marksMethodologicalApproachesPrediction2021,neillMachineLearningDrug2018,bauer_small_2023}. 
+A preregistered trial for overdose reduction in Rhode Island~\citep{marshallPreventingOverdoseUsing2022} used BPR-like metrics to evaluate the top-$K$ predictions of conventionally-trained models. % with conventional training.
+This past work does not \emph{rank} or \emph{train} to improve BPR, as we do.
+
+
+%Authorities often do not have the budget to roll out intensive interventions in all $S$ sites. Thus, they seek data-driven recommendations for a top-$K$ subset of sites. 
+
+
+\textbf{Datasets.}
+We study the capabilities of different methods on two datasets of historical opioid-related overdose mortality. Our IRB provided a Not Human Subjects Research determination for analysis of this decedent data.
+The first dataset, \emph{MA Fatal Overdoses}, covers opioid-related overdose deaths in the state of Massachusetts from 2001-2021. This dataset is publicly available upon request from the MA Registry of Vital Records and Statistics.
+The second dataset, \emph{Cook County IL Fatal Overdoses}, tracks opioid-involved overdose deaths in the greater Chicago area between 2015 and 2022. This is an open dataset obtained via the public website of the Cook County Medical Examiner Case Archive \citep{cookcountyilMedicalExaminerCase2014}.
+
+% and primarily selected for our study due to their availability. 
+%We also believe that their geographic diversity highlights how these methods perform in densely-populated settings as well as across urban, suburban, and rural communities.
+
+We follow previous evaluations of these datasets in \citet{heutonSpatiotemporalForecastingOpioidrelated2024}. 
+Each dataset was processed to a common format of fatal overdose counts per time and spatial unit.
+For the spatial units, we chose \emph{census tracts}. Each tract by design contains a mean population of 4000 people, a scale that allows capturing variation in overdoses at the neighborhood level.
+For temporal binning, we picked calendar years to reflect the frequency at which health agencies might enact policy changes.
+Summary facts are in Tab.~\ref{tab:comparison}.
+
+%, as well as to account for the approximate 6-month temporal lag in the availability of complete death certificates. % 6-month lag is real, stopka often speaks of it 
+%Both spatial and temporal choices are consistent with past work~\citep{heutonSpatiotemporalForecastingOpioidrelated2024}.
+
+\textbf{Task.} Our forecasting task is to predict the next year's count of opioid-related fatal overdoses in each census tract. For \emph{MA}'s $S{=}1620$ tracts, we train on data from 2011-2018, tune hyperparameters on validation data from 2019, and test on 2020 and 2021. For \emph{Cook County IL}'s $S{=}1328$ tracts, we train on data from 2015-2019, tune on 2020, and test on 2021 and 2022. 
+These splits follow~\citet{heutonSpatiotemporalForecastingOpioidrelated2024}.
+
+Given a trained model, we assess heldout likelihood over all sites as well as BPR with $K{=}100$ to measure the model's where-to-intervene ranking. A $K{=}100$ budget was selected to reflect realistic public health budgets, and is similar to values used in other studies~\citep{marshallPreventingOverdoseUsing2022}.
+
+
+%We consider several models: negative binomial regression models which were found to be the highest performing in, the strongest models on the traffic and weather datasets from \cite{OpenSTL}, and something else.
+
+\textbf{Model.}
+A recent benchmark~\citep{heutonSpatiotemporalForecastingOpioidrelated2024} compared many models designed for fatal overdose forecasting, including
+neural architectures with attention~\citep{ertugrul_castnet_2019} and more classical statistical models. 
+A top-performing model is \emph{negative binomial mixed-effects regression} \citep{marks_identifying_2021}.
+The generative model can be expressed as
+\begin{align}
+    \label{eq:neg_binom_mixed_effects}
+    y_{st} &\sim \text{NegBin}(\mu_{st}, q),
+    \\ \notag
+	\log(\mu_{st}) &= \beta_0 + \boldsymbol{\beta}^T\mathbf{x}_{st} + b_{0s} + b_{1s}t.
+\end{align}
+Here, count $y_{st}$ is modeled as a Negative Binomial, where the log of the number of successes to stop at $\mu_{st}$ is a linear function of feature vector $\mathbf{x}_{st}$ as well as a site-specific intercept $b_{0s}$ and site-specific $b_{1s}$ weight on time $t$. The parameter $q$ is a probability of success shared by all sites.
+
+%model, which uses a random intercept for each location, and a random slope for time at each location. The model can be expressed as follows
+Feature vector $\boldsymbol{x}_{st}$ includes tract $s$'s \emph{overdose gravity}, a recent average of opioid-related overdose deaths in tracts spatially near to $s$, as well as measures of sociological vulnerability. See App. \ref{supp:features_opioids} for details.
+
+
+%Parameter $\beta_0$ is the fixed intercept, representing the overall baseline level, $\boldsymbol{\beta}$ is a vector of fixed effect coefficients, and $\mathbf{X}_{st}$ is a vector of fixed effect features. 
+
+%$b_{0s}$ is the random intercept for location $s$, and $b_{1s}$ is the random slope for time $t$ at location $s$.
+
+The overall parameters to estimate during training are $\phi = \{q, \beta_0, \beta, b_{0,1:S}, b_{1,1:S} \}$. To make constrained parameters amenable to gradient descent, we employ suitable one-to-one transforms to unconstrained spaces. Random effect weights $\bm{b}$ are regularized via a \emph{prior} that assumes a zero-mean Normal distribution with learnable covariance parameters. Full details are provided in App.~\ref{supp:model_negbinom}.
+
+\textbf{Competitor methods.}
+We compare to two other decision-aware methods discussed above: Perturbed Gradient (PG) \citep{huang_decision-focused_2024} and SPO+ \citep{elmachtoubSmartPredictThen2022}, as implemented in  PyEPO software~\citep{tang_pyepo_2023}. To be fair, each uses the same model $p_{\phi}$, the ratio estimator to rank sites, and the gradient of this estimator in Eq.~\eqref{eq:grad_r_wrt_phi}. We conduct a hyperparameter search over learning rate (and perturbation noise for PG), selecting the model with the best loss value on validation data. 
+
+
+\textbf{Setup.} We followed the common setup described above.
+For reproducible details specific to overdose tasks, see App.~\ref{supp:results_opioids}.
+
+
+\textbf{Results.}
+Results on \emph{test} data for both MA and Cook County IL tasks are shown in Pareto frontier plots in Fig.~\ref{fig:Frontier}. For both datasets, we see that ML training yields suboptimal top-K decisions. Direct optimization of BPR can improve BPR, though gains on test data over ML vary (+0.04 on Cook County; less than +0.01 on MA).
+Direct BPR and surrogate loss (SPO+, PG) solutions can yield \emph{much worse} likelihood, as expected. The surrogate loss methods provide lower quality decisions than the DAML and direct BPR approach.
+%On the test data, the DAML approach slightly improves likelihood over results obtained from ML training.
+Our DAML approach provides better top-K decisions than the ML approach, with no visible decay in likelihood. 
+%If accurate top-K decisions are the most important outcome for this task these experiments suggest considering direct loss minimization.

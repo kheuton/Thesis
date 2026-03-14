@@ -1,0 +1,33 @@
+\subsubsection{Features}
+\label{supp:features_opioids}
+
+The feature vector $\bm{x}_{st}$ for site $s$ and time $t$ includes:
+\begin{itemize}
+    \item Latitude and Longitude of the centroid of the census tract $s$
+    \item The current timestep $t$
+    \item Overdose gravity, an weighted average of the prior year's overdose deaths in all contiguous tracts. We construct the feature in the same way as \cite{marks_identifying_2021}. Note that the original paper describes a weighted average over all regions within a radius, but the provided code uses only immediately contiguous locations. We follow the implementation from the code. 
+    \item Covariates from the Social Vulnerability Index (SVI) \cite{cdcatsdrCDCATSDRSocial2022}. These covariates are available as 5-year estimates for every census tract in the United States and are updated every 2 years. The SVI measures report the percentile ranking of every census tract according to 4 themes: Socioeconomic, Household Composition \& Disability, Minority Status \& Language, and Housing Type \& Transportation. We use 5 variables: each tract's ranking in each of the four themes as well as its composite ranking.
+    \item We include 5 temporal lags: the number of fatal opioid-related overdoses in tract $s$ in each of the past 5 years.
+\end{itemize}
+
+\subsubsection{Hyperparameter ranges}
+
+%We consider 3 models: a weighted historical average as a competitive yet simple baseline, a negative binomial regression model, and ConvNext (one of the strongest models on traffic prediction on the OpenSTL benchmark). The weighted historical average will be optimized to minimize RMSE, and ConvNext will be trained with its original objective.
+
+Hyperparameter ranges explored include:
+
+\begin{itemize}
+	\item Perturbation noise: $0.1, 0.01,$ and $0.001$.
+    \item Adam step size: $0.1, 0.01,$ and $0.001$.
+	\item Number of samples for score function trick estimator: 100
+	\item Number of samples for perturbation estimator: 100
+	\item BPR constraint $\epsilon$: 5 possible values of the penalty threshold: $1.0$, for a threshold that always encourages better BPR, as well as 4 values selected to be around the best BPR obtained on the training data.
+	\item Multiplier on the penalty for DAML: 30. This value was chosen so that the BPR and likelihood components were roughly the same magnitude after 100 epochs of training.
+\end{itemize}
+
+For each location, training objective (likelihood, direct loss minimization, and DAML), as well as for each threshold for the hybrid model, we selected the model based on validation dataset performance. For the maximum likelihood model and direct BPR models we picked the model that best maximized their respective objective. For the DAML models, we found that given the larger number of hyperparameter configurations, small amount of validation data, and BPR's sensitivty, selected a model based on BPR lead to overfitting. To ameliorate this, we chose the model with the highest likelihood provided that the BPR was greater than a given threshold. Because models failed to meet the target $\epsilon$, we chose the BPR of the maximum likelihood model on the validation dataset as our threshold. If no models met this threshold, we selected the maximum BPR model. For the  We did this by evaluating the validation performance every 10 epochs, and saving a checkpoint for the model with the lowest loss on validation data. 
+
+% We used the same hyperparameter search and experimental setup for both geographic regions. We explored perturbation noise values of $0.1, 0.01,$ and $0.001$. Similarly, we explored 3 learning step sizes on the same scale. We use 100 samples for the score function gradient estimator and 100 perturbation samples for the perturbed top-K operator.
+
+% For Negative Binomial regression, we explored 3 objectives: maximum likelihood, direct loss minimization on BPR-K, and our hybrid, penalized objective. For the hybrid objective, we explored 5 possible values of the penalty threshold: $1.0$, for a threshold that always encourages better BPR, as well as 4 values selected to be around the best BPR obtained on the training data. We also select a lambda value such that the magnitude of each component of the loss is roughly similar during training.
+

@@ -1,0 +1,20 @@
+We have addressed two open challenges related to top-K resource allocation problems guided by the best possible reach (BPR) performance metric. We provided a ranking strategy that can outperform simple per-site means. We posed a training objective that strives for high likelihood across all sites while ensuring top-K decisions meet a stakeholder-specified quality level.
+Our experimental evaluations suggest our approach can better manage tradeoffs in likelihood and BPR than conventional training methods or previous decision-aware methods.
+
+There are several limitations to this study. 
+We focused on showing the tradeoffs between likelihood and BPR for a fixed model family in each task without comparing a wide variety of possible models.
+Only one type of model misspecification is considered each in the synthetic and real-world experiments; perhaps  decision-aware objectives are more or less different to maximum likelihood estimates depending on the kind of model misspecification.
+Our evaluations use fixed $K$ values and do not explore sensitivity to $K$ or other hyperparameters.
+Practitioners may need multiple metrics to assess overall utility; focusing myopically on BPR may not always be wise.
+Additionally, our framework assumes any site with large outcome $y_s$ is a better candidate for intervention. Future work could explore data-driven site selection that considers how site-specific attributes might make some interventions more or less effective. 
+
+%Primarily- the chosen tasks are quite difficult, and our proposed methods offer comparable performance to existing techniques. However, particularly in the case of the wildlife dataset, our method offers the best of both likelihood and direct loss methods. In addition, our method is computationally more expensive than maximum likelihood estimation. However, for spatiotemporal problems, real-time predictions are often not necessary, and are instead used to make decisions for the coming months and years.
+
+Looking forward, we hope to see applications of these ideas inform public health, wildlife conservation, and other where-to-intervene decision-making problems across the private and public sectors. We also hope that future methodological work could scale up to much larger problems ($S > 2000, T > 20$) as we found that our current experiments tested the limits of commodity GPUs.
+
+%Having shown its utility in public health and wildlife conservation, we would like to see it further applied in business, policy, and many other constrained optimization problems.
+
+
+% MCH: moved this to impact statement.tex 
+%We believe that the techniques presented in this paper can be extended to additional constraints, having demonstrated that differentiability is not an obstacle. Furthermore, as demonstrated in other work \cite{marshall_preventing_2022}, equity and fairness constraints can be added to the top-K limitation. We believe this method could be useful for work in building fair machine learning algorithms. This method could also be applied to many more settings where a scarce resource needs to be allocated among competing entities. 
+

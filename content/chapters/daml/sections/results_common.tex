@@ -1,0 +1,20 @@
+Decision-aware training can benefit a variety of models in diverse problem domains. 
+The subsections below cover toy and real applications. 
+On each task, we fit models using all three training approaches from Sec.~\ref{sec:methods_train}: ML estimation, BPR optimization, and DAML.
+We wish to verify common hypotheses throughout: (i) ML training can yield suboptimal top-$K$ decisions; (ii) direct optimization of BPR improves this at the expense of likelihood; (iii) our DAML allow navigating tradeoffs between likelihood and BPR.
+
+\textbf{Common setup.}
+In each task below, for a fixed task-specific $K$ we first train models for ML and BPR. Using their final BPR values as guidelines, we select a suitable range of $\epsilon$ values for DAML and fit each one, intending to explore intermediate points on the two-objective Pareto frontier~\citep{costa2015ParetoFrontier}.
+When training each objective, we run many random initializations to convergence across a range of learning rates and other hyperparameters~(see App. \ref{supp:results_opioids} for details).
+We keep the model $\phi$ from one run that best achieved its objective on a validation set, early stopping as needed.
+A model's ultimate top-$K$ rankings can have some stochasticity. Thus, later figures show \emph{estimated distributions} of BPR across 1000 trials of a $M{=}1000$ sample Monte Carlo estimate of $\bm{r}(\phi)$ after training is completed.
+
+%For each model, we run 20 random initializations to convergence each with 3 possible learning rates. We keep the $\phi$ estimated by the single run that best optimized the model's objective. Using multiple initializations helps avoid the local optima common to mixture models.
+
+
+
+%learn $\phi$ that yields the best where-to-intervene decisions in terms of BPR when K=5, while also delivering high likelihood. We compare 
+
+%We train a spectrum of 7 models, all with gradient descent. One optimizes purely the ML objective. Another optimizes the BPR loss alone. The 5 intermediate models use our DAML objective with different $\epsilon$ values to enforce different constraints on BPR, intending to sweep out intermediate points on the two-objective Pareto frontier.
+%For each model, we run 20 random initializations to convergence each with 3 possible learning rates. We keep the $\phi$ estimated by the single run that best optimized the model's objective. Using multiple initializations helps avoid the local optima common to mixture models.
+

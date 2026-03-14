@@ -19,6 +19,9 @@
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACROS %%%%%%%%%%
 \newcommand{\tpc}[0]{\text{tpc}}
@@ -58,27 +61,63 @@
 \input{content/introduction}
 
 \chapter{Spatiotemporal Forecasting of Opioid-related Fatal Overdoses: Towards Best Practices for Modeling and Evaluation}
-\input{content/chapters/bpr/abstract}
+\label{chap:bpr}
+%\input{content/chapters/bpr/abstract}
 \input{content/chapters/bpr/introduction}
 \input{content/chapters/bpr/methods}
 \input{content/chapters/bpr/results}
 \input{content/chapters/bpr/discussion}
 \input{content/chapters/bpr/acknowledgements}
 
-\chapter{Predicting In-Hospital Patient Outcomes from Time Series with Missing Data via a Semi-supervised Hidden Markov Model}
-\label{chap:pchmm}
-\input{content/chapters/semi_supervised_pchmm_missing_data/intro}
-\input{content/chapters/semi_supervised_pchmm_missing_data/methods}
-\input{content/chapters/semi_supervised_pchmm_missing_data/results}
-\input{content/chapters/semi_supervised_pchmm_missing_data/conclusion}
+\chapter{Decision-aware Training of Spatiotemporal Forecasting Models to Select a Top-K Subset of Sites for Intervention}
+\label{chap:daml}
+\graphicspath{{content/chapters/daml/}}
+\section{Introduction}
+\label{sec:intro}
+\input{content/chapters/daml/sections/intro}
+\input{content/chapters/daml/sections/intro_figure}
+
+\section{Technical Background and Problem Setup}
+\label{sec:background}
+\input{content/chapters/daml/sections/background}
+
+\section{Methods for Ranking}
+\label{sec:methods_rank}
+\input{content/chapters/daml/sections/methods_rank}
+
+\section{Methods for Training}
+\label{sec:methods_train}
+\input{content/chapters/daml/sections/methods_train}
+
+\section{Experiments and Results}
+\label{sec:results}
+\input{content/chapters/daml/sections/results_common}
+
+\subsection{Synthetic Data}
+\label{sec:results_synth1D}
+\input{content/chapters/daml/sections/results_synth1D}
+\input{content/chapters/daml/sections/frontier_figure}
+
+\subsection{Opioid-related Overdose Forecasting}
+\label{sec:results_opioid}
+\input{content/chapters/daml/sections/results_opioid}
+
+\subsection{Endangered Bird Forecasting}
+\label{sec:results_birds}
+\input{content/chapters/daml/sections/results_birds}
+
+\section{Discussion}
+\label{sec:discussion}
+\input{content/chapters/daml/sections/discussion}
+\graphicspath{{./}}
 
 \chapter{Probabilistic Modeling of Data-Driven Missingness in Irregular Time Series Medical Records}
-\input{content/chapters/irregular_time_series_data_driven_missingness/intro}
-\input{content/chapters/irregular_time_series_data_driven_missingness/related_work}
-\input{content/chapters/irregular_time_series_data_driven_missingness/background}
-\input{content/chapters/irregular_time_series_data_driven_missingness/methods}
-\input{content/chapters/irregular_time_series_data_driven_missingness/results}
-\input{content/chapters/irregular_time_series_data_driven_missingness/conclusion}
+%\input{content/chapters/irregular_time_series_data_driven_missingness/intro}
+%\input{content/chapters/irregular_time_series_data_driven_missingness/related_work}
+%\input{content/chapters/irregular_time_series_data_driven_missingness/background}
+%\input{content/chapters/irregular_time_series_data_driven_missingness/methods}
+%\input{content/chapters/irregular_time_series_data_driven_missingness/results}
+%\input{content/chapters/irregular_time_series_data_driven_missingness/conclusion}
 
 \chapter{Conclusion and Outlook}
 \input{content/conclusion}
