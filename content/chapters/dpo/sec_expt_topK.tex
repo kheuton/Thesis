@@ -1,0 +1,24 @@
+\begin{figure}[!h]
+\centering
+\includegraphics[height=10cm,trim={0 0 31.2cm 0},clip]{figures/surrogate_vs_regret_pub_2x3.pdf}
+
+% Tighten space before caption (local to this figure)
+\vspace{-0.3em}
+\setlength{\abovecaptionskip}{2pt}
+\setlength{\belowcaptionskip}{0pt}
+\caption{
+\textbf{Top-K site selection:}
+Comparing estimated $\theta$ from DPO and SPO+/PG. Expanded version in Fig.~\ref{fig:topK_interpolation_6panel}.
+}%endcaption
+% \caption{\textbf{Interpolation between DPO-learned and Surrogate-learned solutions} \textit{Top Row:} PG loss and regret evaluated using models with parameters uniformly interpolated between the solution learned by DPO and the solution learned by PG on two public health and one wildlife datasets. \textit{Bottom Row:} The same for SPO+. We see that the DPO loss universally learned model parameters that result in lower decision regret on the heldout dataset. Additionally, the DPO solution almost always has a higher surrogate loss value, indicating that the surrogate methods would prefer the higher regret model to the one with lower decision regret.}
+\label{fig:topK_interpolation_main}
+\end{figure}
+
+In \citet{heuton2025decisionaware}, the authors study  top-K site selection problems on real data from public health and wildlife conservation. They find that a method based on DPO performs well on a heldout decision-making task, while both SPO+ and PG scores worse than DPO. Yet \emph{why} DPO wins is unexplained in the original work. Does DPO achieve superior results because it has better agreement with decision loss? Or are PG and SPO+ methods stuck in local minima?
+
+We attempt to answer these questions on all 3 tasks from \citeauthor{heuton2025decisionaware},
+by interpolating between the parameters $\theta$ learned by DPO and the $\theta$ estimated by either PG or SPO+.
+Fig.~\ref{fig:topK_interpolation_main} shows results for the overdose death prevention task in Illinois.
+Expanded results for all tasks are in Fig.~\ref{fig:topK_interpolation_6panel}. 
+Across 2 methods and 3 tasks, the DPO estimated $\theta$ always has lower decision regret while almost always having higher surrogate loss (PG or SPO+). This means the \textbf{surrogate loss itself appears inadequate} in these tasks.
+%decision regret because they prefer higher regret solutions than DPO.

@@ -1,0 +1,30 @@
+We replicate 7 tasks from \citet{gengBenchmarkingPtOPnO2024}'s end-to-end prediction and optimization (PnO) benchmark, using their implementation and settings. They use synthetic and real datasets from energy, citation networks, and beyond for a variety of decision tasks. See App.~\ref{app:bench} for task specific descriptions.
+
+We add a DPO method to the benchmark based on \citet{TueroPytorchDPO}'s code. While \citeauthor{gengBenchmarkingPtOPnO2024}'s provided software contains some DPO code, it is not fully implemented. Results for the 11 baseline methods are taken from the original benchmark.
+
+\textbf{Training DPO.} Our basic or ``naive'' DPO completes a grid search of noise-level $\sigma \in [0.1, 0.5, 1]$ and learning rate $[0.01, 0.005, 0.001]$, selecting the lowest-cost run on the benchmark's validation set. These 9 runs for DPO may advantage it compared to other methods (which received 5 different learning rates and no tuning of other hyperparameters). Yet our goal is to highlight what is possible with DPO, not claim superiority. 
+
+\textbf{Results.} Figure \ref{fig:bench_bump} shows DPO's performance across the 7 tasks and 11 methods studied by \citeauthor{gengBenchmarkingPtOPnO2024}. DPO achieves the best performance on bipartite matching and budget allocation, near-optimal performance on the real-world knapsack energy problem, and ranks in the middle for 2 more tasks.
+%the synthetic knapsack and energy scheduling task, and while performance on TopK is catastrophic compared to the best method, it actually outperforms several other methods.
+
+Here, some results contrast with the findings of \citet{gengBenchmarkingPtOPnO2024}. While the authors say "methods in the discrete category [such as DPO] do not perform as well as
+others, especially on non-linear optimization tasks (budget allocation)," we find that DPO with basic grid search performs the best at the Budget Alloc.~task.  
+% budget allocation is truly non-linear (submodular), as is portfolio (quadratic in decision for risk minimization) but topk is absolutely linear
+
+\textbf{Extra tuning.}
+If, after the initial size-9 grid search, DPO was in the bottom half of the methods compared, we performed further tuning to illustrate what can help and harm DPO's performance. 
+
+On the TopK task where DPO-basic scored quite poorly, our extra tuning
+involved decaying $\sigma$ linearly to 0 over iterations, recommended by \citet{cordonnierDifferentiablePatchSelection2021}. We think this decay is helpful due to the nature of the problem: a decision boundary which rarely appears in the training data matters a lot in overall test cost.
+For this task, the model $\hat{y}_{\theta}$ is well-specified, capable of perfectly recovering the data generating process. 
+Thus, a two-stage rather than end-to-end method performs best overall, which is explained by  proofs in \citet{elmachtoubEstimateThenOptimizeIntegratedEstimationOptimizationSample2025}.
+
+
+%This al
+%A two-stage approach works best for this task, as the model used is well-specified and can perfectly represent the data generating process. This aligns with the proofs provided in \citet{elmachtoubEstimateThenOptimizeIntegratedEstimationOptimizationSample2025}.
+
+The energy task exposes one of the major weaknesses of DPO: each noisy sample requires its own solver call, which is expensive here. As such, we were only able to use $M{=}1$ sample when training on this task, and we believe this to be the reason for its failure. Further tuning (more $\sigma$ values, $\sigma$ decay) were unsuccessful: we obtained better regret on the validation set, but slightly worse test-set performance.
+
+Similarly, it was challenging to improve performance on the synthetic Knapsack task. Because $\sigma$ is either constant or decaying, it is important that the predicted outcome $y$ stays in a relatively stable range of magnitudes. As such, we placed a $\text{tanh}$ activation on the outputs of the model for this task. Again, we see this improves validation but harms test-set performance.
+
+Finally, the portfolio task is a continuous quadratic problem, and therefore already has informative gradients and requires no alternative optimization objective. Accordingly, DPO-tuned in this problem corresponds to optimizing portfolio returns directly.

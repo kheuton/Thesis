@@ -1,0 +1,43 @@
+Machine learning (ML) models may inform real-world decisions with high-stakes consequences. Examples include 
+%``Which ICU patients need extra intervention?,'' 
+``Is air quality sufficient to go outside now?''~\citep{berlinghieri2026hourly},
+``Where should scarce public resources be allocated?''~\citep{heuton2025decisionaware},  or ``Which route should I take?''\citep{tangPyEPOPyTorchbasedEndtoend2024}. 
+Ideally, prediction models would be directly trained to optimize a loss tailored to the stakes of the decisions at hand. In most cases, this \emph{decision-aware} end-to-end training should make superior decisions~\citep{elmachtoubDissectingImpactModel2025}. 
+%For a broader survey of possible end-to-end methods, see~\citet{mandi_decision-focused_2024}.
+
+
+Yet many decision problems of practical interest have a loss that is piecewise constant as a function of model parameters. Consequently, gradients of the loss with respect to parameters will be 0 almost everywhere. 
+All zero gradients mean that gradient descent, one of ML's go-to tools for parameter learning, will be ineffective. 
+%Without informative gradients, an optimizer can never move away from an initial parameter value no matter how bad it is.
+
+To overcome this limitation, many methods have been proposed~\citep{mandi_decision-focused_2024}. We consider two families of methods here. In Perturbation methods~\citep{abernethyPerturbationTechniquesOnline2016,berthetLearningDifferentiablePerturbed2020}, informative gradients are obtained by adding noise to model outputs.
+The exemplar method we focus on here is the Differentiable Perturbed Optimizer (DPO)~\citep{berthetLearningDifferentiablePerturbed2020}.
+In contrast, Surrogate Loss methods pick another less-flat loss with non-zero gradients instead of the ideal (yet flat) decision loss. Exemplars here include methods known as PG~\citep{huang2024decisionfocusedPG} and SPO+\citep{elmachtoubSmartPredictThen2022}.
+Using their informative gradients, both families estimate parameters via the common toolbox of gradient descent.
+%optimization. % to estimate parameters.
+
+Among the many methods now available, which is recommended for practical use?
+In recent years, several methods papers and benchmark studies have begun to offer apples-to-apples comparisons of different methods on synthetic and real problems. However, we find that Perturbation methods have rarely been featured in such experiments.
+Despite discussing \citeauthor{berthetLearningDifferentiablePerturbed2020}'s DPO in related work, at least two high-profile recent studies~\citep{huang2024decisionfocusedPG,gengBenchmarkingPtOPnO2024} omit DPO entirely from their experiments. 
+%Additionally, while the PyEPO benchmark~\citep{tangPyEPOPyTorchbasedEndtoend2024} represents a huge value for the community, unfortunately some released DPO code has a subtle correctness issue (see App.~A).
+
+In this work, we argue that DPO is a competitive method worth considering. Our contributions are:
+\begin{itemize}[leftmargin=*,noitemsep,topsep=0pt]
+    \item We evaluate DPO alongside recent end-to-end learning methods across three experimental settings: \citeauthor{gengBenchmarkingPtOPnO2024}'s benchmarks (Fig.~\ref{fig:bench_bump}), a synthetic dataset from~\citeauthor{huang2024decisionfocusedPG} (Fig.~\ref{fig:noisy_synth_triptych}), and applications to top-K site selection (Fig.~\ref{fig:topK_interpolation_main}).    
+    %We also examine easy-to-understand synthetic datasets, where we show empirically that DPO shares two desireable properties of best of surrogate loss methods~\citep{huang2024decisionfocusedPG}: (1) DPO's preferred parameter aligns with the ideal regret minimizer even under misspecification; and (2) as training set size increases, estimated model's regret decreases.
+
+    \item While DPO can work well out of the box, we show several problems where DPO's success is highly sensitive to its noise-level hyperparameter. With improved tuning strategies beyond simple grid search, we find DPO can noticeably improve its regret, though on some tasks no big gains occur.
+    
+    \item We further reveal that a strong surrogate method well-suited for misspecified real-world scenarios, PG~\citep{huang2024decisionfocusedPG}, also has a key hyperparameter sensitivity where  even recommended settings can yield subpar regret (see Fig.~\ref{fig:noisy_synth_triptych}).
+\end{itemize}
+Our work suggests that perturbation-based methods deserve greater consideration in decision-focused learning pipelines, particularly when surrogate losses are misaligned with true decision objectives. We hope this practitioners in many domains make better decisions via end-to-end learning. 
+
+
+%    \item We provide a ``User's Guide'' for key methods from both families tailored to machine learning practitioners. Each guide explains the method's core ideas and inner workings in common notation. Each guide offers clear guidance when a method might be a good fit for the problem at hand, and a clear recipe for hyperparameter tuning backed by reusable code.
+
+
+%    \item \todo{Update when we know more:} We offer a novel hypothesis for  performance gap of these methods: different loss functions result in different gradient signal to noise ratios. We present preliminary experimental testing of this hypothesis.
+
+
+% Across both families, all methods considered here share the desirable property that their tractable loss, whether noisy or surrogate, is minimized when the ideal decision loss is minimized. This means that no matter which method is used, good decision-making performance should be obtainable by minimizing its loss. 
+% Despite this loss alignment, we observe quite different results for each method empirically in terms of the ultimate decision quality of its estimated parameters. Some performance discrepancy can be explained by varying the degree of model misspecification or the amount and kind of observation noise. However, little attention in the literature has been given to describing the regimes in which each method might be expected to work best. Furthermore, many of these loss functions introduce nuisance hyperparameters, such as the magnitude of the noise in the perturbation methods, or the size of the finite difference gap in the surrogate losses. Correctly tuning these hyperparameters makes all the difference in a model's performance, but there is a dearth of guidance on how to do this.

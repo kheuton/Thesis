@@ -1,0 +1,133 @@
+\documentclass[twoside]{article}
+
+\usepackage{aistats2026}
+%\usepackage[accepted]{aistats2026}
+%\usepackage[preprint]{aistats2026}
+
+% If you set papersize explicitly, activate the following three lines:
+%\special{papersize = 8.5in, 11in}
+%\setlength{\pdfpageheight}{11in}
+%\setlength{\pdfpagewidth}{8.5in}
+
+% If you use the natbib package, activate the following three lines:
+\usepackage[round]{natbib}
+\renewcommand{\bibname}{References}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+% If you use BibTeX in apalike style, activate the following line:
+%\bibliographystyle{apalike}
+
+\input{_imports.tex}
+
+%% MCH SPACE-REDUCING HACK 1/3
+% Small captions
+\captionsetup[table]{font=small,labelfont=small}
+\captionsetup[figure]{font=small,labelfont=small}
+
+\begin{document}
+%% MCH SPACE-REDUCING HACK 2/3
+% Reduce spacing around floats 
+\setlength{\floatsep}{8pt plus 4pt minus 4pt}
+
+%% MCH SPACE-REDUCING HACK 3/3
+% Reset vertical space for equations 
+% (must be after \begin{document})
+\setlength{\abovedisplayskip}{2pt plus 3pt}
+\setlength{\belowdisplayskip}{2pt plus 3pt}
+
+%\runningtitle{I use this title instead because the last one was very long}
+
+\twocolumn[
+\aistatstitle{{\bfseries
+Unlocking the Secrets of Perturbation Methods 
+\\for End-to-End Prediction and Optimization
+%The How's and Why's of Predict-Then-Optimize
+}}
+
+\aistatsauthor{Kyle Heuton \And Michael C. Hughes}
+
+\aistatsaddress{ Tufts University} ]
+
+\begin{abstract}
+\input{abstract.tex}
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+\input{sec_intro.tex}
+\input{fig_benchmark_bump.tex}
+
+\input{fig_triple_synth.tex}
+
+%% MCH SPACE SAVING HACK 4/3
+\setlength{\textfloatsep}{8pt plus 4pt minus 3pt}
+
+\section{Background: End-to-end Methods}
+\label{sec:methods}
+\input{sec_methods.tex}
+
+%%%
+\section{Experiment A: Synthetic Task}
+\input{sec_expt_synth.tex}
+
+\section{Experiment B: PnO Benchmark}
+\input{sec_expt_bench.tex}
+
+\section{Experiment C: Top-K Site Selection}
+\input{sec_expt_topK.tex}
+
+\section{Conclusions}
+\input{sec_conclusion.tex}
+
+
+% \begin{itemize}
+%     \item Replaced by PG exp --Synthetic Shortest Path (SPO+ paper)--
+%     \item Replaced by PG exp --Portfolio Optimization (SPO+ paper)--
+%     \item Synthetic Misspec. (PG paper)
+%     \item Synthetic Shortest Path and hard version (PG paper)
+%     \item Portfolio Optimization on Fama French Industry Sector Portfolio (PG Paper)
+%     \item Speed Humps (DAD paper)
+%     \item Warcraft Shortest Path (DBB also DPO) 
+%     \item Global Traveling salesman (DBB)
+%     \item MNIST min cost perfect matching (DBB)
+%     \item CIFAR-10 perturbed max (DPO)
+%     \item Perturbed label ranking (DPO)
+% \end{itemize}
+
+
+
+%\subsubsection*{Acknowledgements}
+
+% This work is funded in part by the U.S. National Science Foundation, under CAREER award \#TODO.
+% 
+
+\bibliographystyle{abbrvnat}
+\bibliography{refs.bib}
+
+
+
+\clearpage
+\appendix
+
+
+\counterwithin{table}{section}
+\setcounter{table}{0}
+\counterwithin{figure}{section}
+\setcounter{figure}{0}
+% \counterwithin{algorithm}{section}
+% \setcounter{algorithm}{0}
+
+
+\thispagestyle{empty}
+
+% Supplementary material: To improve readability, you must use a single-column format for the supplementary material.
+\onecolumn
+\aistatstitle{Supplementary Material}
+
+\input{app_synth.tex}
+\input{app_bench.tex}
+\input{app_topK.tex}
+
+
+
+\end{document}

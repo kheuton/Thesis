@@ -1,0 +1,82 @@
+In our problems, a decision $z\in\mathcal{Z}$ must be chosen from a
+discrete feasible set to minimize a cost that depends on outcomes $Y$ that are
+unknown at decision time. We model $Y$ as a random variable produced from a
+conditional distribution given observed features $X=x$. 
+For example, in a later top-K site selection tasks each $z$ represents an indicator vector that picks $K$ sites for intervention out of many, while vector $y$ has an observed score for each site, with smaller values indicating desirable sites given $x$.
+%hospitalized patient monitoring application, $z$ may represent a subset of patients selected to receive additional clinical attention from among all feasible subsets $\mathcal{Z}$, while $y$ indicates survival or death in next 24 hours for all patients, given patient-specific attributes $x$. 
+The decision to do $z$ when the outcome is $y$ incurs a scalar cost $c(z,y)$. 
+
+The decision-making problem is, given an $x$, to solve for the value(s) of $z$ with lowest expected cost,\begin{align}
+%% OLD VERSION:
+% z^\star(x)\;\in\;\arg\min_{z\in\mathcal{Z}} \mathbb{E} \! \left[c(z,Y)\mid X=x\right].
+% \\ \notag 
+%% MCH PROPOSED:
+z^\star(x,\theta)\;:=\;\arg\min_{z\in\mathcal{Z}} \mathbb{E}_{p_{\theta}(Y | X=x)} \!\left[c(z,Y) \right].
+\label{eq:decisions}
+\end{align}
+Here, the parameter $\theta \in \mathbb{R}^P$ defines a conditional distribution over $Y$ given $X{=}x$.
+At decision-making time (``test time''), only features $x$ and parameter $\theta$ are available; the realization of $Y$ is
+unknown until later.
+
+The training problem is to estimate $\theta$ given observed data $\{(x_i,y_i)\}_{i=1}^n$ assumed drawn i.i.d.\ from the joint distribution
+of $(X,Y)$.
+We could learn $\theta$ to  maximize the likelihood $p_{\theta}(Y|X)$ given observed data.
+However, end-to-end methods seek an estimated $\theta$ that delivers good decisions via Eq.~\eqref{eq:decisions} when used on never-before-seen contexts $X{=}x'$ drawn from the same distribution.
+To solve this, training can be framed as a cost minimization problem: $\theta^* \gets \arg\!\min_{\theta} \sum_{i=1}^n c(z^*(x_i,\theta), y_i)$.
+
+
+\textbf{Linear cost assumption.}
+A common assumption~\citep{huang2024decisionfocusedPG} is that cost is a linear inner product $c(z, y) = 
+\langle z, y\rangle$. Here $z$ and $y$ are vectors of size $D$ and  decisions simplify due to linearity of expectation: $z^*(x,\theta) = \arg\!\min_{z \in \mathcal{Z}} 
+\langle z, \hat{y}_{\theta}(x) \rangle$, where $\hat{y}_{\theta}(x)$ denotes the mean of $Y$ under $p_{\theta}(Y | X=x)$.
+Even here, the decision problem is  piecewise constant as a function of $\hat{y}_{\theta}$. Its flatness yields all-zero gradients which break gradient-based learning of $\theta$.
+
+\textbf{DPO method.} The differentiable perturbed optimizer~\citep{berthetLearningDifferentiablePerturbed2020}, addresses this issue by smoothing the decision
+map via random perturbations of the predictions. For noise
+$\xi$ from a standard Normal or Gumbel distribution with noise-level $\sigma>0$, the perturbed decision is defined as
+\begin{align}
+z_\sigma(x, \theta)
+\;:=\;
+%\textstyle
+\mathbb{E}_{\xi}[
+~
+\arg\min_{z\in\mathcal{Z}} \langle z,\, \hat{y}_{\theta}(x) + \sigma \xi\rangle
+~].
+\end{align}
+In practice, we can estimate this perturbed decision vector of size $D$ and its gradient via Monte Carlo estimates. We focus on iid Gaussian noise and assume $M$ samples, each one denoted $\xi^{(m)} \sim \mathcal{N}(0, I_D)$. Define the decision obtained with each noise sample as as $\hat{z}^{(m)} {=} \arg\min_{z\in\mathcal{Z}} 
+~\langle z,\, \hat{y}_{\theta}(x) + \sigma \xi^{(m)} \rangle$, then we can estimate the perturbed decision $\hat{z}$ and the Jacobian matrix $J$ needed for gradients as
+\begin{align}
+\hat{z}(x, \theta)
+&=
+\textstyle 
+\frac{1}{M} \sum_{m=1}^M
+\hat{z}^{(m)}
+\\ \notag 
+\hat{J}(x, \theta) &= 
+\nabla_{\theta} \hat{y}(x,\theta) \Big[ 
+\textstyle
+\frac{1}{\sigma M} 
+\sum_{m=1}^M \textsc{outer}(\hat{z}^{(m)}, \xi^{(m)})
+\Big] 
+\end{align}
+This Jacobian estimator 
+$\hat{J} \approx \nabla_{\theta} {z}_{\sigma}(x, \theta)$, a $P\times D$ matrix, comes directly from the chain rule and Prop. 3.1 of \citeauthor{berthetLearningDifferentiablePerturbed2020}~Noise distributions other than Gaussian require changes to the outer product term.
+
+\textbf{DPO hyperparameters.}
+DPO's most sensitive hyperparameter is noise-level $\sigma$, which controls a bias--smoothness tradeoff. Smaller $\sigma$ values yield high-variance or vanishing
+gradients. We recover noise-free decisions $z^*(x,\theta)$ as $\sigma \rightarrow 0^+$. Larger $\sigma$ induce smoother decision maps at the cost of
+biasing decisions away from $z^\star$. 
+%Desireably, even with a single sample and small $\sigma$ the Jacobian will be non-zero.
+
+As typical in Monte Carlo methods, DPO's estimators become more accurate as the number of samples $M$ increases: larger $M$ produce lower-variance estimates at the cost of an increased number of calls to the (often expensive) optimization solver that produces $\hat{z}^{(m)}$.
+
+% at added computational cost. The number of samples $M$ controls the variance of the Monte Carlo approximation; a larger number of samples provides a lower-variance decision at the cost of an increased number of calls to the (often expensive) optimization solver.
+
+% For either the ideal expectation or the M-sample estimator, as long as $\sigma$ is large enough that some different $z$ are chosen in the inner $\arg\!\min$, the decision will not suffer from the ``flatness'' problem, thus allowing informative (non-zero) gradients to be backpropagated through the entire computational graph.
+
+
+
+
+%\subsection{Gradient SNR}
+
+%Max Welling 2020 MRI NeurIPS, 2008 weight perturbation NeurIPS.

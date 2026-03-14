@@ -1,0 +1,21 @@
+We pursue a synthetic task from \citeauthor{huang2024decisionfocusedPG} (details in App.~\ref{app:synth}), with univariate $x$, $y$, and $z$.
+The true data-generating process for $y$ given $x$ relationship is piecewise linear, as shown in Fig.~\ref{fig:synth_data}.
+The mean of $y$ is \text{above zero} when $x < 0.5$ and below otherwise. Asymmetric noise is added to this mean.
+The decision task here is to select a binary $z$ value ($\mathcal{Z} {=} \{ 0, 1\})$ to minimize cost $z \cdot y$.  The optimal decision strategy is thus to guess $z=0$ when $x < 0.5$ and $z=1$ otherwise.
+
+\textbf{Model.} We use a 2-parameter linear model: $\hat{y}_{\theta}(x) = \theta_1 x + \theta_0$. This is misspecified to the true ``hockey stick'' trend, but  it can still yield optimal decisions. As long as the learned zero-crossing occurs at $x=0.5$, there are many possible $\theta$ which would achieve optimal cost.
+%Ultimately, while the assumed linear model is misspecified for the piecewise linear $f^*$ above, by design it can still yield optimal decisions, since effectively the task \todo{can be solved by ensuring the zero-crossing of $\theta_1 x + \theta_2$ happens at 0.55; there are many possible $\theta$ which would yield an optimal cost.}
+
+\textbf{Results.}
+In Fig.~\ref{fig:noisy_synth_triptych} we replicate the experiments of \citet{huang2024decisionfocusedPG}, adding DPO at various $\sigma$.
+In the left panel, we explore whether each method's loss is suitably aligned to the ideal. here we vary the location of the decision threshold implied by the parameter $\theta$ and calculate each method's loss function at that $\theta$ on a test set of 10000. 
+% The middle table displays the decision threshold and regret at the $\theta$ that minimizes loss.
+% As found in \citeauthor{huang2024decisionfocusedPG}: among several surrogate methods tested, only PG aligns well.
+
+We highlight two findings. First, with an appropriate noise level $\sigma$, DPO aligns with the true decision loss as well as PG, even under model misspecification. DPO was cited in \citeauthor{huang2024decisionfocusedPG}, but not included in experiments.
+Second, PG is critically dependent on its finite-difference hyperparameter $h$; small increases can make PG's surrogate loss no longer have a minima that coincides with the optimal. PG does well with $h{=}0.1$, but $h{=}0.266$ as recommended in \citeauthor{huang2024decisionfocusedPG}'s code is subpar.
+
+In Fig.~\ref{fig:noisy_synth_triptych}'s right panel, we examine methods for the quality of estimated $\theta$ from gradient descent (GD) as train size $n$ increases. We plot cost on the test set, showing uncertainty over 100 trials (separate datasets and runs of GD). These plots show that even though DPO's loss itself is more aligned with true decision loss at low $\sigma$, higher $\sigma$ may produce better $\theta$ via GD.
+%the ability to reach this minimum via GD is highly dependent on hyperparameter $\sigma$.
+
+% we show the test-set regret achieved by each method, averaged over \todo{100 trials: DEFINE trial} at increasing dataset sizes. These plots show that while DPO theoretically shares a minimum with the true decision regret- the ability to reach this minimum using stochastic gradient descent is also highly dependent on its perturbation hyperparameter $\sigma$.

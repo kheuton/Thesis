@@ -22,6 +22,7 @@
 \usepackage{xcolor}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{import}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACROS %%%%%%%%%%
 \newcommand{\tpc}[0]{\text{tpc}}
@@ -111,13 +112,31 @@
 \input{content/chapters/daml/sections/discussion}
 \graphicspath{{./}}
 
-\chapter{Probabilistic Modeling of Data-Driven Missingness in Irregular Time Series Medical Records}
-%\input{content/chapters/irregular_time_series_data_driven_missingness/intro}
-%\input{content/chapters/irregular_time_series_data_driven_missingness/related_work}
-%\input{content/chapters/irregular_time_series_data_driven_missingness/background}
-%\input{content/chapters/irregular_time_series_data_driven_missingness/methods}
-%\input{content/chapters/irregular_time_series_data_driven_missingness/results}
-%\input{content/chapters/irregular_time_series_data_driven_missingness/conclusion}
+\chapter{Unlocking the Secrets of Perturbation Methods for End-to-End Prediction and Optimization}
+\label{chap:dpo}
+\graphicspath{{content/chapters/dpo/}}
+\section{Introduction}
+\label{sec:dpo_intro}
+\input{content/chapters/dpo/sec_intro}
+\input{content/chapters/dpo/fig_benchmark_bump}
+\input{content/chapters/dpo/fig_triple_synth}
+
+\section{Background: End-to-end Methods}
+\label{sec:dpo_methods}
+\input{content/chapters/dpo/sec_methods}
+
+\section{Experiment A: Synthetic Task}
+\input{content/chapters/dpo/sec_expt_synth}
+
+\section{Experiment B: PnO Benchmark}
+\input{content/chapters/dpo/sec_expt_bench}
+
+\section{Experiment C: Top-K Site Selection}
+\input{content/chapters/dpo/sec_expt_topK}
+
+\section{Conclusions}
+\input{content/chapters/dpo/sec_conclusion}
+\graphicspath{{./}}
 
 \chapter{Conclusion and Outlook}
 \input{content/conclusion}
