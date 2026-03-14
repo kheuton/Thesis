@@ -1,165 +1,30 @@
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2308}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1875}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1939}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1955}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1923}}@{}}
-\caption{Comparison of fatal opioid-related overdose prediction models trained on Cook County, Illinois decedent data, from 2015 to 2020, then evaluated on data from 2021 and 2022.}\label{tab:bpr_cookcounty}\\
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \multicolumn{4}{>{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.7692} + 6\tabcolsep}@{}}{%
-\begin{minipage}[b]{\linewidth}\centering
-Metric
-\end{minipage}} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-Model
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Total overdoses
-
-identified in top 100 tracts
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\%BPR (K=100)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-MAE
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-RMSE
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-All Zeros
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-137.0
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{21.7, (21.1--22.4)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-1.37, (1.30--1.44)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-2.46, (2.34--2.56)
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-Last year
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-466.0
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{73.9, (70.7--77.0)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{1.07, (1.03--1.10)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-1.66, (1.59--1.71)
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-Historical Average (4 year)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-505.3
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{\hl{80.1, (76.2--84.3)}}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{0.94, (0.90--0.97)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{1.44, (1.38--1.50)}
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-Weighted
-
-Historical Average
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-495.4
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{\hl{78.6, (75.7--81.8)}}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{1.15, (1.11--1.19)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-1.87, (1.76--1.96)
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-Poisson GLM
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-496.8
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{78.8, (75.9--82.3)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{1.22, (1.08--1.29)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{4.64, (1.65--5.92)}
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-Poisson GLM + SVI
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-500.7
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{79.4, (76.0--82.8)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-1.16, (1.11--1.20)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{1.86, (1.77--1.94)}
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-Gradient Boosted Trees +SVI
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-485.7
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{77.1, (72.2--81.9)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{0.99, (0.95--1.05)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{1.55, (1.42--1.68)}
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-GP
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-477.2
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{75.7, (69.9--80.5)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\hl{1.03, (0.97--1.09)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-1.63, (1.50--1.74)
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-CASTNet +SVI
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-472.6
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-75.2, (73.2--76.8)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-1.01, (0.98-1.04)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-1.53, (1.39-1.67)
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-BST: Bayesian spatiotemporal
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-505.9
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{80.5, (78.9--82.1)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-1.00, (0.98--1.01)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{1.40, (1.36--1.43)}
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-BST + SVI
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-504.1
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{80.2, (78.7--82.0)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-0.97, (0.95--0.98)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-1.47, (1.43--1.51)
-\end{minipage} \\
-\begin{minipage}[b]{\linewidth}\raggedright
-NBSpLag + SVI
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-502.2
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{\hl{79.9, (78.1--81.6)}}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{\hl{0.96, (0.93-0.98)}}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{\hl{1.42, (1.37-1.48)}}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\end{longtable}
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{4pt}
+\caption{Comparison of fatal opioid-related overdose prediction models trained on Cook County, Illinois decedent data, from 2015 to 2020, then evaluated on data from 2021 and 2022.
+\newline\newline
+Here \%BPR (higher is better) is our new intervention-aware metric, computed assuming an intervention budget for K=100 of 1328 possible tracts in Cook County. MAE (lower is better) and RMSE (lower is better) are common error-based metrics. For each metric, the best model mean is bolded, along with any other model whose uncertainty interval overlaps this mean (intervals are computed via resampling methods). The column titled ``Total Overdoses Identified in top 100 tracts'' contains the \emph{true} number of observed fatal overdoses in the top 100 locations identified by the corresponding model.
+\newline\newline
+Abbreviations: \textbf{BPR}: Best Possible Reach. \textbf{MAE}: Mean Absolute Error. \textbf{RMSE}: Root Mean Squared Error. \textbf{SV}: Social Vulnerability covariates. \textbf{GLM}: Generalized Linear Model. \textbf{GP}: Gaussian Process. \textbf{NBSpLag}: Negative binomial regression with spatially-lagged features. \textbf{BST}: Bayesian spatiotemporal model}\label{tab:bpr_cookcounty}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}>{\hyphenpenalty=10000\exhyphenpenalty=10000\raggedright\arraybackslash}p{1.5in}rrrr@{}}
+\toprule
+ & \multicolumn{4}{c}{Metric} \\
+Model & \makecell[r]{Total overdoses\\identified in\\top 100 tracts} & \makecell[r]{\%BPR (K=100)} & MAE & RMSE \\
+\midrule
+All Zeros & 137.0 & \hl{21.7, (21.1--22.4)} & 1.37, (1.30--1.44) & 2.46, (2.34--2.56) \\
+Last year & 466.0 & \hl{73.9, (70.7--77.0)} & \hl{1.07, (1.03--1.10)} & 1.66, (1.59--1.71) \\
+Historical Average (4 year) & 505.3 & \textbf{\hl{80.1, (76.2--84.3)}} & \textbf{0.94, (0.90--0.97)} & \textbf{1.44, (1.38--1.50)} \\
+Weighted Historical Average & 495.4 & \textbf{\hl{78.6, (75.7--81.8)}} & \hl{1.15, (1.11--1.19)} & 1.87, (1.76--1.96) \\
+Poisson GLM & 496.8 & \textbf{78.8, (75.9--82.3)} & \hl{1.22, (1.08--1.29)} & \hl{4.64, (1.65--5.92)} \\
+Poisson GLM + SVI & 500.7 & \textbf{79.4, (76.0--82.8)} & 1.16, (1.11--1.20) & \hl{1.86, (1.77--1.94)} \\
+Gradient Boosted Trees +SVI & 485.7 & \textbf{77.1, (72.2--81.9)} & \hl{0.99, (0.95--1.05)} & \hl{1.55, (1.42--1.68)} \\
+GP & 477.2 & \textbf{75.7, (69.9--80.5)} & \hl{1.03, (0.97--1.09)} & 1.63, (1.50--1.74) \\
+CASTNet +SVI & 472.6 & 75.2, (73.2--76.8) & 1.01, (0.98-1.04) & 1.53, (1.39-1.67) \\
+BST: Bayesian spatiotemporal & 505.9 & \textbf{80.5, (78.9--82.1)} & 1.00, (0.98--1.01) & \textbf{1.40, (1.36--1.43)} \\
+BST + SVI & 504.1 & \textbf{80.2, (78.7--82.0)} & 0.97, (0.95--0.98) & 1.47, (1.43--1.51) \\
+NBSpLag + SVI & 502.2 & \textbf{\hl{79.9, (78.1--81.6)}} & \textbf{\hl{0.96, (0.93-0.98)}} & \textbf{\hl{1.42, (1.37-1.48)}} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
