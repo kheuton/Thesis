@@ -2,10 +2,15 @@
 How can we make better decisions about allocating limited budgets using machine learning?
 
 
-
 Machine learning is increasingly used to answer decision-making questions in domains where resources are limited and uncertainty is high.
 
-The opioid overdose crisis provides a concrete example where better allocation decisions could significantly improve outcomes.
+%The opioid overdose crisis provides a concrete example where better allocation decisions could significantly improve outcomes.
+Throughout this thesis, we will consider the motivating example of a public health authority who wishes to invest resources in opioid-related overdose death prevention across its territory. \
+In an ideal scenario all locations would receive adequate resources, but in practice, budgets are limited and interventions need to be prioritized for the areas of greatest need. \
+This is a decision making problem: \textit{given a budget to intervene in limited number $K$ of locations, which locations should be prioritized for intervention?} \
+Possible interventions include naloxone distribution (a life-saving drug which can reverse an overdose), outreach campaigns, or increased access to treatment options such as methadone.
+We make several simplifying assumptions throughout: the cost of an intervention is the same in every location (a reasonable assumption if the locations have equal population), and that an intervention is equally effective in every location (less realistic, but if reliable data indicating otherwise were available it could easily be incorporated).
+
 
 In these settings, machine learning predictions are often used as inputs to downstream optimization problems that determine how limited resources are allocated.
 
@@ -28,15 +33,11 @@ To address this question, the thesis introduces three contributions that improve
 
 \subsection{Thesis Overview}
 
-
-
 This chapter introduces Best Possible Reach (BPR), a metric for evaluating forecasts of opioid overdose deaths.
-
 
 This chapter presents Decision-Aware Maximum Likelihood (DAML), a method for training machine learning models that jointly optimize decision quality and probabilistic maximum likelihood.
 
 This chapter provides practical guidance for the use of differentiable perturbed optimizers, along with improved benchmarking protocols and best practices for evaluating decision-aware learning methods.
-
 
 The thesis concludes by summarizing the main contributions and outlining future directions for research in decision-focused machine learning.
 
