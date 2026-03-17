@@ -1,1 +1,31 @@
-We can make better decisions everywhere
+% Summarize main question
+This thesis thesis has explored the question of how to evaluate, train, and benchmark machine learning models for decision making problems. \
+
+% Summarize BPR
+In Chapter 3, we demonstrated how decision-aware model selection can lead to better public health outcomes.
+We also introduced a new evaluation metric called Best Possible Reach which quantifies the decision quality of Top $K$ allocation problems.
+
+% Summarize DAML
+This work was extended in Chapter 4 where we demonstrate how a model can be \emph{trained} to maximize both decision quality and probabalistic maximum likelihood, in addition to answer the question of \emph{how to rank} locations based on predicted scores. \
+The proposed Decision-Aware Maximum Likelihood method was compared to a small number of other decision aware methods, and found to be superior on the given tasks. \
+We also explored problems beyond public health, including a wildlife conservation task.
+
+% Summarize benchmarking
+In Chapter 5 we turned our attention to understand why some decision-aware learning methods perform better than others, and to provide practical guidance for practitioners looking to implement these methods. \
+Here we decomposed the analysis of decision-aware methods into two components: what solutions does the method prefer, and which solutions is it capabale of learning via gradient descent. \
+We also found that many tasks used in common decision-aware benchmarks do not actually benefit from decision-aware methods, and propose several open-source alternatives. 
+
+% Summarize thesis and suggest future benchmarking working
+Taken together, these contributions provide end-to-end guidance for the training and evaluation of decision-aware machine learning techniques. \
+However, crucial open questions remain. \
+Although we have demonstrated more careful benchmarking comparisons between methods, we lack an analytical of understand of the factors that shape each decision-aware method's loss landscape, and what influences the solutions it can learn with gradient descent. \
+Important work also remains to be done on the training of these models; rather than treating all data equally, are some samples more important for decision-aware learning?
+
+% suggest DTR, patient intervention, and inference
+Beyond the largely social-science focused problems considered in this thesis, decision-aware methods have widespread applications in many domains. \
+One particularily exciting domain is that of machine learning training and iference itself. \
+In the twilight of Moore's Law, the rise of expensive foundation model inference has made computational efficiency more important than ever. \
+The advent of test-time compute, wherein model performance can scale (linearly!) with additional computation after training, has turned model inference into a budgeting problem. \
+Here decision-aware methods can help answer the question of how to best spend fixed computational budgets to achieve optimal results from model inference. \
+Furthermore, if model inference is now a decision task, should we be training all models in a budget conscious, decision aware way? \
+We hope that the methods and findings of this thesis help to explore these questions in future work.
