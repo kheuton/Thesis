@@ -5104,3 +5104,83 @@ While this dataset is a valuable resource, users should note the following quali
   langid = {english},
   file = {C:\Users\kheut\Zotero\storage\YU7AXNC7\Sahoo et al. - 2022 - Backpropagation through Combinatorial Algorithms Identity with Projection Works.pdf}
 }
+
+@article{shahLeavingNestGoing2023,
+  title = {Leaving the {{Nest}}: {{Going Beyond Local Loss Functions}} for {{Predict-Then-Optimize}}},
+  shorttitle = {Leaving the {{Nest}}},
+  author = {Shah, Sanket and Perrault, Andrew and Wilder, Bryan and Tambe, Milind},
+  date = {2023},
+  journaltitle = {CoRR},
+  volume = {abs/2305.16830},
+  eprint = {2305.16830},
+  eprinttype = {arXiv},
+  doi = {10.48550/ARXIV.2305.16830},
+  url = {https://doi.org/10.48550/arXiv.2305.16830},
+  urldate = {2026-03-26}
+}
+
+@inproceedings{dontiTaskbasedEndtoendModel2017,
+  title = {Task-Based {{End-to-end Model Learning}} in {{Stochastic Optimization}}},
+  booktitle = {Advances in {{Neural Information Processing Systems}}},
+  author = {Donti, Priya and Amos, Brandon and Kolter, J. Zico},
+  date = {2017},
+  volume = {30},
+  publisher = {Curran Associates, Inc.},
+  url = {https://proceedings.neurips.cc/paper/2017/hash/3fc2c60b5782f641f76bcefc39fb2392-Abstract.html},
+  urldate = {2026-03-26},
+  file = {C:\Users\kheut\Zotero\storage\M8QPPIG4\Donti et al. - 2017 - Task-based End-to-end Model Learning in Stochastic Optimization.pdf}
+}
+
+@inproceedings{mulambaContrastiveLossesSolution2021,
+  title = {Contrastive {{Losses}} and {{Solution Caching}} for {{Predict-and-Optimize}}},
+  booktitle = {Proceedings of the {{Thirtieth International Joint Conference}} on {{Artificial Intelligence}}},
+  author = {Mulamba, Maxime and Mandi, Jayanta and Diligenti, Michelangelo and Lombardi, Michele and Bucarey, Victor and Guns, Tias},
+  date = {2021-08},
+  pages = {2833--2840},
+  publisher = {International Joint Conferences on Artificial Intelligence Organization},
+  location = {Montreal, Canada},
+  doi = {10.24963/ijcai.2021/390},
+  url = {https://www.ijcai.org/proceedings/2021/390},
+  urldate = {2026-03-26},
+  abstract = {Many decision-making processes involve solving a combinatorial optimization problem with uncertain input that can be estimated from historic data. Recently, problems in this class have been successfully addressed via end-to-end learning approaches, which rely on solving one optimization problem for each training instance at every epoch. In this context, we provide two distinct contributions. First, we use a Noise Contrastive approach to motivate a family of surrogate loss functions, based on viewing non-optimal solutions as negative examples. Second, we address a major bottleneck of all predict-and-optimize approaches, i.e. the need to frequently recompute optimal solutions at training time. This is done via a solver-agnostic solution caching scheme, and by replacing optimization calls with a lookup in the solution cache. The method is formally based on an inner approximation of the feasible space and, combined with a cache lookup strategy, provides a controllable trade-off between training time and accuracy of the loss approximation. We empirically show that even a very slow growth rate is enough to match the quality of state-of-the-art methods, at a fraction of the computational cost.},
+  eventtitle = {Thirtieth {{International Joint Conference}} on {{Artificial Intelligence}} \{{{IJCAI-21}}\}},
+  isbn = {978-0-9992411-9-6},
+  langid = {english},
+  file = {C:\Users\kheut\Zotero\storage\MQJIG37I\Mulamba et al. - 2021 - Contrastive Losses and Solution Caching for Predict-and-Optimize.pdf}
+}
+
+
+
+@inproceedings{mandiDecisionFocusedLearningLens2022,
+  title = {Decision-{{Focused Learning}}: {{Through}} the {{Lens}} of {{Learning}} to {{Rank}}},
+  shorttitle = {Decision-{{Focused Learning}}},
+  booktitle = {Proceedings of the 39th {{International Conference}} on {{Machine Learning}}},
+  author = {Mandi, Jayanta and Bucarey, Vı́ctor and Tchomba, Maxime Mulamba Ke and Guns, Tias},
+  date = {2022-06-28},
+  pages = {14935--14947},
+  publisher = {PMLR},
+  issn = {2640-3498},
+  url = {https://proceedings.mlr.press/v162/mandi22a.html},
+  urldate = {2026-03-26},
+  abstract = {In the last years decision-focused learning framework, also known as predict-and-optimize, have received increasing attention. In this setting, the predictions of a machine learning model are used as estimated cost coefficients in the objective function of a discrete combinatorial optimization problem for decision making. Decision-focused learning proposes to train the ML models, often neural network models, by directly optimizing the quality of decisions made by the optimization solvers. Based on a recent work that proposed a noise contrastive estimation loss over a subset of the solution space, we observe that decision-focused learning can more generally be seen as a learning-to-rank problem, where the goal is to learn an objective function that ranks the feasible points correctly. This observation is independent of the optimization method used and of the form of the objective function. We develop pointwise, pairwise and listwise ranking loss functions, which can be differentiated in closed form given a subset of solutions. We empirically investigate the quality of our generic methods compared to existing decision-focused learning approaches with competitive results. Furthermore, controlling the subset of solutions allows controlling the runtime considerably, with limited effect on regret.},
+  eventtitle = {International {{Conference}} on {{Machine Learning}}},
+  langid = {english},
+  file = {C:\Users\kheut\Zotero\storage\UQ92UDY9\Mandi et al. - 2022 - Decision-Focused Learning Through the Lens of Learning to Rank.pdf}
+}
+
+@online{shahDecisionFocusedLearningDifferentiable2022,
+  title = {Decision-{{Focused Learning}} without {{Differentiable Optimization}}: {{Learning Locally Optimized Decision Losses}}},
+  shorttitle = {Decision-{{Focused Learning}} without {{Differentiable Optimization}}},
+  author = {Shah, Sanket and Wang, Kai and Wilder, Bryan and Perrault, Andrew and Tambe, Milind},
+  date = {2022-11-09},
+  eprint = {2203.16067},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  doi = {10.48550/arXiv.2203.16067},
+  url = {http://arxiv.org/abs/2203.16067},
+  urldate = {2026-03-23},
+  abstract = {Decision-Focused Learning (DFL) is a paradigm for tailoring a predictive model to a downstream optimization task that uses its predictions in order to perform better on that specific task. The main technical challenge associated with DFL is that it requires being able to differentiate through the optimization problem, which is difficult due to discontinuous solutions and other challenges. Past work has largely gotten around this issue by handcrafting task-specific surrogates to the original optimization problem that provide informative gradients when differentiated through. However, the need to handcraft surrogates for each new task limits the usability of DFL. In addition, there are often no guarantees about the convexity of the resulting surrogates and, as a result, training a predictive model using them can lead to inferior local optima. In this paper, we do away with surrogates altogether and instead learn loss functions that capture task-specific information. To the best of our knowledge, ours is the first approach that entirely replaces the optimization component of decision-focused learning with a loss that is automatically learned. Our approach (a) only requires access to a black-box oracle that can solve the optimization problem and is thus generalizable, and (b) can be convex by construction and so can be easily optimized over. We evaluate our approach on three resource allocation problems from the literature and find that our approach outperforms learning without taking into account task structure in all three domains, and even hand-crafted surrogates from the literature.},
+  pubstate = {prepublished},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning},
+  file = {C\:\\Users\\kheut\\Zotero\\storage\\HWLYLQ9W\\Shah et al. - 2022 - Decision-Focused Learning without Differentiable Optimization Learning Locally Optimized Decision L.pdf;C\:\\Users\\kheut\\Zotero\\storage\\AP2KS7C8\\2203.html}
+}

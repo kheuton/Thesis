@@ -1,21 +1,23 @@
 The promise of machine learning is that through careful modeling of the world around us, we can learn informative patterns and make better predictions and decisions about the future. \
-In thesis, I am to elucidate exactly that: the ways in which machine learning models can be trained and evaluated on decision making problems. \
+In this thesis, I aim to elucidate exactly that: the ways in which machine learning models can be trained and evaluated on decision making problems. \
 My focus will be on the common case where a model with parameters learned from data is used to generate predictions which are used to solve a downstream optimization problem. \
-In particular, I focus on the optimization problem of allocating limited resources for maximal impact.
+In particular, I study how to train prediction models which are used to solve the decision problem of the allocation of limited resources for maximal impact.
 
 %The opioid overdose crisis provides a concrete example where better allocation decisions could significantly improve outcomes.
 Throughout this thesis, we will consider the motivating example of a public health authority who wishes to invest resources in opioid-related overdose death prevention across its territory. \
 In an ideal scenario all locations would receive adequate resources, but in practice, budgets are limited and interventions need to be prioritized for the areas of greatest need. \
-This is a decision making problem: \textit{given a budget to intervene in limited number $K$ of locations, which locations should be prioritized for intervention?} \
-Possible interventions include naloxone distribution (a life-saving drug which can reverse an overdose), outreach campaigns, or increased access to treatment options such as methadone.
-We make several simplifying assumptions throughout: the cost of an intervention is the same in every location (a reasonable assumption if the locations have equal population), and that an intervention is equally effective in every location (less realistic, but if reliable data indicating otherwise were available it could easily be incorporated).
+This is a  discrete decision making problem: \textit{Which locations should be prioritized for intervention if our budget only affords intervention in a limited subset of $K$ locations?} \
+Possible interventions include naloxone distribution (a life-saving drug which can reverse an overdose) \citep{clarkSystematicReviewCommunity2014,hawkReducingFatalOpioid2015,peiperFentanylTestStrips2019},  outreach campaigns, or increased access to treatment options such as methadone \citep{mattickBuprenorphineMaintenancePlacebo2014,leshnerMedicationsOpioidUse2019}.
+We make several simplifying assumptions throughout: the cost of an intervention is the same in every location (a reasonable assumption if the locations have equal population and intervention cost scales with population size), and that an intervention is equally effective in every location (less realistic, but if reliable data indicating otherwise were available it could easily be incorporated).
 
 % In these settings, machine learning predictions are often used as inputs to downstream optimization problems that determine how limited resources are allocated.
 Given this challenge, how should public health practitioners inform their decision making? \
 A natural choice would be to study historical data, and allocate resources to the locations with the highest observed overdose death counts. \
-Although we show that this is often an effective baseline strategy, increasingly machine learning models are being used to predict future overdose death counts, and these predictions are then used to inform resource allocation decisions. \
+Although we show that this is often an effective baseline strategy, it will never be able to adapt to temporally evolving patterns in the data. \
+A prediction model built on lagged indicators alone will always be one year behind in responding to epidemics as they move from the city to the suburbs or as a new drug supply enters a community and diffuses outward. \
+Increasingly machine learning models are being used to predict future overdose death counts, and these predictions are then used to inform resource allocation decisions \citep{marksMethodologicalApproachesPrediction2021,borquezFatalOverdosePredicting2022,heutonZIGP2022, acharyaExploringCountylevelSpatiotemporal2022, allenTranslatingPredictiveAnalytics2023,ertugrulCASTNetCommunityAttentiveSpatioTemporal2019}. \
 These models are trained as standard regression problems: given historical data on overdose death counts and other predictive features, can we predict future death counts? \
-Typically, some years of data are heldout for evaluation, and the model is trained to minimize the error between predicted and obseredved death counts in these heldout years. \
+Typically, some years of data are heldout for evaluation, and the model is trained to minimize the error between predicted and observed death counts in these heldout years. \
 Finally, the predictions from the trained model are used to solve the downstream optimization problem of maximizing the number of potential overdose deaths reached by intervention, subject to the budget constraint of only intervening in $K$ locations. \
 Somewhat trivially, this optimization problem is solved by simply selecting the $K$ locations with the highest predicted death counts.
 
@@ -30,8 +32,8 @@ Because of this, the prediction error can be dominated by the large number of lo
 
 %Decision-focused learning (DFL) addresses this limitation by recognizing that decision quality depends more on correctly ranking the most important cases than on minimizing average prediction error.
 The solution to this disconnect appears straightforward: instead of training the machine learning model to minimize prediction error, we should train it to maximize decision quality. \
-This is the core idea behind a family of techniques which have variously been called Decision Aware \citep{chung_decision-aware_2022}, Decision-Focused Learning (DFL) \citep{wilderDFL}, End-to-End Learning \citep{donti2017} \citep{tangPyEPOPyTorchbasedEndtoend2024}, and Predict-then-Optimize (PtO) or sometimes Predict-and-Optimize (PnO) \citep{elmachtoubSmartPredictThen2022}, \citep{gengBenchmarkingPtOPnO2024}.
-Unsurprisingly, optimizing for decision quality rather than prediction error can lead to better decisions \citep{elmachtoubEstimateThenOptimizeIntegratedEstimationOptimizationSample2025}, especially when our models of the world are imperfect and misspecified. 
+This is the core idea behind a family of techniques which have variously been called Decision Aware \citep{chung_decision-aware_2022}, Decision-Focused Learning (DFL) \citep{wilderMeldingDatadecisionsPipeline2019}, End-to-End Learning \citep{dontiTaskbasedEndtoendModel2017, tangPyEPOPyTorchbasedEndtoend2024}, and Predict-then-Optimize (PtO) or sometimes Predict-and-Optimize (PnO) \citep{elmachtoubSmartPredictThen2022}, \citep{gengBenchmarkingPtOPnO2024}.
+Unsurprisingly, optimizing for decision quality rather than prediction error can lead to better decisions \citep{elmachtoubEstimateThenOptimizeIntegratedEstimationOptimizationSample2025}, especially when our models of the world are imperfect. 
 
 %However, differentiating through optimization problems is often difficult, especially when the decisions involved are discrete.
 Despite the simplicity of the idea of optimizing for decision quality, there are challenges and open research questions in the practical implementation of these techniques. \
@@ -42,8 +44,8 @@ Small changes to model parameters almost always lead to the same decision; a cha
 The decision function is piecewise constant with respect to the model parameters, and therefore has zero gradient almost everywhere. \
 
 %In addition, empirical evaluations of these approaches are often incomplete and fragmented across different decision problems.
-To adress this differentiability challenge, a variety of methods have been proposed that proivde approimate objectives or approximate gradients that can be used to train decision-aware models. \
-However, empircal evaluations of these methods are often incomplete, and comparisons between approaches are often inconsistent across different decision problems. \
+To adress this uniformative grtadient challenge, a variety of methods have been proposed that proivde approimate objectives or approximate gradients that can be used to train decision-aware models. \
+Benchmarking efforts that compare these methods are emerging \citep{gengBenchmarkingPtOPnO2024,shahLeavingNestGoing2023,tangPyEPOPyTorchbasedEndtoend2024}, but none are exhaustive and often include tasks which do not benefit from decision-aware learning. \
 No clear guidance exists for practitioners on which method to select for a given decision problem. \
 
 This thesis therefore asks the following central question: how can machine learning models be trained and evaluated so that they produce better decisions when allocating limited resources?
@@ -53,8 +55,8 @@ In the following chapters, the thesis introduces three contributions that improv
 \section{Thesis Overview}
 The rest of the thesis is organized as follows:
 \begin{itemize}
-    \item In Chapter 3, I directly consider the problem of \emph{evaluating} forecasts of opioid overdose deaths, and introduce a new metric called Best Possible Reach (BPR) that better captures the decision quality of these forecasts.
-    \item In Chapter 4, I address the \emph{training} of decision-aware machine learning models, and introduce a new method called Decision-Aware Maximum Likelihood (DAML) that jointly optimizes for decision quality and probabilistic maximum likelihood. I also demonstrate the method on problems beyond public health.
+    \item In Chapter 3 \citep{heutonSpatiotemporalForecastingOpioidrelated2024}, I directly consider the problem of \emph{evaluating} forecasts of opioid overdose deaths, and introduce a new metric called Best Possible Reach (BPR) that better captures the decision quality of these forecasts.
+    \item In Chapter 4 \citep{heuton2025decisionaware}, I address the \emph{training} of decision-aware machine learning models, and introduce a new method called Decision-Aware Maximum Likelihood (DAML) that jointly optimizes for decision quality and probabilistic maximum likelihood. I also demonstrate the method on problems beyond public health.
     \item In Chapter 5, I set out to \emph{benchmark} different decision-aware learning methods. Here, demonstrate several shortcomings in existing benchmarks and provide \emph{practical guidance} for both researchers studying these methods and practitioners looking to implement them.
 \end{itemize}
 
