@@ -24,7 +24,14 @@
 \setlength{\abovecaptionskip}{2pt}
 \setlength{\belowcaptionskip}{0pt}
 
-\caption{\textbf{Results on synthetic data under misspecification for various end-to-end PnO methods.}
-}%end caption
+\caption{\textbf{What solution is each method capable of learning?}
+\textit{Left: }Here we train each objective at datasets of increasing size on the synthetic data task.
+The dashed black line shows oracle decision regret. 
+Only DPO and PG approach this optimal regret.
+\textit{Center, Right:} Here we show how the DPO and PG training behavior changes as we vary key hyperparameters. 
+DPO appears to struggle with too-low $\sigma$ values. Training is noisy and does not approach the optimal regret.
+ Surprisingly, PG does not exhibit this behavior.
+ }
+%end caption
 \label{fig:noisy_synth_regret}
 \end{figure*}

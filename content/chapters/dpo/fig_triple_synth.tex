@@ -24,7 +24,12 @@
 \setlength{\abovecaptionskip}{2pt}
 \setlength{\belowcaptionskip}{0pt}
 
-\caption{\textbf{Results on synthetic data under misspecification for various end-to-end PnO methods.}
+\caption{\textbf{What objective does each method prefer?}
+\textit{Left: }Here we evaluate each objective at every possible decision boundary for the synthetic data task. 
+In black, we plot oracle decision regret. 
+Methods which closely align with the oracle will learn parameters that also optimize for decision regret.
+\textit{Center, Right:} Here we show how the DPO and PG objectives change as we vary key hyperparameters.
+ Both methods approach the true decision loss when their hyperparameter is 0.
 }%end caption
 \label{fig:noisy_synth_sweep}
 \end{figure*}
