@@ -1,0 +1,30 @@
+\begin{figure*}[!t]
+\centering
+
+\begin{minipage}[t]{0.333\textwidth}
+  \centering
+  \vspace{0pt}
+  \includegraphics[width=\linewidth]{figures/regret_v3_noisy.png}
+\end{minipage}%
+\hfill%
+\begin{minipage}[t]{0.33\textwidth}
+  \centering
+  \vspace{0pt}
+  \includegraphics[width=\linewidth]{figures/regret_v3_noisy_dpo_sigma.png}
+\end{minipage}%
+\hfill%
+\begin{minipage}[t]{0.33\textwidth}
+  \centering
+  \vspace{0pt}
+  \includegraphics[width=\linewidth]{figures/regret_v3_noisy_pgb_h.png}
+\end{minipage}
+
+% Tighten gap between content and caption (local to this figure)
+\vspace{-0.25em}
+\setlength{\abovecaptionskip}{2pt}
+\setlength{\belowcaptionskip}{0pt}
+
+\caption{\textbf{Results on synthetic data under misspecification for various end-to-end PnO methods.}
+}%end caption
+\label{fig:noisy_synth_regret}
+\end{figure*}

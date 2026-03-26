@@ -1,4 +1,12 @@
-We pursue a synthetic task from \citeauthor{huang2024decisionfocusedPG} (details in App.~\ref{app:synth}), with univariate $x$, $y$, and $z$.
+As an example of a task where decision-aware methods offer benefits over decision-blind ones, we analyze the synthetic task in \citeauthor{huang2024decisionfocusedPG} (details in App.~\ref{app:synth}), with univariate $x$, $y$, and $z$. 
+
+We present this task as an example of an appropriate choice for benchmarking decision-aware methods, thanks to the following properties:
+\begin{itemize}
+    \item The model is misspecified. The linear model used here does not have the capacity to capture the true data generating process. We know that under model misspecification, integrated prediction and optimization methods are superior to two-stage approaches \cite{elmachtoubDissectingImpactModel2025}.
+    \item Misspecification is not enough to guarantee that the two-stage and integrated approaches will come to meaningfully different decisions. However, this task was designed so that is the case.
+    \item As an added benefit, this task was designed so that common assumptions in decision-aware methods (such as symmetric noise) are violated, and accordingly leads to different PnO methods arriving at different solutions, allowing for meaningful comparisons.
+\end{itemize}
+
 The true data-generating process for $y$ given $x$ relationship is piecewise linear, as shown in Fig.~\ref{fig:synth_data}.
 The mean of $y$ is \text{above zero} when $x < 0.5$ and below otherwise. Asymmetric noise is added to this mean.
 The decision task here is to select a binary $z$ value ($\mathcal{Z} {=} \{ 0, 1\})$ to minimize cost $z \cdot y$.  The optimal decision strategy is thus to guess $z=0$ when $x < 0.5$ and $z=1$ otherwise.
@@ -6,16 +14,14 @@ The decision task here is to select a binary $z$ value ($\mathcal{Z} {=} \{ 0, 1
 \textbf{Model.} We use a 2-parameter linear model: $\hat{y}_{\theta}(x) = \theta_1 x + \theta_0$. This is misspecified to the true ``hockey stick'' trend, but  it can still yield optimal decisions. As long as the learned zero-crossing occurs at $x=0.5$, there are many possible $\theta$ which would achieve optimal cost.
 %Ultimately, while the assumed linear model is misspecified for the piecewise linear $f^*$ above, by design it can still yield optimal decisions, since effectively the task \todo{can be solved by ensuring the zero-crossing of $\theta_1 x + \theta_2$ happens at 0.55; there are many possible $\theta$ which would yield an optimal cost.}
 
+\textbf{Experiment 1: What solutions do different methods favor?} First, we consider the question: "Which decisions does each method prefer?" That is to say, we analyze the decision loss at all possible model parameter settings, and find which setting is preferred by a variety of methods. Although this model has 2 parameters, because our action space is binary, the only aspect of the model which matters for the decision loss is where the model crosses the x-axis. If the model predicts a positive cost, we take action $0$ to eliminate it, and if the model predicts a negative cost, we take action $1$ to benefit from it. To conduct this experiment, we set the model slope to 1, and varied the intercept term to achieve every possible decision boundary in the domain $[0,\ 1]$. At each decision threshold, we calculate the given method's objective on a test set of size $10,000$. For the two-stage, MSE model, we solve a constrained optimization to find the optimal model at each possible decision threshold. For comparison methods, we consider the methods originally used by \citeauthor{huang2024decisionfocusedPG}, and in addition we add differentiable perturbed optimizers (DPO) as we hypothesize it is well-suited to this task. 
+
+\textbf{Results} In Figure \ref{fig:noisy_synth_sweep}, we see the results of this experiment. As expected, the two-stage, decision-unaware MSE approach is minimized at a far different threshold than that which minimizes decision regret. As \citeauthor{huang2024decisionfocusedPG} showed, the Perturbed Gradient (PG) method is the only method which also closely aligns with decision regret among the original set of models studied. We see that DPO also shares this desirable property. 
+
+In addition, we provide a careful analysis of the decision-specific hyperparameters, and show that both DPO and PG only closely-align with decision regret as their hyperparameters $\sigma$ and $h$, respectively, approach 0. Carefully tuning these hyperparameters is critical to achieving the best decision-aware solutions.
+
+
+\textbf{Experiment 2: What solutions are different models capable of learning via gradient descent?} Even though a given decision-aware loss method might prefer a certain solution, the loss landscape is non-convex, and it may be difficult to arrive at the global minimum. To explore this, we trained each method on 100 different randomly sampled datasets of size 200 with 100 different random initializations of hyperparameters.
+
 \textbf{Results.}
-In Fig.~\ref{fig:noisy_synth_triptych} we replicate the experiments of \citet{huang2024decisionfocusedPG}, adding DPO at various $\sigma$.
-In the left panel, we explore whether each method's loss is suitably aligned to the ideal. here we vary the location of the decision threshold implied by the parameter $\theta$ and calculate each method's loss function at that $\theta$ on a test set of 10000. 
-% The middle table displays the decision threshold and regret at the $\theta$ that minimizes loss.
-% As found in \citeauthor{huang2024decisionfocusedPG}: among several surrogate methods tested, only PG aligns well.
-
-We highlight two findings. First, with an appropriate noise level $\sigma$, DPO aligns with the true decision loss as well as PG, even under model misspecification. DPO was cited in \citeauthor{huang2024decisionfocusedPG}, but not included in experiments.
-Second, PG is critically dependent on its finite-difference hyperparameter $h$; small increases can make PG's surrogate loss no longer have a minima that coincides with the optimal. PG does well with $h{=}0.1$, but $h{=}0.266$ as recommended in \citeauthor{huang2024decisionfocusedPG}'s code is subpar.
-
-In Fig.~\ref{fig:noisy_synth_triptych}'s right panel, we examine methods for the quality of estimated $\theta$ from gradient descent (GD) as train size $n$ increases. We plot cost on the test set, showing uncertainty over 100 trials (separate datasets and runs of GD). These plots show that even though DPO's loss itself is more aligned with true decision loss at low $\sigma$, higher $\sigma$ may produce better $\theta$ via GD.
-%the ability to reach this minimum via GD is highly dependent on hyperparameter $\sigma$.
-
-% we show the test-set regret achieved by each method, averaged over \todo{100 trials: DEFINE trial} at increasing dataset sizes. These plots show that while DPO theoretically shares a minimum with the true decision regret- the ability to reach this minimum using stochastic gradient descent is also highly dependent on its perturbation hyperparameter $\sigma$.
+In Figure \ref{fig:noisy_synth_regret} we see the results of this experiment. Here we see a more nuanced picture than what the decision threshold sweep alone gave us: some methods which closely agreed with the true decision loss are unable to learn the optimal solution. We see this acutely in DPO for low $\sigma$ values such as $0.05$. As $\sigma \xrightarrow{} 0$ the DPO objective aproaches the true decision loss, but the gradient signal gets weaker. We see that a more moderate value is required for successful learning with gradient descent.

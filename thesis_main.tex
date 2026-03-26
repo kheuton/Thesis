@@ -112,26 +112,34 @@
 \input{content/chapters/daml/sections/discussion}
 \graphicspath{{./}}
 
-\chapter{Unlocking the Secrets of Perturbation Methods for End-to-End Prediction and Optimization}
+\chapter{Many Decision-Aware Benchmarks do not benefit from Decision-Aware Learning}
 \label{chap:dpo}
 \graphicspath{{content/chapters/dpo/}}
 \section{Introduction}
 \label{sec:dpo_intro}
 \input{content/chapters/dpo/sec_intro}
 \input{content/chapters/dpo/fig_benchmark_bump}
-\input{content/chapters/dpo/fig_triple_synth}
 
 \section{Background: End-to-end Methods}
 \label{sec:dpo_methods}
 \input{content/chapters/dpo/sec_methods}
 
-\section{Experiment A: Synthetic Task}
-\input{content/chapters/dpo/sec_expt_synth}
 
-\section{Experiment B: PnO Benchmark}
+\section{Replicating a PnO Benchmark: Do the tasks require PnO methods?}
 \input{content/chapters/dpo/sec_expt_bench}
+\input{content/chapters/dpo/sec_expt_budget.tex}
+\input{content/chapters/dpo/sec_expt_portfolio.tex}
 
-\section{Experiment C: Top-K Site Selection}
+
+\section{A Synthetic Task Where PnO Methods Are Advantaged}
+\label{sec:synth}
+\input{content/chapters/dpo/sec_expt_synth}
+\input{content/chapters/dpo/fig_triple_synth}
+\input{content/chapters/dpo/fig_triple_synth_regret}
+
+
+
+\section{A Real-world Top-K Selection task}
 \input{content/chapters/dpo/sec_expt_topK}
 
 \section{Conclusions}

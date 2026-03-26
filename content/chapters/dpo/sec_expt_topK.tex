@@ -16,8 +16,9 @@ Comparing estimated $\theta$ from DPO and SPO+/PG. Expanded version in Fig.~\ref
 
 In \citet{heuton2025decisionaware}, the authors study  top-K site selection problems on real data from public health and wildlife conservation. They find that a method based on DPO performs well on a heldout decision-making task, while both SPO+ and PG scores worse than DPO. Yet \emph{why} DPO wins is unexplained in the original work. Does DPO achieve superior results because it has better agreement with decision loss? Or are PG and SPO+ methods stuck in local minima?
 
-We attempt to answer these questions on all 3 tasks from \citeauthor{heuton2025decisionaware},
-by interpolating between the parameters $\theta$ learned by DPO and the $\theta$ estimated by either PG or SPO+.
+We attempt to answer these questions in a manner similar to the decision-threshold sweep experiment in Section \ref{sec:synth}. Because the model used in these tasks has many more parameters than the simple linear model, we cannot effectively explore all of parameter space. However, we can interpolate between the learned parameters $\theta$ from each method.
+This will illuminate if the methods arrived at the different solutions due to their objectives inherently preferring a parameter setting with higher decision loss, or if there were local minima which made learning the better solution difficult.
+
 Fig.~\ref{fig:topK_interpolation_main} shows results for the overdose death prevention task in Illinois.
 Expanded results for all tasks are in Fig.~\ref{fig:topK_interpolation_6panel}. 
 Across 2 methods and 3 tasks, the DPO estimated $\theta$ always has lower decision regret while almost always having higher surrogate loss (PG or SPO+). This means the \textbf{surrogate loss itself appears inadequate} in these tasks.

@@ -9,28 +9,37 @@ Ideally, prediction models would be directly trained to optimize a loss tailored
 Yet many decision problems of practical interest have a loss that is piecewise constant as a function of model parameters. Consequently, gradients of the loss with respect to parameters will be 0 almost everywhere. 
 All zero gradients mean that gradient descent, one of ML's go-to tools for parameter learning, will be ineffective. 
 %Without informative gradients, an optimizer can never move away from an initial parameter value no matter how bad it is.
+To overcome this limitation, many methods have been proposed~\citep{mandi_decision-focused_2024}. 
+As the number of methods have increased, new methods papers have appropriately tried to compare their methods to the other options, and a recent benchmark study \citep{gengBenchmarkingPtOPnO2024} has attempted to provide a common suite of tasks so that models can be assessed on an equal ground.
+%In recent years, several methods papers and benchmark studies have begun to offer apples-to-apples comparisons of different methods on synthetic and real problems. 
 
-To overcome this limitation, many methods have been proposed~\citep{mandi_decision-focused_2024}. We consider two families of methods here. In Perturbation methods~\citep{abernethyPerturbationTechniquesOnline2016,berthetLearningDifferentiablePerturbed2020}, informative gradients are obtained by adding noise to model outputs.
-The exemplar method we focus on here is the Differentiable Perturbed Optimizer (DPO)~\citep{berthetLearningDifferentiablePerturbed2020}.
-In contrast, Surrogate Loss methods pick another less-flat loss with non-zero gradients instead of the ideal (yet flat) decision loss. Exemplars here include methods known as PG~\citep{huang2024decisionfocusedPG} and SPO+\citep{elmachtoubSmartPredictThen2022}.
-Using their informative gradients, both families estimate parameters via the common toolbox of gradient descent.
-%optimization. % to estimate parameters.
+% We consider two families of methods here. In Perturbation methods~\citep{abernethyPerturbationTechniquesOnline2016,berthetLearningDifferentiablePerturbed2020}, informative gradients are obtained by adding noise to model outputs.
+% The exemplar method we focus on here is the Differentiable Perturbed Optimizer (DPO)~\citep{berthetLearningDifferentiablePerturbed2020}.
+% In contrast, Surrogate Loss methods pick another less-flat loss with non-zero gradients instead of the ideal (yet flat) decision loss. Exemplars here include methods known as PG~\citep{huang2024decisionfocusedPG} and SPO+\citep{elmachtoubSmartPredictThen2022}.
+% Using their informative gradients, both families estimate parameters via the common toolbox of gradient descent.
+% optimization. % to estimate parameters.
 
-Among the many methods now available, which is recommended for practical use?
-In recent years, several methods papers and benchmark studies have begun to offer apples-to-apples comparisons of different methods on synthetic and real problems. However, we find that Perturbation methods have rarely been featured in such experiments.
-Despite discussing \citeauthor{berthetLearningDifferentiablePerturbed2020}'s DPO in related work, at least two high-profile recent studies~\citep{huang2024decisionfocusedPG,gengBenchmarkingPtOPnO2024} omit DPO entirely from their experiments. 
+%Among the many methods now available, which is recommended for practical use?
+
+
+%However, we find that Perturbation methods have rarely been featured in such experiments.
+%Despite discussing \citeauthor{berthetLearningDifferentiablePerturbed2020}'s DPO in related work, at least two high-profile recent studies~\citep{huang2024decisionfocusedPG,gengBenchmarkingPtOPnO2024} omit DPO entirely from their experiments. 
 %Additionally, while the PyEPO benchmark~\citep{tangPyEPOPyTorchbasedEndtoend2024} represents a huge value for the community, unfortunately some released DPO code has a subtle correctness issue (see App.~A).
 
-In this work, we argue that DPO is a competitive method worth considering. Our contributions are:
+However, we have found that many of these comparison tasks are not appropriate for decision-aware methods. In 6 of the 7 tasks presented in the Predict-then-Optimize benchmark, we show that with minor hyperparameter search,  a two-stage, \textit{decision-unaware} approach is either the best method (4 of 7 tasks) or competitive with the best methods (2 of 7 tasks) as assessed by decision-quality on held out data. In fact, if the one task in which the two-stage approach does poorly (budget allocation) is excluded, this decision-unaware approach has the highest average rank of all decision-aware methods considered.
+
+In this work, we show how common decision-aware benchmark tasks do not benefit from decision-aware learning at all. Our contributions are:
 \begin{itemize}[leftmargin=*,noitemsep,topsep=0pt]
-    \item We evaluate DPO alongside recent end-to-end learning methods across three experimental settings: \citeauthor{gengBenchmarkingPtOPnO2024}'s benchmarks (Fig.~\ref{fig:bench_bump}), a synthetic dataset from~\citeauthor{huang2024decisionfocusedPG} (Fig.~\ref{fig:noisy_synth_triptych}), and applications to top-K site selection (Fig.~\ref{fig:topK_interpolation_main}).    
+    \item We re-evaluate end-to-end learning methods from \citeauthor{gengBenchmarkingPtOPnO2024}'s benchmarks (Fig.~\ref{fig:bench_bump},~\ref{fig:budget_bump},~\ref{fig:portfolio_bump}), and show how competitive decision-unaware approaches can be with minor hyperparameter tuning.
+    \item We analyze the benchmark tasks from ~\citet{huang2024decisionfocusedPG} (Fig.~\ref{fig:noisy_synth_sweep},~\ref{fig:noisy_synth_regret}), and show how these were constructed to create a scenario where decision-aware approaches are truly beneficial. 
+    \item We provide guidance on how practitioners should evaluate decision-aware methods by reconsidering the top-K site selection tasks from \citet{heuton2025decisionaware}. (Fig.~\ref{fig:topK_interpolation_main}).    
     %We also examine easy-to-understand synthetic datasets, where we show empirically that DPO shares two desireable properties of best of surrogate loss methods~\citep{huang2024decisionfocusedPG}: (1) DPO's preferred parameter aligns with the ideal regret minimizer even under misspecification; and (2) as training set size increases, estimated model's regret decreases.
 
-    \item While DPO can work well out of the box, we show several problems where DPO's success is highly sensitive to its noise-level hyperparameter. With improved tuning strategies beyond simple grid search, we find DPO can noticeably improve its regret, though on some tasks no big gains occur.
+    %\item While DPO can work well out of the box, we show several problems where DPO's success is highly sensitive to its noise-level hyperparameter. With improved tuning strategies beyond simple grid search, we find DPO can noticeably improve its regret, though on some tasks no big gains occur.
     
-    \item We further reveal that a strong surrogate method well-suited for misspecified real-world scenarios, PG~\citep{huang2024decisionfocusedPG}, also has a key hyperparameter sensitivity where  even recommended settings can yield subpar regret (see Fig.~\ref{fig:noisy_synth_triptych}).
+    %\item We further reveal that a strong surrogate method well-suited for misspecified real-world scenarios, PG~\citep{huang2024decisionfocusedPG}, also has a key hyperparameter sensitivity where  even recommended settings can yield subpar regret (see Fig.~\ref{fig:noisy_synth_triptych}).
 \end{itemize}
-Our work suggests that perturbation-based methods deserve greater consideration in decision-focused learning pipelines, particularly when surrogate losses are misaligned with true decision objectives. We hope this practitioners in many domains make better decisions via end-to-end learning. 
+Our work suggests that common benchmarking tasks may be giving an inaccurate picture of the relative performance of decision-aware methods. We hope this spurs greater innovation in benchmarking tasks and deeper understand of the relative strengths and weaknesses in decision-aware learning methods.
 
 
 %    \item We provide a ``User's Guide'' for key methods from both families tailored to machine learning practitioners. Each guide explains the method's core ideas and inner workings in common notation. Each guide offers clear guidance when a method might be a good fit for the problem at hand, and a clear recipe for hyperparameter tuning backed by reusable code.

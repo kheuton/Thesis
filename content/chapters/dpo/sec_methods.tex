@@ -1,4 +1,4 @@
-In our problems, a decision $z\in\mathcal{Z}$ must be chosen from a
+In these problems, a decision $z\in\mathcal{Z}$ must be chosen from a
 discrete feasible set to minimize a cost that depends on outcomes $Y$ that are
 unknown at decision time. We model $Y$ as a random variable produced from a
 conditional distribution given observed features $X=x$. 
@@ -24,14 +24,39 @@ We could learn $\theta$ to  maximize the likelihood $p_{\theta}(Y|X)$ given obse
 However, end-to-end methods seek an estimated $\theta$ that delivers good decisions via Eq.~\eqref{eq:decisions} when used on never-before-seen contexts $X{=}x'$ drawn from the same distribution.
 To solve this, training can be framed as a cost minimization problem: $\theta^* \gets \arg\!\min_{\theta} \sum_{i=1}^n c(z^*(x_i,\theta), y_i)$.
 
+\textbf{Linear cost assumption.} A common assumption \citep{berthetLearningDifferentiablePerturbed2020, elmachtoubSmartPredictThen2022, huang2024decisionfocusedPG} is that cost is a linear inner product $c(z, y) = 
+\langle z, y\rangle$. This is to say that the optimization problem can be written as a linear program (LP).
+We note that this is not a restrictive assumption: for any score function $s$ which maps a decision vector $z \in \mathcal{Z}$ to a real-valued scalar, we can write $\max_{z \in \mathcal{Z}} s(z)$ as a linear program for some embedding of $\mathcal{Z}$ \citep{berthetLearningDifferentiablePerturbed2020}.
+Even for methods which depend on a linear program formulation for the optimization problem, it is not required to know the LP formulation to apply these methods \citep{berthetLearningDifferentiablePerturbed2020}.
 
-\textbf{Linear cost assumption.}
-A common assumption~\citep{huang2024decisionfocusedPG} is that cost is a linear inner product $c(z, y) = 
-\langle z, y\rangle$. Here $z$ and $y$ are vectors of size $D$ and  decisions simplify due to linearity of expectation: $z^*(x,\theta) = \arg\!\min_{z \in \mathcal{Z}} 
+For the rest of this paper, we will assume a linear cost objective.
+Here $z$ and $y$ are vectors of size $D$ and  decisions simplify due to linearity of expectation: $z^*(x,\theta) = \arg\!\min_{z \in \mathcal{Z}} 
 \langle z, \hat{y}_{\theta}(x) \rangle$, where $\hat{y}_{\theta}(x)$ denotes the mean of $Y$ under $p_{\theta}(Y | X=x)$.
-Even here, the decision problem is  piecewise constant as a function of $\hat{y}_{\theta}$. Its flatness yields all-zero gradients which break gradient-based learning of $\theta$.
+Here we see the key challenge in decision-aware learning: the decision problem is  piecewise constant as a function of $\hat{y}_{\theta}$. Its flatness yields all-zero gradients which break gradient-based learning of $\theta$.
 
-\textbf{DPO method.} The differentiable perturbed optimizer~\citep{berthetLearningDifferentiablePerturbed2020}, addresses this issue by smoothing the decision
+\subsection{Two-Stage, Decision-unaware learning}
+Given that our decision problem does not have informative gradients, a natural choice is to not model the decision problem at all, and only train the prediction model by minimizing error between $y$ and $\hat{y}_\theta$ (for this reason, this approach is called MSE (mean squared error) by \citeauthor{gengBenchmarkingPtOPnO2024}'s benchmark). Once a value for $\hat{y}_{\theta}$ is obtained, the optimization solver is called and we obtain our decision. This choice is well-motivated; it is obvious that $\theta$ only enters our decision objective via $\hat{y}_\theta$. Indeed, for well-specified models, a two-stage approach has advantages over decision-aware methods by learning the simpler predictive model and computing the more expensive optimization problem \cite{elmachtoubDissectingImpactModel2025}. However, for interesting real-world decision problems our model will always be misspecified, and training with a decision aware objective can lead to better downstream decisions.
+
+\subsection{A taxonomy of Predict-And-Optimize}
+We will use the same taxonomy of methods used by \citeauthor{gengBenchmarkingPtOPnO2024}, which we will briefly describe here. Some taxonomy category names have been changed to better clarify their qualities.
+
+\textbf{Surrogate Gradients}
+One family of PnO methods preserves the discrete optimization problem, but somehow augments the problem such that the backward pass produces informative gradients. 
+This family is referred to as \textbf{Discrete} by \citeauthor{gengBenchmarkingPtOPnO2024}, but we think it is more informative to name this group of methods after how they deal with the challenges of decision-aware learning.
+The original benchmark explores \textbf{Blackbox} \citep{pogancicDifferentiationBlackboxCombinatorial2019}, which works by linearly interpolating the piecewise-constant gradient with hyperparameter $\lambda$ to control how informative the gradient is, \textbf{Identity} \citep{sahooBackpropagationCombinatorialAlgorithms2022} which replaces the backwards pass through the combinatorial solver with the identity, and \textbf{DFL} \citep{wilderMeldingDatadecisionsPipeline2019}. In the benchmark, DFL is a method which works by not differentiating through the combinatorial solver, only the calculation of the cost after the solver has returned a decision, regularized by mean-squared error with weight $\alpha$. This is indeed the method proposed by \citeauthor{wilderMeldingDatadecisionsPipeline2019}, but they also used the term ``\textbf{DFL}" to mean decision-focused learning in general. As such, in later works \cite{shahDecisionFocusedLearningDifferentiable2022}, DFL is more generic. Later, we will use DFL to refer to optimizing the objective directly when gradients are available, as \citeauthor{shahDecisionFocusedLearningDifferentiable2022} do.
+
+\textbf{Continuous Relaxations}
+Another family of methods works by replacing the discrete optimization problem with a continuous relaxation of it. In the benchmark, \texttt{cvxpy} layer (called \textbf{CPLayer}) \citep{agrawalDifferentiableConvexOptimization2019} which replaces the combinatorial optimization problem with a convex relaxation that can be differentiated, and \textbf{SPO-relax} \citep{mandiSmartPredictandOptimizeHard2020}, which replaces the combinatorial solver from the SPO loss \citep{elmachtoubSmartPredictThen2022} with a continuous relaxation. We note that although  \cite{gengBenchmarkingPtOPnO2024} claim to use SPO-relax, we find in fact that SPO$+$ \citep{elmachtoubSmartPredictThen2022} is used in the provided code.
+
+\textbf{Statistical Methods}
+These techniques work by replacing the optimization problem with a comparison of sampled solutions. Here Noise Contrastive Estimation \textbf{NCE} \citep{mulambaContrastiveLossesSolution2021} and Learn To Rank \textbf{LTR} \citep{mandiDecisionFocusedLearningLens2022} both work by maintaining a ``solution cache`` of sampled solutions to the optimization problem. Then, the training signal is replaced by a loss function designed to capture the quality of the solution and not necessarily the downstream decision regret.  The listwise version of LTR introduces a temperature hyperparamter to control the smoothness of the loss function.
+
+\textbf{Trained Surrogates} The final group of the taxonomy works by replacing the optimization problem with a flexible neural network that learns a surrogate solution. The sole example of this family is Locally Optimized Decision Losses \textbf{LODL} \citep{shahDecisionFocusedLearningDifferentiable2022}. While this method introduces a host of hyper parameters (the entire design and training of the surrogate neural network), in our later experiments we will only consider the number of training samples used to train the replacement network.
+
+\subsection{Other methods considered in this paper}
+While the benchmark is thorough, it is not exhaustive. In this work we will consider two additional predict-and-optimize methods: Differentiable Perturbed Optimizers (DPO) \citep{berthetLearningDifferentiablePerturbed2020} and Perturbation Gradient \citep{huang2024decisionfocusedPG}. DPO is mentioned in the benchmark, but not included in the experiments, and PG was published contemporaneously with the benchmark so could not have been included. Placing these methods into the taxonomy of \cite{gengBenchmarkingPtOPnO2024}, DPO is a Surrogate Gradient method: the discrete solver is used but perturbed in order to differentiate through the expectation. PG could likely also be placed in the Surrogate Graident category as it still relies on calling the discrete optimization solver. However, one could argue that PG along with SPO+ belong in their own category of designed surrogate objectives. These methods replace the decision objective with a bounded, differentiable replacement.
+
+\textbf{DPO} The differentiable perturbed optimizer~\citep{berthetLearningDifferentiablePerturbed2020}, addresses this issue by smoothing the decision
 map via random perturbations of the predictions. For noise
 $\xi$ from a standard Normal or Gumbel distribution with noise-level $\sigma>0$, the perturbed decision is defined as
 \begin{align}
@@ -69,6 +94,30 @@ biasing decisions away from $z^\star$.
 %Desireably, even with a single sample and small $\sigma$ the Jacobian will be non-zero.
 
 As typical in Monte Carlo methods, DPO's estimators become more accurate as the number of samples $M$ increases: larger $M$ produce lower-variance estimates at the cost of an increased number of calls to the (often expensive) optimization solver that produces $\hat{z}^{(m)}$.
+
+\textbf{PG method.} 
+The perturbation gradient method~\citep{huang2024decisionfocusedPG} addresses the flat-gradient problem by replacing the decision loss with a smooth surrogate derived from finite differences.
+Define the optimal value function for an arbitrary predicted cost $t$ as $V(t) := \min_{z \in \mathcal{Z}} \langle z, t \rangle$.
+By Danskin's theorem, the decision loss $\ell(t, y) = \langle z^*(t), y \rangle$ equals the directional derivative of $V$ at $t$ in direction $y$.
+The PG surrogate approximates this derivative via backward differencing with step size $h > 0$:
+\begin{align}
+\hat{\ell}_h(\hat{y}_\theta(x),\, y)
+\;:=\;
+\tfrac{1}{h}\Big(
+  V(\hat{y}_\theta(x)) - V(\hat{y}_\theta(x) - h\, y)
+\Big).
+\end{align}
+The gradient of this surrogate with respect to the predictions is the scaled difference of two optimization solves:
+\begin{align}
+\nabla_{\hat{y}} \hat{\ell}_h(\hat{y}_\theta(x), y)
+= \tfrac{1}{h}\Big(z^*(\hat{y}_\theta(x)) - z^*(\hat{y}_\theta(x) - hy)\Big),
+\end{align}
+where each $z^*(\cdot)$ requires one call to the combinatorial solver. Gradients with respect to $\theta$ then follow by the chain rule. 
+
+\textbf{PG hyperparameters.}
+PG's key hyperparameter is the step size $h$, which controls a bias--smoothness tradeoff analogous to DPO's $\sigma$. As $h \to 0$, the surrogate approaches the true decision loss, but the Lipschitz constant scales as $1/h$, making optimization more difficult. Larger $h$ yields a smoother, easier-to-optimize loss at the cost of a more biased approximation. \citeauthor{huang2024decisionfocusedPG} recommend $h = O(n^{-1/2})$ to balance these concerns.
+
+
 
 % at added computational cost. The number of samples $M$ controls the variance of the Monte Carlo approximation; a larger number of samples provides a lower-variance decision at the cost of an increased number of calls to the (often expensive) optimization solver.
 
