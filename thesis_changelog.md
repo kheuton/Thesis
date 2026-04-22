@@ -1,4 +1,4 @@
-# Thesis Feedback — Changelog
+# Thesis Feedback Changelog
 
 ---
 
