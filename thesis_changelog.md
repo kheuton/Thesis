@@ -24,7 +24,7 @@
 ### 4c. Consistent y-axis normalization
 - [ ] If normalizing the y-axis, apply the **same transformation across both subplots** so their scales are directly comparable.
 
-### 4d. (Optional / stretch) Combined visualization
+### 4d. Interpolation hyperplane
 - [ ] Consider replacing the two 1D plots with a single 2D visualization: the **hyperplane formed by the affine combination of $\theta_{PG}$, $\theta_{DPO}$, and $\theta_{SPO+}$**, showing decision loss (and/or surrogate loss) as a surface or heatmap over that plane.
 
 ---
