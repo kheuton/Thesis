@@ -1,18 +1,18 @@
 Statistical machine learning methods for spatiotemporal forecasting can play a vital role in high-stakes applications from mitigating overdoses in public health~\citep{marksMethodologicalApproachesPrediction2021} to forest fire management~\citep{cheng2008ForestFire} to wildlife monitoring~\citep{golden2022SpatialPredictionWhooping,hefley2017DynamicSpatiotemporalWastingDisease}.
 Across these domains, there is a pressing need for predictive models that can make accurate predictions of near-term future events at fine spatiotemporal resolutions.
-Such models can enable inform data-driven decisions about how to allocate limited resources to maximize utility.
+Such models can inform data-driven decisions about how to allocate limited resources to maximize utility.
 
 
 In this work, we seek to help decision-makers select \emph{where to intervene}. Given historical data for a fixed set of $S$ candidate spatial sites, we develop models that can recommend a specific subset of given size $K$ for some action or intervention. We think of hyperparameter $K$ as setting the budget for interventions. In an ideal world, decision-makers could afford interventions in all $S$ sites. However, when resource constraints allow only $K$ sites to receive interventions, a decision selecting a specific $K$-of-$S$ subset is required. While such decisions may often be heuristic in current practice, we hope to offer data-driven solutions.
 
 With this goal in mind, choosing a sensible performance metric is critical to assessing which models have real-world utility.
 Common metrics such as squared error or absolute error are not well matched to where-to-intervene decisions because they treat all sites equally.
-Recent work on overdose forecasting has suggested a metric termed the \emph{fraction of best possible reach}, or \emph{BPR}~\citep{heutonPredictingSpatiotemporalCounts2022,heutonSpatiotemporalForecastingOpioidrelated2024}. BPR measures a ratio of event counts. The numerator sums over the model's recommended $K$ sites, while the denominator sums over the best possible $K$ selected in hindsight. This type of evaluation has been used in a preregistered trial~\citep{marshallPreventingOverdoseUsing2022} for assessing forecasts of opioid overdoses in Rhode Island, as well as a follow-up feasability study~\citep{allenTranslatingPredictiveAnalytics2023}. BPR is applicable to many where-to-intervene problems beyond public health.
-\ifdefined\ispreprint
-\let\thefootnote\relax\footnotetext{\noindent Code: \href{https://github.com/tufts-ml/decision-aware-topk/}{https://github.com/tufts-ml/decision-aware-topk/}}
-\else
-\let\thefootnote\relax\footnotetext{\noindent Code: \href{https://github.com/tufts-ml/decision-aware-topk}{https://github.com/tufts-ml/decision-aware-topk}}
-\fi
+Recent work on overdose forecasting has suggested a metric termed the \emph{fraction of best possible reach}, or \emph{BPR}~\citep{heutonZIGP2022,heutonSpatiotemporalForecastingOpioidrelated2024}. BPR measures a ratio of event counts. The numerator sums over the model's recommended $K$ sites, while the denominator sums over the best possible $K$ selected in hindsight. This type of evaluation has been used in a preregistered trial~\citep{marshallPreventingOverdoseUsing2022} for assessing forecasts of opioid overdoses in Rhode Island, as well as a follow-up feasability study~\citep{allenTranslatingPredictiveAnalytics2023}. BPR is applicable to many where-to-intervene problems beyond public health.
+%\ifdefined\ispreprint
+%\let\thefootnote\relax\footnotetext{\noindent Code: \href{https://github.com/tufts-ml/decision-aware-topk/}{https://github.com/tufts-ml/decision-aware-topk/}}
+%\else
+%\let\thefootnote\relax\footnotetext{\noindent Code: \href{https://github.com/tufts-ml/decision-aware-topk}{https://github.com/tufts-ml/decision-aware-topk}}
+%\fi
 
 While some publications have reported BPR in evaluations, 
 we suggest that a natural goal would be for this performance metric to inform two other key parts of data-driven decision-making: model-based \emph{ranking} and 
@@ -62,7 +62,7 @@ Yet a tractable and scalable recipe that prioritizes top-$K$ where-to-intervene 
 
 
 
-% Suppose our forecasting model has a scoring function $r_{\theta}(\mathbf{X}_{t}) \in \mathbb{R}^S$ that scores each of the $S$ regions with a real number given available features $\mathbf{X}_t$, which we design to include past counts $\mathbf{Y}_{1:t-1}$ as well as socioeconomic properties of each area~\citep{heutonPredictingSpatiotemporalCounts2022}.
+% Suppose our forecasting model has a scoring function $r_{\theta}(\mathbf{X}_{t}) \in \mathbb{R}^S$ that scores each of the $S$ regions with a real number given available features $\mathbf{X}_t$, which we design to include past counts $\mathbf{Y}_{1:t-1}$ as well as socioeconomic properties of each area~\citep{heutonZIGP2022}.
 % Here, $\theta$ represents the learnable parameters of our model (e.g. weights of a neural network).
 % Using scores from $r$, we wish to select a size-$K$ set of high-risk regions, denoted $\mathcal{R}$, to recommend for further action. A natural way to do this is to keep the top $K$ highest scoring locations:
 % $\mathcal{R}_{\theta}(\mathbf{X}_t) = \textsc{TopKIDs}( r_{\theta}(\mathbf{X}_t) )    

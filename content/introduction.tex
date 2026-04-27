@@ -17,7 +17,7 @@ Although we show that this is often an effective baseline strategy, it will neve
 A prediction model built on lagged indicators alone will always be one year behind in responding to epidemics as they move from the city to the suburbs or as a new drug supply enters a community and diffuses outward. \
 Increasingly machine learning models are being used to predict future overdose death counts, and these predictions are then used to inform resource allocation decisions \citep{marksMethodologicalApproachesPrediction2021,borquezFatalOverdosePredicting2022,heutonZIGP2022, acharyaExploringCountylevelSpatiotemporal2022, allenTranslatingPredictiveAnalytics2023,ertugrulCASTNetCommunityAttentiveSpatioTemporal2019}. \
 These models are trained as standard regression problems: given historical data on overdose death counts and other predictive features, can we predict future death counts? \
-Typically, some years of data are heldout for evaluation, and the model is trained to minimize the error between predicted and observed death counts in these heldout years. \
+Typically, some years of data are heldout for evaluation. The model is trained to minimize the error between predicted and observed death counts in the training data (using a metric like mean squared error), and it is hoped that it will generalize well to these heldout years. \
 Finally, the predictions from the trained model are used to solve the downstream optimization problem of maximizing the number of potential overdose deaths reached by intervention, subject to the budget constraint of only intervening in $K$ locations. \
 Somewhat trivially, this optimization problem is solved by simply selecting the $K$ locations with the highest predicted death counts.
 
@@ -26,7 +26,7 @@ Even though this approach sounds intuitive, we see a subtle disconnect between h
 The model is trained to minimize average prediction error across all locations, but the decision problem requires correctly identifying which locations rank in the top $K$ for predicted death counts. \
 To expose this disconnect, you could consider adding $1000$ to the predicted death count for all locations in the top $K$. \
 This would cause the prediction error to increase dramatically, but the decision about where to allocate resources would remain unchanged. \
-Beyond this cartoonish example, the fact that the model is trained to optimize for a different objective than the downstream decision can lead to worse decisions and worse outcomes. \
+Beyond this cartoonish example, the fact that the model is trained to optimize for a different objective than the downstream decision can lead to worse decisions and worse outcomes when the model is misspecified. \
 This problem can be espeically pronounced when studying fatal opioid-related overdoses, which are relatively rare events. \
 Because of this, the prediction error can be dominated by the large number of locations with zero or low death counts, while the most important locations to get right are those with the highest death count.
 
@@ -55,8 +55,8 @@ In the following chapters, the thesis introduces three contributions that improv
 \section{Thesis Overview}
 The rest of the thesis is organized as follows:
 \begin{itemize}
-    \item In Chapter 3 \citep{heutonSpatiotemporalForecastingOpioidrelated2024}, I directly consider the problem of \emph{evaluating} forecasts of opioid overdose deaths, and introduce a new metric called Best Possible Reach (BPR) that better captures the decision quality of these forecasts.
-    \item In Chapter 4 \citep{heuton2025decisionaware}, I address the \emph{training} of decision-aware machine learning models, and introduce a new method called Decision-Aware Maximum Likelihood (DAML) that jointly optimizes for decision quality and probabilistic maximum likelihood. I also demonstrate the method on problems beyond public health.
-    \item In Chapter 5, I set out to \emph{benchmark} different decision-aware learning methods. Here, demonstrate several shortcomings in existing benchmarks and provide \emph{practical guidance} for both researchers studying these methods and practitioners looking to implement them.
+    \item The work in Chapter 3 has been published in the American Journal of Epidemiology as a contribution to public health methodology. Here I directly consider the problem of \emph{evaluating} forecasts of opioid overdose deaths, and introduce a new metric called Best Possible Reach (BPR) that better captures the decision quality of these forecasts.
+    \item The work in Chapter 4 was presented at the 2025 International Conference on Machine Learning where it was accepted for its machine learning research contributions \citep{heuton2025decisionaware}. In this work I address the \emph{training} of decision-aware machine learning models, and introduce a new method called Decision-Aware Maximum Likelihood (DAML) that jointly optimizes for decision quality and probabilistic maximum likelihood. I also demonstrate the method on problems beyond public health.
+    \item In Chapter 5, I set out to \emph{benchmark} different decision-aware learning methods. Here, demonstrate several shortcomings in existing benchmarks and provide \emph{practical guidance} for both researchers studying these methods and practitioners looking to implement them. Preliminary work from this chapter has been accepted for presentation at the OPTIMAL: Optimisation and Post-Bayesian Inference in Machine Learning workshop at AISTATS 2025.
 \end{itemize}
 

@@ -1,5 +1,5 @@
 
-\paragraph{Loose bound justifies per-site mean ranking.} A natural first guess for ranking is the per-site mean: $\bm{\bar{r}} = \mathbb{E}_{p_{\phi}}[\bm{y}]$. We can show this is justifiable way to minimize expected loss on a simplistic upper bound on BPR.
+\textbf{Loose bound justifies per-site mean ranking.} A natural first guess for ranking is the per-site mean: $\bm{\bar{r}} = \mathbb{E}_{p_{\phi}}[\bm{y}]$. We can show this is justifiable way to minimize expected loss on a simplistic upper bound on BPR.
 Assume there exists an \emph{upper limit} $U$ such that for all $s$, we can guarantee $U \geq y_s$.
 %For example, we may know that per-site counts will be smaller than overall population size. 
 The sum over any $K$ entries of vector $\bm{y}$ in the denominator of BPR is then bounded by $K \cdot U$. Plugging this bound into the minimize expected loss problem and simplifying with linearity of expectations yields
@@ -61,7 +61,10 @@ One valid solution is the expected ratio of vector $\bm{y}$ to its sum, which we
 \bm{r}^*(\phi) = \mathbb{E}_{\bm{y} \sim p_{\phi}}\left[ \frac{\bm{y}}{\bm{1} \cdot \bm{y}} \right]
 \approx \frac{1}{M} \sum_{m=1}^M \frac{ \bm{y}^{(m)}}{ \bm{1}\cdot\bm{y}^{(m)} }.
 \end{align}
-This ranking is \emph{distinct} from the per-site mean: there exist fixed models $\phi$ where the ratio estimator and the per-site mean would select different subsets of the same $S$ sites. See App.~\ref{supp:ranking_demo} for concrete cases where the ratio estimator earns BPR 2.5x to 5x higher than the per-site mean, even when all estimators know the true data-generating model.
+This ranking is \emph{distinct} from the per-site mean: there exist fixed models $\phi$ where the ratio estimator and the per-site mean would select different subsets of the same $S$ sites.
+A natural question is, why not use a ranking estimator which more closely resembles BPR, such as $\bm{r} = \mathbb{E}[ \frac{ \bm{y} }{ \text{TopKMask}(\bm{y},K)} \cdot \bm{y}  ]$. 
+In practice, this estimator is equivalent to the ratio estimator in expectation, and will select the same top-K locations. Accordingly, we use the ratio estimator for its improved computational speed and simplicity.
+See App.~\ref{supp:ranking_demo} for concrete cases where the ratio estimator earns BPR 2.5x to 5x higher than the per-site mean, even when all estimators know the true data-generating model.
 
 When exact computation of this expectation is not easy, we recommend a Monte Carlo approximation using $M$ samples $\{ \bm{y}^{(m)} \}_{m=1}^M$ drawn iid from $p_{\phi}$, as in Eq.~\eqref{eq:ratio_estimator_for_ranking}. 
 This is a stochastic estimator; rankings can differ across repeat trials if $M$ is not large enough.

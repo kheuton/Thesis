@@ -6,7 +6,7 @@ We begin with an illustrative synthetic case study chosen to highlight the trade
 &
 \includegraphics[width=.35\textwidth]{figures/SynthFrontierSquare.png}
 \end{tabular}
-\captionof{figure}{
+\captionof{figure}[Synthetic 1D data: learned models and Pareto frontier.]{
 \textbf{Synthetic 1D data: learned models and Pareto frontier.} \textit{Left Row 1:} histograms of $y_s$ values by site (circled numbers). Sites 3-7 should be the top K=5 under the true model.
 \textit{Left Rows 2-4:} Learned Gaussian components, with site-specific weights $\bm{\pi}_s$ marked as horizontal position between pure green and blue. Text provides ranking $r$ with how often that site is in top $K=5$ over 200 trials.
 \textit{Right:} Likelihood vs. BPR tradeoff frontier for final models delivered by different training objectives.
@@ -41,7 +41,7 @@ We only report training set metrics here for simplicity; later tasks assess gene
 
 \textbf{Results and analysis.}
 From results in Fig.~\ref{fig:synth_data_and_results}, we draw several conclusions.
-First, training to optimize NLL alone delivers subpar BPR for this task. 
+First, training to optimize NLL alone delivers subpar BPR for this task, as expected. 
 Second, optimizing for BPR alone yields much better BPR values, suggesting that even this mispecified model can deliver much better top-K decision making than the off-the-shelf ML solution. However, BPR alone yields nonsensical likelihood values, as nothing in the objective forces $\phi$ to be good at modeling the outcomes $y$, only at relative ranking of the $S$ sites.
 In Fig.~\ref{fig:synth_data_and_results}, we see how our DAML hybrid objective allows a user to traverse the Pareto frontier of likelihood and BPR by enforcing a desired threshold on minimum BPR. As the desired minimum BPR threshold $\epsilon$ increases, we can sweep the tradeoff between likelihood and BPR. Ultimately, our DAML yields the best high-likelihood, high-BPR solutions in the top-right corner of the Pareto plot.
 

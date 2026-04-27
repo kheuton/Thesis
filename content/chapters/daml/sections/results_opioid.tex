@@ -20,7 +20,7 @@ The second dataset, \emph{Cook County IL Fatal Overdoses}, tracks opioid-involve
 % and primarily selected for our study due to their availability. 
 %We also believe that their geographic diversity highlights how these methods perform in densely-populated settings as well as across urban, suburban, and rural communities.
 
-We follow previous evaluations of these datasets in \citet{heutonSpatiotemporalForecastingOpioidrelated2024}. 
+We follow previous evaluations of these datasets in Chapter~\ref{chap:bpr}~\citep{heutonSpatiotemporalForecastingOpioidrelated2024}. 
 Each dataset was processed to a common format of fatal overdose counts per time and spatial unit.
 For the spatial units, we chose \emph{census tracts}. Each tract by design contains a mean population of 4000 people, a scale that allows capturing variation in overdoses at the neighborhood level.
 For temporal binning, we picked calendar years to reflect the frequency at which health agencies might enact policy changes.
@@ -69,7 +69,7 @@ For reproducible details specific to overdose tasks, see App.~\ref{supp:results_
 
 
 \textbf{Results.}
-Results on \emph{test} data for both MA and Cook County IL tasks are shown in Pareto frontier plots in Fig.~\ref{fig:Frontier}. For both datasets, we see that ML training yields suboptimal top-K decisions. Direct optimization of BPR can improve BPR, though gains on test data over ML vary (+0.04 on Cook County; less than +0.01 on MA).
+Results on \emph{test} data for both MA and Cook County IL tasks are shown in Pareto frontier plots in Fig.~\ref{fig:Frontier}. For both datasets, we see that ML training yields suboptimal top-K decisions. Direct optimization of BPR can improve BPR, though gains on test data over ML vary (+0.04 on Cook County, $\approx$27 more overdoses reached; less than +0.01 on MA, fewer than 5 more overdoses reached).
 Direct BPR and surrogate loss (SPO+, PG) solutions can yield \emph{much worse} likelihood, as expected. The surrogate loss methods provide lower quality decisions than the DAML and direct BPR approach.
 %On the test data, the DAML approach slightly improves likelihood over results obtained from ML training.
 Our DAML approach provides better top-K decisions than the ML approach, with no visible decay in likelihood. 

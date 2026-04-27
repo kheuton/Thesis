@@ -1,7 +1,6 @@
 \subsection{Justification for ratio estimator}
 
-In the text, we propose the ratio estimator for ranking locations: $\bm{r} = \mathbb{E}[ \frac{ \bm{y} }{ \bm{1} \cdot \bm{y} } ]$ and justify its use by demonstrating that it is a better bound on our decision loss BPR than the mean estimator. However, a natural question is, why not use a ranking estimator which more closely resembles BPR, such as $\bm{r} = \mathbb{E}[ \frac{ \bm{y} }{ \text{TopKMask}(\bm{y},K)} \cdot \bm{y}  ]$. 
-In practice, this estimator is equivalent to the ratio estimator in expectation, and will select the same top-K locations. Accordingly, we use the ratio estimator for its improved computational speed and simplicity.
+In the text, we propose the ratio estimator for ranking locations: $\bm{r} = \mathbb{E}[ \frac{ \bm{y} }{ \bm{1} \cdot \bm{y} } ]$ and justify its use by demonstrating that it is a better bound on our decision loss BPR than the mean estimator. 
 
 
 \subsection{Demo experiment}

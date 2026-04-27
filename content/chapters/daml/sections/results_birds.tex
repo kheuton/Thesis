@@ -46,7 +46,7 @@ See reproducible details in App.~\ref{supp:results_birds}.
 
 %The same training objectives and hyperparameter search efforts were used as in Sec.~\ref{sec:results_opioid}.
 
-\textbf{Results.} From results in Fig.~\ref{fig:Frontier} (right panel), we find that optimizing NLL or BPR \emph{alone} will yield poor results in the other metric. In this case, direct optimization of BPR results in the best top-K decisions, but dramatically worse likelihood. Our DAML models improve BPR by up to 0.05 over conventional ML training with only modest decay in likelihood. 
+\textbf{Results.} From results in Fig.~\ref{fig:Frontier} (right panel), we find that optimizing NLL or BPR \emph{alone} will yield poor results in the other metric. In this case, direct optimization of BPR results in the best top-K decisions, but dramatically worse likelihood. Our DAML models improve BPR by up to 0.05 over conventional ML training ($\approx$8 more birds observed) with only modest decay in likelihood. 
 Our DAML and direct BPR objectives also deliver better BPR than previous decision-aware methods (PG, SPO+). 
 This is even after providing smarter initializations to these methods, as we found their training had trouble improving on our common random initialization of $\phi$, perhaps due to this task's much sparser $\bm{y}$ values.
 

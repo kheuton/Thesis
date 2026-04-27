@@ -6,7 +6,7 @@
 &
 \includegraphics[width=.3\textwidth]{figures/AsurvFrontier.pdf}
 \end{tabular}
-\captionof{figure}{
+\captionof{figure}[Pareto frontier of best possible reach (BPR) and log likelihood for real-world tasks.]{
     \textbf{Pareto frontier of best possible reach (BPR, x-axis) and log likelihood (LL, y-axis) for real-world tasks}. Higher is better on both axes. Each panel how the final models estimated by different training methods score on the test set of a forecasting task defined in Sec.~\ref{sec:results}. 
     To capture the stochasticity of BPR due to our sampling-based ranking estimator, for each model we show an estimated density for BPR over 1000 trials. Uncertainty in this plot only corresponds to uncertainty in BPR, log likelihood is a point estimate.
     In all three tasks, our proposed decision-aware ML (DAML) delivers better top-K decisions as measured by BPR than ML estimation. DAML also delivers likelihood comparable to ML methods and \emph{much better} than directly optimizing BPR. In the Cranes dataset, the DAML objective surprisingly offers better BPR than the BPR-only objective, although the magnitude of this difference is small and perhaps due to the small-scale and sparsity of this dataset.  \\

@@ -19,7 +19,7 @@ The decision task here is to select a binary $z$ value ($\mathcal{Z} = \{ 0, 1\}
 
 \begin{figure}[!h]
 \includegraphics[width=0.65\linewidth]{figures/synthetic_data.pdf}
-\caption{Synthetic data task: True data-generating mean function $f^*(x)$ and sampled $y$ values using zero-mean noise from an Exponential distribution. 
+\caption[Synthetic data task: true mean function $f^*(x)$ and sampled $y$ values with Exponential noise.]{Synthetic data task: True data-generating mean function $f^*(x)$ and sampled $y$ values using zero-mean noise from an Exponential distribution.
 In order to minimize cost $z \cdot y$ by taking actions $z \in \{0, 1\}$, the optimal policy is to choose $z{=}0$ when $x<0.5,$ and $z{=}+1$ otherwise. However, the asymmetric noise in $y$ means that, even optimal decisions may sometimes incur a positive cost at any $x$ value; the optimal policy's expected cost is roughly 0.39. }
 \label{fig:synth_data}
 \end{figure}

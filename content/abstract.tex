@@ -1,7 +1,7 @@
 \chapter*{Abstract}
 In this thesis, I demonstrate how machine learning models can be trained and evaluated to produce better decisions when allocating limited resources under uncertainty.
 I work in the predict-then-optimize setting, in which predictions from trained models are used to solve downstream discrete optimization problems, such as selecting a budget-constrained subset of locations for intervention.
-While standard machine learning models are trained to minimize prediction error, this objective is misaligned with decision quality; correctly identifying the highest-priority locations matters more than minimizing average error across all locations.
+While standard machine learning models are trained to minimize prediction error, this objective can be misaligned with decision quality when the model is misspecified or data is insufficient; correctly identifying the highest-priority locations matters more than minimizing average error across all locations.
 Decision-aware learning methods address this misalignment by training models to optimize decision quality jointly with the prediction model, but open challenges remain: evaluation metrics often fail to capture decision-relevant performance, differentiating through discrete decision problems is difficult, and practitioners lack clear guidance on which methods to use. 
 This thesis addresses these challenges through three contributions spanning evaluation, training, and benchmarking of decision-aware models.
 

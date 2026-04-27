@@ -255,16 +255,6 @@ Logistic regression yields as good performance as ML models to predict the risk 
   file = {Full Text PDF:C\:\\Users\\kheut\\Zotero\\storage\\LW6UJX7F\\Rue et al. - 2009 - Approximate Bayesian inference for latent Gaussian.pdf:application/pdf;Snapshot:C\:\\Users\\kheut\\Zotero\\storage\\GDMQ7TM2\\j.1467-9868.2008.00700.html:text/html},
 }
 
-@article{SpatialSamplingResampling,
-  title = {Spatial sampling and resampling for {Machine} {Learning}},
-  url = {https://zenodo.org/records/5886678},
-  doi = {10.5281/zenodo.5886678},
-  abstract = {This R tutorial contains instructions on how to organize spatial sampling using R packages. It is organized in three main parts: (1) planning new surveys: i.e. starting from scratch, (2) implementing resampling: learning from existing point data, focusing on subsampling and Cross-Validation strategies, (3) planning additional sampling: sampling additional point data based on initial models, the running re-analysis and gradually improving models until the maximum possible accuracy is reached. We use sample datasets to demonstrate processing steps and provide interpretation and dicussion of the results. More chapters will be added in the future. To use most up-to-date copy please refer to: https://opengeohub.github.io/spatial-sampling-ml/.},
-  language = {en},
-  urldate = {2023-11-09},
-  file = {Full Text PDF:C\:\\Users\\kheut\\Zotero\\storage\\KGMEAQTB\\Spatial sampling and resampling for Machine Learni.pdf:application/pdf},
-}
-
 @article{schellIdentifyingPredictorsOpioid2022,
   title = {Identifying {Predictors} of {Opioid} {Overdose} {Death} at a {Neighborhood} {Level} {With} {Machine} {Learning}},
   volume = {191},
@@ -856,6 +846,7 @@ CONCLUSIONS: We found that using FTS and receiving a positive test result was as
   title = {Predicting {{Spatiotemporal Counts}} of {{Opioid-related Fatal Overdoses}} via {{Zero-Inflated Gaussian Processes}}},
   booktitle = {{{NeurIPS}} 2022 {{Workshop}} on {{Gaussian Processes}}, {{Spatiotemporal Modeling}}, and {{Decision-making Systems}}},
   author = {Heuton, Kyle and Shrestha, Shikhar and Stopka, Thomas J and Pustz, Jennifer and Liu, Li-Ping and Hughes, Michael C},
+  year = {2022},
   url = {https://gp-seminar-series.github.io/neurips-2022/assets/camera_ready/49.pdf},
   abstract = {Recently, zero-inflated Gaussian processes (GPs) have been proposed as probabilistic machine learning models for observed spatio-temporal data that contain many close-to-zero entries. In this work, we extend zero-inflated GPs to sparse count data via the zero-inflated Poisson likelihood. This change no longer admits a closedform computation of the training objective, so we use automatic differentiation variational inference to perform approximate posterior estimation. Our motivating application is the prediction of the number of opioid-related overdose deaths that will occur in the next 3 months in each of 1620 census tracts across the state of Massachusetts, given historical decedent data and socio-economic covariates. We find zero-inflated GPs can prioritize regions in need of near-term public health interventions better than alternative models at finer spatial and temporal resolutions than most prior efforts. Surprisingly, we find that this model is successful even when using Normal likelihoods instead of the zero-inflated Poisson.},
   eventtitle = {{{NeurIPS}} 2022 {{Workshop}} on {{Gaussian Processes}}, {{Spatiotemporal Modeling}}, and {{Decision-making Systems}}},
@@ -1132,21 +1123,27 @@ CONCLUSIONS: We found that using FTS and receiving a positive test result was as
   publisher = {Wiley Online Library},
 }
 
-@inproceedings{heutonPredictingSpatiotemporalCounts2022,
-  title = {Predicting Spatiotemporal Counts of Opioid-Related Fatal Overdoses via Zero-Inflated Gaussian Processes},
-  booktitle = {The 2022 {{NeurIPS}} Workshop on Gaussian Processes, Spatiotemporal Modeling, and Decision-Making Systems.},
-  author = {Heuton, Kyle and Shrestha, Shikhar and Stopka, Thomas J and Pustz, Jennifer and Liu, Li-Ping and Hughes, Michael C},
-  year = {2022},
+@article{heutonSpatiotemporalForecastingOpioidrelated2024,
+  title = {Spatiotemporal Forecasting of Opioid-Related Fatal Overdoses: Towards Best Practices for Modeling and Evaluation},
+  shorttitle = {Spatiotemporal Forecasting of Opioid-Related Fatal Overdoses},
+  author = {Heuton, Kyle and Kapoor, Jyontika and Shrestha, Shikhar and Stopka, Thomas J. and Hughes, Michael C.},
+  date = {2025-06-03},
+  journaltitle = {American Journal of Epidemiology},
+  shortjournal = {Am J Epidemiol},
+  volume = {194},
+  number = {6},
+  eprint = {39277561},
+  eprinttype = {pubmed},
+  pages = {1776--1782},
+  issn = {1476-6256},
+  doi = {10.1093/aje/kwae343},
+  abstract = {To inform public health interventions, researchers have developed models to forecast opioid-related overdose mortality. These efforts often have limited overlap in the models and data sets employed, presenting challenges to assessing progress in this field. Furthermore, common error-based performance metrics, such as root mean squared error (RMSE), cannot directly assess a key modeling purpose: the identification of priority areas for interventions. We recommend a new intervention-aware performance metric, Percentage of Best Possible Reach (\%BPR). We compare metrics for many published models across 2 distinct geographic settings: Cook County, Illinois, and the state of Massachusetts, assuming the budget to intervene in 100 census tracts out of 1000 in each setting. The top-performing models based on RMSE recommend areas that do not always reach the most possible overdose events. In Massachusetts, the top models preferred by \%BPR could have reached 18 additional fatal overdoses per year in 2020-2021 compared to models favored by RMSE. In Cook County, the different metrics select similar top-performing models, yet other models with similar RMSE can have significant variation in \%BPR. We further find that simple models often perform as well as recently published ones. We release open code and data for others to build upon.},
+  langid = {english},
+  pmcid = {PMC12133270},
+  keywords = {Drug Overdose,Forecasting,Humans,Illinois,machine learning,Massachusetts,Models Statistical,Opiate Overdose,opioid,overdose,predictive modeling,public health practice,Spatio-Temporal Analysis,spatiotemporal forecasting},
+  file = {C:\Users\kheut\Zotero\storage\356VWJSB\Heuton et al. - 2025 - Spatiotemporal forecasting of opioid-related fatal overdoses towards best practices for modeling an.pdf}
 }
 
-@article{heutonSpatiotemporalForecastingOpioidrelated2024,
-  title = {Spatiotemporal Forecasting of Opioid-Related Fatal Overdoses: {{Towards}} Best Practices for Modeling and Evaluation},
-  author = {Heuton, Kyle and Kapoor, Jyontika and Shrestha, Shikhar and Stopka, Thomas J and Hughes, Michael C},
-  year = {2024},
-  journal = {American Journal of Epidemiology},
-  pages = {kwae343},
-  publisher = {Oxford University Press},
-}
 
 @inproceedings{kusmierczykVariationalBayesianDecisionmaking2019,
   title = {Variational {{Bayesian Decision-making}} for {{Continuous Utilities}}},
@@ -3426,17 +3423,6 @@ Most prescriptions written by the majority of providers are under the recommende
 }
 
 
-@article{heuton_predicting_2022,
-  title = {Predicting {Spatiotemporal} {Counts} of {Opioid}-related {Fatal} {Overdoses} via {Zero}-{Inflated} {Gaussian} {Processes}},
-  volume = {Predicting Spatiotemporal Counts of Opioid-related Fatal Overdoses via Zero-Inflated Gaussian Processes},
-  abstract = {Recently, zero-inflated Gaussian processes (GPs) have been proposed as probabilistic machine learning models for observed spatio-temporal data that contain many close-to-zero entries. In this work, we extend zero-inflated GPs to sparse count data via the zero-inflated Poisson likelihood. This change no longer admits a closedform computation of the training objective, so we use automatic differentiation variational inference to perform approximate posterior estimation. Our motivating application is the prediction of the number of opioid-related overdose deaths that will occur in the next 3 months in each of 1620 census tracts across the state of Massachusetts, given historical decedent data and socio-economic covariates. We find zero-inflated GPs can prioritize regions in need of near-term public health interventions better than alternative models at finer spatial and temporal resolutions than most prior efforts. Surprisingly, we find that this model is successful even when using Normal likelihoods instead of the zero-inflated Poisson.},
-  language = {en},
-  journal = {NeurIPS 202},
-  author = {Heuton, Kyle and Shrestha, Shikhar and Stopka, Thomas J and Pustz, Jennifer and Liu, Li-Ping and Hughes, Michael C},
-  year = {2022},
-  file = {Heuton et al. - Predicting Spatiotemporal Counts of Opioid-related.pdf:C\:\\Users\\kheut\\Zotero\\storage\\SFH6Y7IQ\\Heuton et al. - Predicting Spatiotemporal Counts of Opioid-related.pdf:application/pdf},
-}
-
 @article{krausz_opioid_2021,
   title = {The opioid overdose crisis as a global health challenge},
   volume = {34},
@@ -4435,16 +4421,6 @@ Our novel approach uncovered new time varying and spatial patterns in fatal OOD 
   note = {Publisher: Oxford University Press},
   pages = {526},
   file = {Full Text:C\:\\Users\\kheut\\Zotero\\storage\\ADIVLE77\\Schell et al. - 2022 - Identifying Predictors of Opioid Overdose Death at.pdf:application/pdf;Snapshot:C\:\\Users\\kheut\\Zotero\\storage\\HFEXAX6Q\\PMC9214774.html:text/html},
-}
-
-@article{noauthor_spatial_nodate,
-  title = {Spatial sampling and resampling for {Machine} {Learning}},
-  url = {https://zenodo.org/records/5886678},
-  doi = {10.5281/zenodo.5886678},
-  abstract = {This R tutorial contains instructions on how to organize spatial sampling using R packages. It is organized in three main parts: (1) planning new surveys: i.e. starting from scratch, (2) implementing resampling: learning from existing point data, focusing on subsampling and Cross-Validation strategies, (3) planning additional sampling: sampling additional point data based on initial models, the running re-analysis and gradually improving models until the maximum possible accuracy is reached. We use sample datasets to demonstrate processing steps and provide interpretation and dicussion of the results. More chapters will be added in the future. To use most up-to-date copy please refer to: https://opengeohub.github.io/spatial-sampling-ml/.},
-  language = {en},
-  urldate = {2023-11-09},
-  file = {Full Text PDF:C\:\\Users\\kheut\\Zotero\\storage\\KGMEAQTB\\Spatial sampling and resampling for Machine Learni.pdf:application/pdf},
 }
 
 @article{rue_approximate_2009,

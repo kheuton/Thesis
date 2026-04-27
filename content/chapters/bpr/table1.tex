@@ -1,7 +1,7 @@
 \begin{table}[htbp]
 \centering
 \setlength{\tabcolsep}{4pt}
-\caption{Comparison of fatal opioid-related overdose prediction models trained on Massachusetts decedent data from 2010-2019, then evaluated on data from 2020 and 2021.
+\caption[Comparison of fatal opioid-related overdose prediction models on Massachusetts data (2010--2021).]{Comparison of fatal opioid-related overdose prediction models trained on Massachusetts decedent data from 2010-2019, then evaluated on data from 2020 and 2021.
 \newline\newline
 Here BPR (higher is better) is our new intervention-aware metric, computed assuming an intervention budget for K=100 of 1620 possible tracts in Massachusetts. MAE (lower is better) and RMSE (lower is better) are common error-based metrics. For each metric, the best model mean is bolded, along with any other model whose uncertainty interval overlaps this mean (intervals are computed via resampling methods). The column titled ``Total Overdoses Identified in top 100 tracts'' contains the \emph{true} number of observed fatal overdoses in the top 100 locations identified by the corresponding model.
 \newline\newline
@@ -12,12 +12,12 @@ Abbreviations: \textbf{BPR}: Best Possible Reach. \textbf{MAE}: Mean Absolute Er
  & \multicolumn{4}{c}{Metric} \\
 Model & \makecell[r]{Total overdoses\\identified in\\top 100 tracts} & \makecell[r]{\%BPR (K=100)} & MAE & RMSE \\
 \midrule
-All Zeros & 124.1 & \hl{25.1, (24.8-25.8)} & \hl{1.24, (1.18-1.30)} & \hl{1.92, (1.83-2.01)} \\
-Last year & 254.5 & \hl{51.8, (49.5-54.4)} & \hl{1.09, (1.04-1.14)} & \hl{1.58, (1.50-1.65)} \\
-Historical Average (4 year) & 295.4 & \textbf{\hl{59.8, (56.8-62.9)}} & \textbf{0.92, (0.90-0.94)} & 1.28, (1.24-1.33) \\
-Weighted Historical Average & 303.5 & \textbf{\hl{61.4, (56.1-66.9)}} & \textbf{0.94, (0.91-0.98)} & 1.32, (1.27-1.38) \\
-Poisson GLM & 304.7 & \textbf{61.6, (56.4-66.8)} & \textbf{\hl{0.95, (0.91-0.98)}} & \hl{1.32, (1.25-1.39)} \\
-Poisson GLM +SVI & 301.3 & \textbf{61.0, (57.4-65.1)} & \hl{1.10, (1.04-1.16)} & \hl{1.38, (1.30-1.47)} \\
+All Zeros & 124.1 & 25.1, (24.8-25.8) & 1.24, (1.18-1.30) & 1.92, (1.83-2.01) \\
+Last year & 254.5 & 51.8, (49.5-54.4) & 1.09, (1.04-1.14) & 1.58, (1.50-1.65) \\
+Historical Average (4 year) & 295.4 & \textbf{59.8, (56.8-62.9)} & \textbf{0.92, (0.90-0.94)} & 1.28, (1.24-1.33) \\
+Weighted Historical Average & 303.5 & \textbf{61.4, (56.1-66.9)} & \textbf{0.94, (0.91-0.98)} & 1.32, (1.27-1.38) \\
+Poisson GLM & 304.7 & \textbf{61.6, (56.4-66.8)} & \textbf{0.95, (0.91-0.98)} & 1.32, (1.25-1.39) \\
+Poisson GLM +SVI & 301.3 & \textbf{61.0, (57.4-65.1)} & 1.10, (1.04-1.16) & 1.38, (1.30-1.47) \\
 Gradient Boosted Trees +SVI & 293.6 & \textbf{59.5, (55.9-63.1)} & \textbf{0.92, (0.89-0.96)} & \textbf{1.24, (1.18-1.30)} \\
 GP & 287.2 & 58.2, (55.2-61.2) & \textbf{0.93, (0.91-0.95)} & \textbf{1.28, (1.23-1.34)} \\
 CASTNet +SVI & 268.0 & 54.4, (52.0-56.6) & 1.07, (0.99-1.16) & 1.47, (1.36-1.58) \\
