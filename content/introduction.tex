@@ -27,7 +27,7 @@ The model is trained to minimize average prediction error across all locations, 
 To expose this disconnect, you could consider adding $1000$ to the predicted death count for all locations in the top $K$. \
 This would cause the prediction error to increase dramatically, but the decision about where to allocate resources would remain unchanged. \
 Beyond this cartoonish example, the fact that the model is trained to optimize for a different objective than the downstream decision can lead to worse decisions and worse outcomes when the model is misspecified. \
-This problem can be espeically pronounced when studying fatal opioid-related overdoses, which are relatively rare events. \
+This problem can be especially pronounced when studying fatal opioid-related overdoses, which are relatively rare events. \
 Because of this, the prediction error can be dominated by the large number of locations with zero or low death counts, while the most important locations to get right are those with the highest death count.
 
 %Decision-focused learning (DFL) addresses this limitation by recognizing that decision quality depends more on correctly ranking the most important cases than on minimizing average prediction error.
@@ -44,7 +44,7 @@ Small changes to model parameters almost always lead to the same decision; a cha
 The decision function is piecewise constant with respect to the model parameters, and therefore has zero gradient almost everywhere. \
 
 %In addition, empirical evaluations of these approaches are often incomplete and fragmented across different decision problems.
-To adress this uniformative grtadient challenge, a variety of methods have been proposed that proivde approimate objectives or approximate gradients that can be used to train decision-aware models. \
+To address this uniformative grtadient challenge, a variety of methods have been proposed that proivde approximate objectives or approximate gradients that can be used to train decision-aware models. \
 Benchmarking efforts that compare these methods are emerging \citep{gengBenchmarkingPtOPnO2024,shahLeavingNestGoing2023,tangPyEPOPyTorchbasedEndtoend2024}, but none are exhaustive and often include tasks which do not benefit from decision-aware learning. \
 No clear guidance exists for practitioners on which method to select for a given decision problem. \
 
@@ -55,8 +55,8 @@ In the following chapters, the thesis introduces three contributions that improv
 \section{Thesis Overview}
 The rest of the thesis is organized as follows:
 \begin{itemize}
-    \item The work in Chapter 3 has been published in the American Journal of Epidemiology as a contribution to public health methodology. Here I directly consider the problem of \emph{evaluating} forecasts of opioid overdose deaths, and introduce a new metric called Best Possible Reach (BPR) that better captures the decision quality of these forecasts.
-    \item The work in Chapter 4 was presented at the 2025 International Conference on Machine Learning where it was accepted for its machine learning research contributions \citep{heuton2025decisionaware}. In this work I address the \emph{training} of decision-aware machine learning models, and introduce a new method called Decision-Aware Maximum Likelihood (DAML) that jointly optimizes for decision quality and probabilistic maximum likelihood. I also demonstrate the method on problems beyond public health.
-    \item In Chapter 5, I set out to \emph{benchmark} different decision-aware learning methods. Here, demonstrate several shortcomings in existing benchmarks and provide \emph{practical guidance} for both researchers studying these methods and practitioners looking to implement them. Preliminary work from this chapter has been accepted for presentation at the OPTIMAL: Optimisation and Post-Bayesian Inference in Machine Learning workshop at AISTATS 2025.
+    \item The work in Chapter \ref{chap:bpr} has been published in the American Journal of Epidemiology as a contribution to public health methodology. Here I directly consider the problem of \emph{evaluating} forecasts of opioid overdose deaths, and introduce a new metric called Best Possible Reach (BPR) that better captures the decision quality of these forecasts.
+    \item The work in Chapter \ref{chap:daml} was presented at the 2025 International Conference on Machine Learning where it was accepted for its machine learning research contributions \citep{heuton2025decisionaware}. In this work I address the \emph{training} of decision-aware machine learning models, and introduce a new method called Decision-Aware Maximum Likelihood (DAML) that jointly optimizes for decision quality and probabilistic maximum likelihood. I also demonstrate the method on problems beyond public health.
+    \item In Chapter \ref{chap:dpo}, I set out to \emph{benchmark} different decision-aware learning methods. Here, I demonstrate several shortcomings in existing benchmarks and provide \emph{practical guidance} for both researchers studying these methods and practitioners looking to implement them. Preliminary work from this chapter has been accepted for presentation at the OPTIMAL: Optimisation and Post-Bayesian Inference in Machine Learning workshop at AISTATS 2025.
 \end{itemize}
 

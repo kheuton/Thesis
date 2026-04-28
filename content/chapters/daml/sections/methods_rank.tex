@@ -1,5 +1,5 @@
 
-\textbf{Loose bound justifies per-site mean ranking.} A natural first guess for ranking is the per-site mean: $\bm{\bar{r}} = \mathbb{E}_{p_{\phi}}[\bm{y}]$. We can show this is justifiable way to minimize expected loss on a simplistic upper bound on BPR.
+\textbf{Loose bound justifies per-site mean ranking.} A natural first guess for ranking is the per-site mean: $\bm{\bar{r}} = \mathbb{E}_{p_{\phi}}[\bm{y}]$. We can show this is a justifiable way to minimize expected loss on a simplistic upper bound on BPR.
 Assume there exists an \emph{upper limit} $U$ such that for all $s$, we can guarantee $U \geq y_s$.
 %For example, we may know that per-site counts will be smaller than overall population size. 
 The sum over any $K$ entries of vector $\bm{y}$ in the denominator of BPR is then bounded by $K \cdot U$. Plugging this bound into the minimize expected loss problem and simplifying with linearity of expectations yields
