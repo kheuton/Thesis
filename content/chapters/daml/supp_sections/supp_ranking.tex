@@ -23,37 +23,37 @@ Each type's PMF function over the non-negative integers is defined in the table 
     & \multicolumn{1}{c}{Type C} 
     \\
     & \begin{minipage}[t]{.25\textwidth}
-    $$
+    \centering
+    \resizebox{\linewidth}{!}{$\displaystyle
         p(y_s) = \begin{cases}
         0.0 & \text{if}~ y_s = 0~
         \\
         1.0 & \text{if}~ y_s = 7~
         \\
         0.0 & \text{otherwise}
-    \end{cases}
-    $$
+    \end{cases}$}
     \end{minipage}
     & \begin{minipage}[t]{.25\textwidth}
-    $$
+    \centering
+    \resizebox{\linewidth}{!}{$\displaystyle
         p(y_s) = \begin{cases}
         0.35 & \text{if}~ y_s = ~0
         \\
         0.65 & \text{if}~ y_s = 10
         \\
         0.0 & \text{otherwise}
-    \end{cases}
-    $$
+    \end{cases}$}
     \end{minipage}
     & \begin{minipage}[t]{.25\textwidth}
-    $$
+    \centering
+    \resizebox{\linewidth}{!}{$\displaystyle
         p(y_s) = \begin{cases}
         0.90 & \text{if}~ y_s = ~0
         \\
         0.10 & \text{if}~ y_s = 80
         \\
         0.0 & \text{otherwise}
-    \end{cases}
-    $$
+    \end{cases}$}
     \end{minipage}
     \\
     Mean & 7.0 & 6.5 & 8.0
@@ -76,6 +76,7 @@ To ensure accuracy of Monte Carlo estimates, we average over $M=50000$ samples t
 
 Results are provided in the table below. We have two key findings. First, our proposed ratio estimator can select very different sites than the per-site mean, \emph{even when both estimators have access to the true data-generating model}. Using $K=3$, our estimator would select all type-A sites as the top 3; in contrast the per-site mean would select all type-C sites (\#7-9). Second, this can produce very different BPR values. Even in this simple example, we see an absolute difference in BPR of over 0.4 between the different rankings at $K=1$ and over 0.39 at $K=3$, which is a huge shift for a metric that is bounded between 0.0 and 1.0.
 
+\noindent\resizebox{\textwidth}{!}{%
 \begin{tabular}{l l r r r || r r r r r r r r r}
   & & \multicolumn{3}{c}{BPR }
     & \multicolumn{9}{c}{fraction of trials each site in top $K{=}3$ of $\bm{r}$ }
@@ -94,9 +95,10 @@ Results are provided in the table below. We have two key findings. First, our pr
  $\bm{r} = \mathbb{E}[ \frac{ \bm{y} }{ \bm{1} \cdot \bm{y} }]$
  &
      0.538 & 0.625 & 0.810
-      & 1.0 & 1.0 & 1.0 
+      & 1.0 & 1.0 & 1.0
       & 0.0 & 0.0 & 0.0
       & 0.0 & 0.0 & 0.0
-\end{tabular}
+\end{tabular}%
+}
 
 These results can be replicated via scripts provided in the code repository.

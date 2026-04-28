@@ -3,29 +3,33 @@
 ---
 
 ## 1. Decision problem definitions
-- [ ] Formally define the decision problem solved by each experiment.
+- [x] Formally define the decision problem solved by each experiment. *Addressed by `dpo/new_tables_figures/decision_problems.tex` (input into `sec_expt_bench.tex`); covers the 7 PnO bench tasks and the Cook County / Aerial Survey top-K tasks.*
 
 ## 2. Surrogate usage specification
-- [ ] Formally document (ideally as a table) how each surrogate is used per experiment, specifying for each: whether hyperparameters are **fixed** or **tuned on a validation set via decision loss**.
-- [ ] For any claim that hyperparameter tuning improves performance, add a head-to-head comparison of the **same surrogate with fixed hyperparameters vs. validation-tuned hyperparameters**.
+- [x] Formally document (ideally as a table) how each surrogate is used per experiment, specifying for each: whether hyperparameters are **fixed** or **tuned on a validation set via decision loss**. *Addressed by `dpo/new_tables_figures/methods_hyperparams.tex` (input into `sec_expt_bench.tex`).*
+- [x] For any claim that hyperparameter tuning improves performance, add a head-to-head comparison of the **same surrogate with fixed hyperparameters vs. validation-tuned hyperparameters**. *Addressed by `tuning_benefit_summary.tex` in main text and full `tuning_benefit.tex` in `app_bench`.*
 
 ## 3. Overfitting diagnostics
-- [ ] Report both **decision training error** and **prediction training error** for each surrogate (alongside existing test metrics) to make overfitting visible.
+- [x] Report both **decision training error** and **prediction training error** for each surrogate (alongside existing test metrics) to make overfitting visible. *Addressed by `dpo/new_tables_figures/error_per_problem.tex` (input into `app_bench.tex`); 7 per-task tables.*
 
 ## 4. Interpolation Figure Revision (Figure 6 in Standalone Chapter)
 
 ### 4a. Extend the loss-landscape sweep
-- [ ] Plot $t \cdot \theta_{PG} + (1 - t) \cdot \theta_{DPO}$ for $t$ **outside** $[0, 1]$ (not just the interpolation interval) to show the broader loss landscape.
-- [ ] Add vertical lines marking where the chosen parameters ($\theta_{PG}$, $\theta_{DPO}$, and any selected operating point) sit on the sweep.
+- [x] Plot $t \cdot \theta_{PG} + (1 - t) \cdot \theta_{DPO}$ for $t$ **outside** $[0, 1]$ (not just the interpolation interval) to show the broader loss landscape. *$(s, t)$ both extended to roughly $[-0.25, 1.25]$ in the new hyperplane figures.*
+- [x] Add vertical lines marking where the chosen parameters ($\theta_{PG}$, $\theta_{DPO}$, and any selected operating point) sit on the sweep. *Stars on each panel mark $\theta_{DPO}$, $\theta_{PG}$, $\theta_{SPO^+}$.*
 
 ### 4b. Hyperparameter reporting on the figure
-- [ ] If the plot shows a single run, annotate **which hyperparameters were used** — in particular, flag the value of $h$ for the PG loss, since a large $h$ explains divergence between decision loss and surrogate loss.
+- [x] If the plot shows a single run, annotate **which hyperparameters were used** — in particular, flag the value of $h$ for the PG loss, since a large $h$ explains divergence between decision loss and surrogate loss. *Per-task footer in each hyperplane figure lists $\sigma$, $h$, and step sizes.*
 
 ### 4c. Consistent y-axis normalization
-- [ ] If normalizing the y-axis, apply the **same transformation across both subplots** so their scales are directly comparable.
+- [x] If normalizing the y-axis, apply the **same transformation across both subplots** so their scales are directly comparable. *Hyperplane figures show four loss panels (BPR, NLL, SPO+, PG) using each loss's own consistent transformation across the full $(s, t)$ surface.*
 
 ### 4d. Interpolation hyperplane
-- [ ] Consider replacing the two 1D plots with a single 2D visualization: the **hyperplane formed by the affine combination of $\theta_{PG}$, $\theta_{DPO}$, and $\theta_{SPO+}$**, showing decision loss (and/or surrogate loss) as a surface or heatmap over that plane.
+- [x] Consider replacing the two 1D plots with a single 2D visualization: the **hyperplane formed by the affine combination of $\theta_{PG}$, $\theta_{DPO}$, and $\theta_{SPO+}$**, showing decision loss (and/or surrogate loss) as a surface or heatmap over that plane. *Implemented as $\theta(s,t) = (1-s-t)\theta_{DPO} + s\,\theta_{PG} + t\,\theta_{SPO^+}$ heatmaps for Cook County (main), MA, and aerial survey (appendix).*
+
+## 5. Well-specified vs. misspecified framing
+- [x] Reframe benchmark datasets in well-specified / low-data terms to explain the strong performance of two-stage MSE; cite Hu, Kallus, & Mao (2022) and Elmachtoub, Lam, Lan, & Zhang (2025). *Three-regime restructure of Ch. 5 bench section; new framing sentence in `sec_intro.tex` and `sec_expt_bench.tex`.*
+- [x] Temper "decision-blind" claims about MSE by reminding readers that hyperparameters were tuned on validation regret. *New paragraph in `sec_expt_bench.tex` and parenthetical in `sec_conclusion.tex`.*
 
 ---
 
@@ -52,3 +56,16 @@
 | Code footnote disabled | Commented out the `\ifdefined\ispreprint` footnote block (was duplicating the URL footnote in thesis context) | `daml/sections/intro.tex` |
 | Methods Rank styling | Changed `\paragraph{Loose bound...}` to `\textbf{Loose bound...}` (paragraph styling was inconsistent with surrounding text) | `daml/sections/methods_rank.tex` |
 | Ranking estimator justification moved | Moved the "why not use a TopKMask-based ranking estimator" justification from the supplementary into the main Methods Rank section | `daml/sections/methods_rank.tex`, `daml/supp_sections/supp_ranking.tex` |
+| Three-regime experiment framing | Restructured Ch. 5 benchmark section into "Well-Specified Regime" / "Misspecified Regime" / "Continuous, Gradient-Informative Task" subsections; added one-sentence framing paragraph citing Hu/Kallus/Mao and Elmachtoub | `dpo/sec_expt_bench.tex` |
+| Decision problem table | Added formal table specifying $\hat y$, $\mathcal{Z}$, objective, constraints, and dataset sizes for all 7 PnO bench tasks plus Cook County and Aerial Survey top-K tasks | `dpo/new_tables_figures/decision_problems.tex`, input into `dpo/sec_expt_bench.tex` |
+| Methods/hyperparameters table | Added table listing every method's tunable hyperparameter, validation grid, and shared training settings; baseline methods (MSE, Identity, SPO+, NCE, ptLTR, prLTR, cpLayer) listed without method-specific HP | `dpo/new_tables_figures/methods_hyperparams.tex`, input into `dpo/sec_expt_bench.tex` |
+| Hyperparameter tuning impact (main + appendix) | Per-method mean $\Delta$ summary in main text; full per-task fixed-vs-tuned breakdown in appendix; positive $\Delta$ shaded green, negative shaded red | `dpo/new_tables_figures/{tuning_benefit_summary,tuning_benefit}.tex` (`sec_expt_bench.tex` + `app_bench.tex`) |
+| Train/val/test error tables | Added 7 per-task tables reporting train, val, test prediction loss and decision regret for every method (using val-best HPs) | `dpo/new_tables_figures/error_per_problem.tex`, input into `dpo/app_bench.tex` |
+| MSE tempering caveat | Added paragraph noting that grid-searching $(\eta, b)$ on validation regret makes the "decision-unaware" two-stage baseline a coarse decision-aware method; companion parenthetical in conclusions | `dpo/sec_expt_bench.tex`, `dpo/sec_conclusion.tex` |
+| Well-specified citation in intro | Added "We attribute this to most benchmark tasks falling into a well-specified regime, where two-stage MSE is known to be advantaged" with `huFastRatesContextual2022` and `elmachtoubDissectingImpactModel2025` citations | `dpo/sec_intro.tex` |
+| Top-K loss landscape figure | Replaced the 1D linear-interpolation Figure with a 2D hyperplane landscape (BPR, NLL, SPO+, PG losses) on $\theta(s,t) = (1-s-t)\theta_{DPO} + s\,\theta_{PG} + t\,\theta_{SPO^+}$ with $(s,t)$ extended beyond $[0,1]$; main text shows Cook County, appendix shows MA + aerial survey | `dpo/sec_expt_topK.tex`, `dpo/fig_topK_interp_6panel.tex`, `dpo/figures/hyperplane_landscape_{cook,MA,asurv}.pdf` |
+| Bib: Hu/Kallus/Mao | Added `huFastRatesContextual2022` (Fast Rates for Contextual Linear Optimization, Mgmt. Sci. 2022) supporting the well-specified-regime claim | `refs/thesisbib.bib` |
+| Bib: Mandi citation encoding | Replaced the composed `Vı́ctor` glyph with `V{\'\i}ctor` (LaTeX accent macro) in the Mandi/Bucarey/Tchomba/Guns citation | `refs/thesisbib.bib` |
+| Regenerated bench bump figures | Re-rendered `fig_bench_bump_{budgetalloc,portfolio,rest}.pdf`; previous versions saved as `*_old.pdf` | `dpo/figures/` |
+| Added `[table]` option to `xcolor` | Required to enable `\cellcolor` used in the new color-shaded `tuning_benefit` table | `thesis_main.tex` |
+| `app:topK` label fix | Added missing `\label{app:topK}` so cross-references from the main text resolve | `dpo/app_topK.tex` |

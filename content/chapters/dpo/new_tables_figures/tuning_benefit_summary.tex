@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{Per-method mean improvement from tuning method-specific hyperparameters across the 7 PnO benchmark tasks. $\Delta = ({\rm fixed} - {\rm tuned})/|{\rm fixed}|$ averaged over applicable tasks (positive = tuning helps); $N$ is the number of tasks where the method has a method-specific hyperparameter and ran successfully. Full per-task breakdown in Tab.~\ref{tab:tuning-benefit}.}
+\label{tab:tuning-benefit-summary}
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Method & Mean $\Delta$ & $N$ \\
+\midrule
+DFL      & +25.6\% & 7 \\
+lsLTR    & +14.1\% & 7 \\
+Blackbox & +12.3\% & 7 \\
+PG       & +6.5\%  & 6 \\
+DPO      & +3.2\%  & 7 \\
+LODL     & +1.8\%  & 7 \\
+\bottomrule
+\end{tabular}
+\end{table}

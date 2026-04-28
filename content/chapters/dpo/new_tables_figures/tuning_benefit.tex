@@ -1,0 +1,27 @@
+\begin{table*}[t]
+\centering
+\caption{Benefit of tuning method-specific hyperparameters across the 7 PnO benchmark tasks. Each cell shows three numbers stacked top-to-bottom: \emph{fixed} (method-specific HP at default values, with the Phase-1 val-best $(\eta, b)$), \emph{tuned} (best HP value across the Phase-2 grid, selected by minimum validation decision regret), and $\Delta=({\rm fixed}-{\rm tuned})/|{\rm fixed}|$ (positive = tuning helps). Numbers are test relative regret (absolute regret for \textit{Pf}). Methods without a method-specific HP show only the middle (tuned) row. Cells shaded green when $\Delta\geq 5\%$, red when $\Delta\leq -5\%$. Per-method mean $\Delta$ across applicable problems (descending): DFL\,+25.6\% (7), lsLTR\,+14.1\% (7), Blackbox\,+12.3\% (7), PG\,+6.5\% (6), DPO\,+3.2\% (7), LODL\,+1.8\% (7). Columns: KS=knapsack-synth, KS-E=knapsack-energy, En=energy, BA=budgetalloc, Cu=cubic, BM=bipartite, Pf=portfolio.}
+\label{tab:tuning-benefit}
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{0.9}
+{\footnotesize
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+ & KS & KS-E & En & BA & Cu & BM & Pf \\
+\midrule
+MSE & \makecell[c]{--\\0.054\\--} & \makecell[c]{--\\0.076\\--} & \makecell[c]{--\\0.020\\--} & \makecell[c]{--\\0.366\\--} & \makecell[c]{--\\0.000\\--} & \makecell[c]{--\\0.919\\--} & \makecell[c]{--\\0.221\\--} \\
+DFL & \cellcolor{green!18}\makecell[c]{0.242\\0.067\\+72.3\%} & \cellcolor{green!18}\makecell[c]{0.096\\0.071\\+26.0\%} & \makecell[c]{0.171\\0.171\\0.0\%} & \makecell[c]{0.225\\0.228\\-1.3\%} & \cellcolor{green!18}\makecell[c]{0.135\\0.022\\+83.7\%} & \makecell[c]{0.927\\0.943\\-1.7\%} & \makecell[c]{0.276\\0.276\\0.0\%} \\
+Identity & \makecell[c]{--\\0.238\\--} & \makecell[c]{--\\0.351\\--} & \makecell[c]{--\\0.171\\--} & \makecell[c]{--\\0.147\\--} & \makecell[c]{--\\0.139\\--} & \makecell[c]{--\\0.922\\--} & \makecell[c]{--\\0.280\\--} \\
+SPO\textsuperscript{+} & \makecell[c]{--\\0.063\\--} & \makecell[c]{--\\0.070\\--} & \makecell[c]{--\\0.018\\--} & \makecell[c]{--\\0.051\\--} & \makecell[c]{--\\1.604\\--} & \makecell[c]{--\\0.922\\--} & \makecell[c]{--\\0.230\\--} \\
+NCE & \makecell[c]{--\\0.148\\--} & \makecell[c]{--\\0.120\\--} & \makecell[c]{--\\0.019\\--} & \makecell[c]{--\\0.086\\--} & \makecell[c]{--\\1.426\\--} & \makecell[c]{--\\0.900\\--} & \makecell[c]{--\\0.310\\--} \\
+Blackbox & \makecell[c]{0.243\\0.243\\0.0\%} & \makecell[c]{0.366\\0.366\\0.0\%} & \cellcolor{green!18}\makecell[c]{0.066\\0.035\\+47.6\%} & \cellcolor{green!18}\makecell[c]{0.170\\0.106\\+37.6\%} & \makecell[c]{0.139\\0.139\\0.0\%} & \makecell[c]{0.926\\0.919\\+0.8\%} & \makecell[c]{0.268\\0.268\\0.0\%} \\
+ptLTR & \makecell[c]{--\\0.058\\--} & \makecell[c]{--\\0.084\\--} & \makecell[c]{--\\0.020\\--} & \makecell[c]{--\\0.042\\--} & \makecell[c]{--\\0.001\\--} & \makecell[c]{--\\0.921\\--} & \makecell[c]{--\\0.251\\--} \\
+prLTR & \makecell[c]{--\\0.079\\--} & \makecell[c]{--\\0.110\\--} & \makecell[c]{--\\0.020\\--} & \makecell[c]{--\\0.079\\--} & \makecell[c]{--\\0.004\\--} & \makecell[c]{--\\0.909\\--} & \makecell[c]{--\\0.255\\--} \\
+lsLTR & \makecell[c]{0.059\\0.059\\0.0\%} & \makecell[c]{0.072\\0.072\\0.0\%} & \makecell[c]{0.020\\0.020\\+0.1\%} & \makecell[c]{0.036\\0.036\\0.0\%} & \cellcolor{green!18}\makecell[c]{0.006\\0.000\\+98.4\%} & \makecell[c]{0.898\\0.898\\0.0\%} & \makecell[c]{0.232\\0.232\\0.0\%} \\
+LODL & \makecell[c]{0.240\\0.240\\0.0\%} & \makecell[c]{0.099\\0.099\\0.0\%} & \makecell[c]{0.024\\0.024\\+1.4\%} & \cellcolor{green!18}\makecell[c]{0.561\\0.498\\+11.2\%} & \makecell[c]{0.042\\0.042\\0.0\%} & \makecell[c]{0.939\\0.939\\0.0\%} & \makecell[c]{0.242\\0.242\\0.0\%} \\
+DPO & \cellcolor{green!18}\makecell[c]{0.138\\0.080\\+42.1\%} & \cellcolor{green!18}\makecell[c]{0.105\\0.095\\+9.4\%} & \makecell[c]{0.020\\0.020\\0.0\%} & \cellcolor{red!18}\makecell[c]{0.056\\0.073\\-29.9\%} & \makecell[c]{0.135\\0.135\\+0.1\%} & \makecell[c]{0.940\\0.936\\+0.5\%} & \makecell[c]{0.382\\0.382\\0.0\%} \\
+PG & \makecell[c]{0.111\\0.111\\0.0\%} & \cellcolor{green!18}\makecell[c]{0.087\\0.081\\+6.4\%} & \makecell[c]{0.019\\0.019\\0.0\%} & \multicolumn{1}{c}{--} & \cellcolor{green!18}\makecell[c]{0.072\\0.049\\+31.8\%} & \makecell[c]{0.907\\0.907\\0.0\%} & \makecell[c]{0.356\\0.353\\+0.8\%} \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

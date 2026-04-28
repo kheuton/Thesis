@@ -1,12 +1,13 @@
-\begin{figure*}[t]
+\begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/surrogate_vs_regret_pub_2x3.pdf}
+\includegraphics[width=\linewidth]{figures/hyperplane_landscape_MA.pdf}
 
-% Tighten space before caption (local to this figure)
+\vspace{0.4em}
+\includegraphics[width=\linewidth]{figures/hyperplane_landscape_asurv.pdf}
+
 \vspace{-0.3em}
 \setlength{\abovecaptionskip}{2pt}
 \setlength{\belowcaptionskip}{0pt}
-
-\caption[Interpolation between DPO-learned and Surrogate-learned solutions on real-world datasets.]{\textbf{Interpolation between DPO-learned and Surrogate-learned solutions} \textit{Top Row:} PG loss and regret evaluated using models with parameters uniformly interpolated between the solution learned by DPO and the solution learned by PG on two public health and one wildlife datasets. \textit{Bottom Row:} The same for SPO+. We see that the DPO loss universally learned model parameters that result in lower decision regret on the heldout dataset. Additionally, the DPO solution almost always has a higher surrogate loss value, indicating that the surrogate methods would prefer the higher regret model to the one with lower decision regret.}
+\caption[Top-K site selection: loss landscapes on the affine hyperplane for the Massachusetts opioid and aerial-survey tasks.]{\textbf{Top-K site selection on Massachusetts opioid (top) and Aransas aerial survey (bottom).} Same construction as Fig.~\ref{fig:topK_interpolation_main}: heldout-test BPR, NLL, SPO\textsuperscript{+}, and PG losses on the affine hyperplane $\theta(s,t)=(1-s-t)\theta_{DPO}+s\,\theta_{PG}+t\,\theta_{SPO^+}$. Surrogate hyperparameters per task appear in each figure footer.}
 \label{fig:topK_interpolation_6panel}
-\end{figure*}
+\end{figure}

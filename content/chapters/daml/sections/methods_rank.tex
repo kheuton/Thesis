@@ -28,8 +28,12 @@ The sum over any $K$ entries of vector $\bm{y}$ in the denominator of BPR is the
     } \cdot \textsc{TopKMask}( \bm{r}, K)
     }_{\leq \text{BPR}(\bm{r}, \bm{y})}
 \end{align}
-Many solutions exist: any vector $\bm{r}^*$ 
-that satisfies $\textsc{TopKMask}(\bm{r}^*, K) = \textsc{TopKMask}(\mathbb{E}_{p_{\phi}}[\bm{y}], K)$ can be an argmin. One valid solution here is the per-site mean $\bm{\bar{r}}(\phi) = \mathbb{E}_{p_{\phi}}[\bm{y}]$. However, this solution is optimal for a potentially quite loose bound on BPR that approximates the denominator with the constant $K \cdot U$.
+Many solutions exist: any vector $\bm{r}^*$
+that satisfies
+\[
+    \textsc{TopKMask}(\bm{r}^*, K) = \textsc{TopKMask}(\mathbb{E}_{p_{\phi}}[\bm{y}], K)
+\]
+can be an argmin. One valid solution here is the per-site mean $\bm{\bar{r}}(\phi) = \mathbb{E}_{p_{\phi}}[\bm{y}]$. However, this solution is optimal for a potentially quite loose bound on BPR that approximates the denominator with the constant $K \cdot U$.
 
 \textbf{Tighter bound suggests the ratio estimator for ranking.} 
 Instead of bounding with constant $K \cdot U$, we can upper bound the denominator in Eq.~\eqref{eq:loss_bpr_how_to_rank} by summing over all $S$ terms instead of the top $K$:

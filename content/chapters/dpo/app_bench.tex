@@ -1,4 +1,12 @@
 \section{PnO 7 Task Benchmark: Further Details}
 \label{app:bench}
 \subsection{Dataset descriptions}
-\textbf{Knapsack} using both synthetic and real energy data, \textbf{Energy Scheduling} using the same real-world dataset, \textbf{Budget allocation} based on an internet advertising dataset, \textbf{TopK selection} on synthetic data,  \textbf{Bipartite Matching} on graphs of citation data, and \textbf{Portfolio optimization} on stock data. 
+\textbf{Knapsack} using both synthetic and real energy data, \textbf{Energy Scheduling} using the same real-world dataset, \textbf{Budget allocation} based on an internet advertising dataset, \textbf{TopK selection} on synthetic data,  \textbf{Bipartite Matching} on graphs of citation data, and \textbf{Portfolio optimization} on stock data.
+
+\subsection{Hyperparameter tuning: per-task breakdown}
+Tab.~\ref{tab:tuning-benefit} reports, for every method with a method-specific hyperparameter, the test regret obtained at a fixed default value, the test regret obtained at the validation-best Phase-2 value, and the relative improvement $\Delta$.
+\input{content/chapters/dpo/new_tables_figures/tuning_benefit.tex}
+
+\subsection{Train / validation / test error per task}
+The following tables report train, validation, and test prediction loss and decision regret for every method on every benchmark task, using the val-best hyperparameter combination for each cell.
+\input{content/chapters/dpo/new_tables_figures/error_per_problem.tex}

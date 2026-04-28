@@ -4,6 +4,7 @@
 \begin{minipage}{0.45\textwidth}
 \centering
 \setlength{\tabcolsep}{1mm}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lrrr}
 \toprule
 \textbf{ANWR TX Cranes} & \textbf{MAE} & \textbf{RMSE} & \textbf{BPR-50} \\
@@ -18,7 +19,8 @@ NLL Only & 0.35 & 1.14 & 0.38 \\
 DAML ($\epsilon=1$) & 9.08 & 35.89 & 0.39 \\
 BPR Only & 40495 & 40495 & 0.41 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption*{(a) ANWR TX Cranes 2009-2010.}
 \end{minipage}
 %\hfill
@@ -26,6 +28,7 @@ BPR Only & 40495 & 40495 & 0.41 \\
 \begin{minipage}{0.45\textwidth}
 \centering
 \setlength{\tabcolsep}{1mm}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lrrr}
 \toprule
 \textbf{Cook County IL Overdose} & \textbf{MAE} & \textbf{RMSE} & \textbf{BPR-100} \\
@@ -40,7 +43,8 @@ NLL Only & 1.03 & 1.58 & 0.78 \\
 DAML ($\epsilon=1$) & 1.12 & 1.84 & 0.80 \\
 BPR Only & 70.31 & 152.72 & 0.82 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \caption*{(b) Cook County IL 2021-2022.}
 \end{minipage}
 \caption[Performance comparison between model families for error-based and decision metrics.]{Performance comparison between different model families for error-based and decision metrics. The top 2 rows represent simple historical baselines: using either the previous timestep alone, or an average over a larger amount (10 bi-months for the crane dataset, and 5 years for Cook County). Next, the \emph{Chance decision} model chooses spatial locations by random chance, and uses all 0's for predicted $\hat{y}$ in MAE and RMSE calculations. Despite the simplicity, this is a competitive model on the error-based metrics due to sparsity. It outperforms all others on MAE on the Cranes dataset. Next is EpiGNN, a spatiotemporal forecasting model based on graph neural networks, trained to minimize RMSE. Although this model has the best performing RMSE on the crane dataset, it makes poor top-K decisions on both. Finally, the last three rows show different ways to train the negative binomial mixed effects regression model in \ref{eq:model}. \emph{NLL Only} trains to maximize likelihood alone (\ref{eq:ml_obj}), \emph{BPR Only} is our direct-loss minimization trained to maximize BPR alone (\ref{eq:dlm_obj}), and DAML (\ref{eq:hybrid_obj}) is our hybrid loss that allows a user to explore the pareto frontier between likelihood and BPR-K.}
