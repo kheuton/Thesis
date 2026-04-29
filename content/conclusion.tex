@@ -12,20 +12,23 @@ We also explored problems beyond public health, including a wildlife conservatio
 
 % Summarize benchmarking
 In Chapter 5 we turned our attention to understand why some decision-aware learning methods perform better than others, and to provide practical guidance for practitioners looking to implement these methods. \
-Here we decomposed the analysis of decision-aware methods into two components: what solutions does the method prefer, and which solutions is it capabale of learning via gradient descent. \
+Here we decomposed the analysis of decision-aware methods into two components: what solutions does the method prefer, and which solutions is the method capable of learning via gradient descent. \
 We also found that many tasks used in common decision-aware benchmarks do not actually benefit from decision-aware methods, and propose several open-source alternatives. 
 
 % Summarize thesis and suggest future benchmarking working
-Taken together, these contributions provide end-to-end guidance for the training and evaluation of decision-aware machine learning techniques. \
-However, crucial open questions remain. \
-Although we have demonstrated more careful benchmarking comparisons between methods, we lack an analytical of understand of the factors that shape each decision-aware method's loss landscape, and what influences the solutions it can learn with gradient descent. \
-Important work also remains to be done on the training of these models; rather than treating all data equally, are some samples more important for decision-aware learning?
+Taken together, these contributions provide end-to-end guidance for the training and evaluation of decision-aware machine learning techniques.
+However, crucial open questions remain. Although we have demonstrated the importance of more careful benchmarking comparisons between methods, we still lack an analytical understanding of when decision-aware learning is beneficial, and how this depends on the structure of the downstream optimization problem and the role predictions play in determining the final decision. \
+Future work should therefore develop new benchmark tasks that more clearly expose the conditions under which decision-aware learning offers advantages over decision-unaware two-stage approaches. \
+Aditionally, new training methods are needed that make more principled use of prediction error within decision-aware learning as suggested in Chapter \ref{chap:daml}. \
+Rather than discarding predictive accuracy as irrelevant, these methods should identify which errors are decision-critical and allocate learning effort accordingly, avoiding overemphasis on errors that are either too easy to correct or unlikely to affect the downstream decision. \
 
 % suggest DTR, patient intervention, and inference
 Beyond the largely social-science focused problems considered in this thesis, decision-aware methods have widespread applications in many domains. \
 One particularly exciting domain is that of machine learning training and inference itself. \
 In the twilight of Moore's Law, the rise of expensive foundation model inference has made computational efficiency more important than ever. \
-The advent of test-time compute, wherein model performance can scale (linearly!) with additional computation after training, has turned model inference into a budgeting problem. \
+Recent work has shown that by simply sampling more model outputs at test time, performance (as measured by at least one sample getting the correct response) can improve log-linearly with compute \citep{brownLargeLanguageMonkeys2024}.\
+This has trasformed the simple act of using a model to output predictions into a budgeting problem. \
+How we spend resources at test-time is a meaninful axis of model improvement: \cite{muennighoffS1SimpleTesttime2025a} showed consistent improvement over several-orders of magnitude, taking models from 0 to 60\% accuracy on challenging math datasets, and outperforming pretrined models with many more parameters. \
 Here decision-aware methods can help answer the question of how to best spend fixed computational budgets to achieve optimal results from model inference. \
 Furthermore, if model inference is now a decision task, should we be training all models in a budget conscious, decision aware way? \
 We hope that the methods and findings of this thesis help to explore these questions in future work.

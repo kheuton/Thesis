@@ -45,7 +45,7 @@ The decision function is piecewise constant with respect to the model parameters
 
 %In addition, empirical evaluations of these approaches are often incomplete and fragmented across different decision problems.
 To address this uniformative grtadient challenge, a variety of methods have been proposed that proivde approximate objectives or approximate gradients that can be used to train decision-aware models. \
-Benchmarking efforts that compare these methods are emerging \citep{gengBenchmarkingPtOPnO2024,shahLeavingNestGoing2023,tangPyEPOPyTorchbasedEndtoend2024}, but none are exhaustive and often include tasks which do not benefit from decision-aware learning. \
+Benchmarking efforts that compare these methods are emerging \citep{gengBenchmarkingPtOPnO2024,shahLeavingNestGoing2023,tangPyEPOPyTorchbasedEndtoend2024}, but none are exhaustive and often include tasks which do not benefit from decision-aware learning (which is demonstrated in Chapter \ref{chap:dpo}). \
 No clear guidance exists for practitioners on which method to select for a given decision problem. \
 
 This thesis therefore asks the following central question: how can machine learning models be trained and evaluated so that they produce better decisions when allocating limited resources?
@@ -55,8 +55,8 @@ In the following chapters, the thesis introduces three contributions that improv
 \section{Thesis Overview}
 The rest of the thesis is organized as follows:
 \begin{itemize}
-    \item The work in Chapter \ref{chap:bpr} has been published in the American Journal of Epidemiology as a contribution to public health methodology. Here I directly consider the problem of \emph{evaluating} forecasts of opioid overdose deaths, and introduce a new metric called Best Possible Reach (BPR) that better captures the decision quality of these forecasts.
+    \item The work in Chapter \ref{chap:bpr} has been published in the American Journal of Epidemiology as a contribution to public health methodology \citep{heutonSpatiotemporalForecastingOpioidrelated2024}. Here I directly consider the problem of \emph{evaluating} forecasts of opioid overdose deaths, and introduce a new metric called Best Possible Reach (BPR) that better captures the decision quality of these forecasts.
     \item The work in Chapter \ref{chap:daml} was presented at the 2025 International Conference on Machine Learning where it was accepted for its machine learning research contributions \citep{heuton2025decisionaware}. In this work I address the \emph{training} of decision-aware machine learning models, and introduce a new method called Decision-Aware Maximum Likelihood (DAML) that jointly optimizes for decision quality and probabilistic maximum likelihood. I also demonstrate the method on problems beyond public health.
-    \item In Chapter \ref{chap:dpo}, I set out to \emph{benchmark} different decision-aware learning methods. Here, I demonstrate several shortcomings in existing benchmarks and provide \emph{practical guidance} for both researchers studying these methods and practitioners looking to implement them. Preliminary work from this chapter has been accepted for presentation at the OPTIMAL: Optimisation and Post-Bayesian Inference in Machine Learning workshop at AISTATS 2025.
+    \item In Chapter \ref{chap:dpo}, I set out to \emph{benchmark} different decision-aware learning methods. Here, I demonstrate several shortcomings in existing benchmarks and provide \emph{practical guidance} for both researchers studying these methods and practitioners looking to implement them. Preliminary work from this chapter has been accepted for presentation at the OPTIMAL: Optimisation and Post-Bayesian Inference in Machine Learning workshop at AISTATS 2026.
 \end{itemize}
 

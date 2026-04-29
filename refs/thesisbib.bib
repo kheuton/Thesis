@@ -5193,3 +5193,41 @@ While this dataset is a valuable resource, users should note the following quali
   keywords = {contextual stochastic optimization,end-to-end optimization,estimate and then optimize,personalized decision making}
 }
 
+
+@misc{brownLargeLanguageMonkeys2024,
+  title = {Large {{Language Monkeys}}: {{Scaling Inference Compute}} with {{Repeated Sampling}}},
+  shorttitle = {Large {{Language Monkeys}}},
+  author = {Brown, Bradley and Juravsky, Jordan and Ehrlich, Ryan and Clark, Ronald and Le, Quoc V. and R{\'e}, Christopher and Mirhoseini, Azalia},
+  year = 2024,
+  month = dec,
+  number = {arXiv:2407.21787},
+  eprint = {2407.21787},
+  primaryclass = {cs},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2407.21787},
+  urldate = {2025-08-29},
+  abstract = {Scaling the amount of compute used to train language models has dramatically improved their capabilities. However, when it comes to inference, we often limit models to making only one attempt at a problem. Here, we explore inference compute as another axis for scaling, using the simple technique of repeatedly sampling candidate solutions from a model. Across multiple tasks and models, we observe that coverage -- the fraction of problems that are solved by any generated sample -- scales with the number of samples over four orders of magnitude. Interestingly, the relationship between coverage and the number of samples is often log-linear and can be modelled with an exponentiated power law, suggesting the existence of inference-time scaling laws. In domains like coding and formal proofs, where answers can be automatically verified, these increases in coverage directly translate into improved performance. When we apply repeated sampling to SWE-bench Lite, the fraction of issues solved with DeepSeek-Coder-V2-Instruct increases from 15.9\% with one sample to 56\% with 250 samples, outperforming the single-sample state-of-the-art of 43\%. In domains without automatic verifiers, we find that common methods for picking from a sample collection (majority voting and reward models) plateau beyond several hundred samples and fail to fully scale with the sample budget.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning},
+  file = {C\:\\Users\\kheut\\Zotero\\storage\\JTRJIUNZ\\Brown et al. - 2024 - Large Language Monkeys Scaling Inference Compute with Repeated Sampling.pdf;C\:\\Users\\kheut\\Zotero\\storage\\T4GDH3YF\\2407.html}
+}
+
+@inproceedings{muennighoffS1SimpleTesttime2025a,
+  title = {S1: {{Simple}} Test-Time Scaling},
+  shorttitle = {S1},
+  booktitle = {Proceedings of the 2025 {{Conference}} on {{Empirical Methods}} in {{Natural Language Processing}}},
+  author = {Muennighoff, Niklas and Yang, Zitong and Shi, Weijia and Li, Xiang Lisa and Fei-Fei, Li and Hajishirzi, Hannaneh and Zettlemoyer, Luke and Liang, Percy and Candès, Emmanuel and Hashimoto, Tatsunori},
+  editor = {Christodoulopoulos, Christos and Chakraborty, Tanmoy and Rose, Carolyn and Peng, Violet},
+  date = {2025-11},
+  year = {2025},
+  pages = {20275--20321},
+  publisher = {Association for Computational Linguistics},
+  location = {Suzhou, China},
+  doi = {10.18653/v1/2025.emnlp-main.1025},
+  url = {https://aclanthology.org/2025.emnlp-main.1025/},
+  urldate = {2026-04-29},
+  abstract = {Test-time scaling is a promising new approach to language modeling that uses extra test-time compute to improve performance. Recently, OpenAI's o1 model showed this capability but did not publicly share its methodology, leading to many replication efforts. We seek the simplest approach to achieve test-time scaling and strong reasoning performance. First, we curate a small dataset s1K of 1,000 questions paired with reasoning traces relying on three criteria we validate through ablations: difficulty, diversity, and quality. Second, we develop budget forcing to control test-time compute by forcefully terminating the model's thinking process or lengthening it by appending “Wait” multiple times to the model's generation when it tries to end. This can lead the model to double-check its answer, often fixing incorrect reasoning steps. After supervised finetuning the Qwen2.5-32B-Instruct language model on s1K and equipping it with budget forcing, our model s1 exceeds o1-preview on competition math questions by up to 27\% (MATH and AIME24). Further, scaling s1 with budget forcing allows extrapolating beyond its performance without test-time intervention: from 50\% to 57\% on AIME24. Our model, data, and code are open-source at https://github.com/simplescaling/s1.},
+  eventtitle = {{{EMNLP}} 2025},
+  isbn = {979-8-89176-332-6},
+  file = {C:\Users\kheut\Zotero\storage\2X8FPRHE\Muennighoff et al. - 2025 - s1 Simple test-time scaling.pdf}
+}
