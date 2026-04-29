@@ -2,15 +2,15 @@ Machine learning (ML) models may inform real-world decisions with high-stakes co
 %``Which ICU patients need extra intervention?,'' 
 ``Is air quality sufficient to go outside now?''~\citep{berlinghieri2026hourly},
 ``Where should scarce public resources be allocated?''~\citep{heuton2025decisionaware},  or ``Which route should I take?'' \citep{tangPyEPOPyTorchbasedEndtoend2024}. 
-Ideally, prediction models would be directly trained to optimize a loss tailored to the stakes of the decisions at hand. In most cases, this \emph{decision-aware} end-to-end training should make superior decisions~\citep{elmachtoubDissectingImpactModel2025}. 
+Ideally, prediction models would be directly trained to optimize a loss tailored to the stakes of the decisions at hand. When the underlying model is misspecified (as is often the case when dealing with real-world data), this \emph{decision-aware} end-to-end training should make superior decisions~\citep{elmachtoubDissectingImpactModel2025}. 
 %For a broader survey of possible end-to-end methods, see~\citet{mandi_decision-focused_2024}.
 
 
-Yet many decision problems of practical interest have a loss that is piecewise constant as a function of model parameters. Consequently, gradients of the loss with respect to parameters will be 0 almost everywhere. 
+Many decision problems of practical interest have a loss that is piecewise constant as a function of model parameters. Consequently, gradients of the loss with respect to parameters will be 0 almost everywhere. 
 All zero gradients mean that gradient descent, one of ML's go-to tools for parameter learning, will be ineffective. 
 %Without informative gradients, an optimizer can never move away from an initial parameter value no matter how bad it is.
 To overcome this limitation, many methods have been proposed~\citep{mandi_decision-focused_2024}. 
-As the number of methods have increased, new methods papers have appropriately tried to compare their methods to the other options, and a recent benchmark study \citep{gengBenchmarkingPtOPnO2024} has attempted to provide a common suite of tasks so that models can be assessed on an equal ground.
+As the number of methods have increased, new methods papers have appropriately tried to compare their methods to the other options, and a recent benchmark study on so called "Predict-then-Optimize" methods \citep{gengBenchmarkingPtOPnO2024} has attempted to provide a common suite of tasks so that models can be assessed on an equal ground.
 %In recent years, several methods papers and benchmark studies have begun to offer apples-to-apples comparisons of different methods on synthetic and real problems. 
 
 % We consider two families of methods here. In Perturbation methods~\citep{abernethyPerturbationTechniquesOnline2016,berthetLearningDifferentiablePerturbed2020}, informative gradients are obtained by adding noise to model outputs.
@@ -26,11 +26,15 @@ As the number of methods have increased, new methods papers have appropriately t
 %Despite discussing \citeauthor{berthetLearningDifferentiablePerturbed2020}'s DPO in related work, at least two high-profile recent studies~\citep{huang2024decisionfocusedPG,gengBenchmarkingPtOPnO2024} omit DPO entirely from their experiments. 
 %Additionally, while the PyEPO benchmark~\citep{tangPyEPOPyTorchbasedEndtoend2024} represents a huge value for the community, unfortunately some released DPO code has a subtle correctness issue (see App.~A).
 
-However, we have found that many of these comparison tasks are not appropriate for decision-aware methods. In 6 of the 7 tasks presented in the Predict-then-Optimize benchmark, we show that with minor hyperparameter search,  a two-stage, \textit{decision-unaware} approach is either the best method (4 of 7 tasks) or competitive with the best methods (2 of 7 tasks) as assessed by decision-quality on held out data. In fact, if the one task in which the two-stage approach does poorly (budget allocation) is excluded, this decision-unaware approach has the highest average rank of all decision-aware methods considered. We attribute this to most benchmark tasks falling into a well-specified regime, where two-stage MSE is known to be advantaged \citep{elmachtoubDissectingImpactModel2025, huFastRatesContextual2022}.
+However, we have found that many of these comparison tasks are not ideal for decision-aware methods. In 6 of the 7 tasks presented in the Predict-then-Optimize benchmark, we show that with a slightly expanded hyperparameter search,   \textit{decision-unaware} approach that trains to minimize prediction error and then later solves the optimization task (called a two-stage approach) is either the best method (4 of 7 tasks) or competitive with the best methods (2 of 7 tasks) as assessed by decision-quality on held out data. \
+In fact, if the one task in which the two-stage approach does poorly (Budget Allocation) is excluded, this decision-unaware approach has the highest average rank of all decision-aware methods considered. \
+We attribute this to most benchmark tasks falling into a well-specified regime, where two-stage MSE is known to be advantaged \citep{elmachtoubDissectingImpactModel2025, huFastRatesContextual2022}. \
+Here we use the definition of misspecification from \cite{elmachtoubDissectingImpactModel2025}, which is the difference in decision loss between the two-stage model and a model trained with the decision-aware objective.
 
-In this work, we show how common decision-aware benchmark tasks do not benefit from decision-aware learning at all. Our contributions are:
+In this work, we show how several common decision-aware benchmark tasks do not benefit from decision-aware learning at all. Our contributions are:
 \begin{itemize}[leftmargin=*,noitemsep,topsep=0pt]
-    \item We re-evaluate end-to-end learning methods from \citeauthor{gengBenchmarkingPtOPnO2024}'s benchmarks (Fig.~\ref{fig:bench_bump}, \ref{fig:budget_bump}, \ref{fig:portfolio_bump}), and show how competitive decision-unaware approaches can be with minor hyperparameter tuning.
+    \item We re-evaluate end-to-end learning methods from \citeauthor{gengBenchmarkingPtOPnO2024}'s benchmarks (Fig.~\ref{fig:bench_bump}, \ref{fig:budget_bump}, \ref{fig:portfolio_bump}), and show how competitive decision-unaware approaches can be with a slightly expanded hyperparameter tuning grid (fewer learning rates, more batch sizes, and tuning of method-specific parameters).
+    \item We provide an assessment of which tasks are suitable for future decision-aware learning research.
     \item We analyze the benchmark tasks from ~\citet{huang2024decisionfocusedPG} (Fig.~\ref{fig:noisy_synth_sweep},~\ref{fig:noisy_synth_regret}), and show how these were constructed to create a scenario where decision-aware approaches are truly beneficial. 
     \item We provide guidance on how practitioners should evaluate decision-aware methods by reconsidering the top-K site selection tasks from Chapter~\ref{chap:daml}~\citep{heuton2025decisionaware} (Fig.~\ref{fig:topK_interpolation_main}).
     %We also examine easy-to-understand synthetic datasets, where we show empirically that DPO shares two desireable properties of best of surrogate loss methods~\citep{huang2024decisionfocusedPG}: (1) DPO's preferred parameter aligns with the ideal regret minimizer even under misspecification; and (2) as training set size increases, estimated model's regret decreases.
@@ -39,7 +43,7 @@ In this work, we show how common decision-aware benchmark tasks do not benefit f
     
     %\item We further reveal that a strong surrogate method well-suited for misspecified real-world scenarios, PG~\citep{huang2024decisionfocusedPG}, also has a key hyperparameter sensitivity where  even recommended settings can yield subpar regret (see Fig.~\ref{fig:noisy_synth_triptych}).
 \end{itemize}
-Our work suggests that common benchmarking tasks may be giving an inaccurate picture of the relative performance of decision-aware methods. We hope this spurs greater innovation in benchmarking tasks and deeper understand of the relative strengths and weaknesses in decision-aware learning methods.
+Our work suggests that common benchmarking tasks may be giving an inaccurate picture of the relative performance of decision-aware methods, and that too-limited hyperparameter tuning protocols may be obscuring the strength of two-stage, decision-unaware methods. We hope this spurs greater innovation in benchmarking tasks and deeper understand of the relative strengths and weaknesses in decision-aware learning methods.
 
 
 %    \item We provide a ``User's Guide'' for key methods from both families tailored to machine learning practitioners. Each guide explains the method's core ideas and inner workings in common notation. Each guide offers clear guidance when a method might be a good fit for the problem at hand, and a clear recipe for hyperparameter tuning backed by reusable code.

@@ -2,9 +2,12 @@ In these problems, a decision $z\in\mathcal{Z}$ must be chosen from a
 discrete feasible set to minimize a cost that depends on outcomes $Y$ that are
 unknown at decision time. We model $Y$ as a random variable produced from a
 conditional distribution given observed features $X=x$. 
-For example, in a later top-K site selection tasks each $z$ represents an indicator vector that picks $K$ sites for intervention out of many, while vector $y$ has an observed score for each site, with smaller values indicating desirable sites given $x$.
+For example, in a later top-K site selection tasks each $z$ represents an indicator vector that picks $K$ sites for intervention out of many, while vector $y$ has an observed score for each site, with smaller values indicating desirable sites given $x$. \
+This notation slightly differs from previous chapters, where a higher score meant a better opportunity to intervene on more overdoses or observe more wildlife. \
+Here we want to minimize a total cost and act on the places with the lowest scores. \
+To put it in terms of our grounding public health example: the human cost of lives lost is minimized when we intervene on the places with the most overdose deaths. To convert deaths to a suitable score, we could simply negate the count. \
 %hospitalized patient monitoring application, $z$ may represent a subset of patients selected to receive additional clinical attention from among all feasible subsets $\mathcal{Z}$, while $y$ indicates survival or death in next 24 hours for all patients, given patient-specific attributes $x$. 
-The decision to do $z$ when the outcome is $y$ incurs a scalar cost $c(z,y)$. 
+We write that  the decision to do action $z$ when the outcome is $y$ incurs a scalar cost $c(z,y)$. 
 
 The decision-making problem is, given an $x$, to solve for the value(s) of $z$ with lowest expected cost,\begin{align}
 %% OLD VERSION:
@@ -18,26 +21,37 @@ Here, the parameter $\theta \in \mathbb{R}^P$ defines a conditional distribution
 At decision-making time (``test time''), only features $x$ and parameter $\theta$ are available; the realization of $Y$ is
 unknown until later.
 
-The training problem is to estimate $\theta$ given observed data $\{(x_i,y_i)\}_{i=1}^n$ assumed drawn i.i.d.\ from the joint distribution
-of $(X,Y)$.
-We could learn $\theta$ to  maximize the likelihood $p_{\theta}(Y|X)$ given observed data.
-However, end-to-end methods seek an estimated $\theta$ that delivers good decisions via Eq.~\eqref{eq:decisions} when used on never-before-seen contexts $X{=}x'$ drawn from the same distribution.
-To solve this, training can be framed as a cost minimization problem: $\theta^* \gets \arg\!\min_{\theta} \sum_{i=1}^n c(z^*(x_i,\theta), y_i)$.
-
 \textbf{Linear cost assumption.} A common assumption \citep{berthetLearningDifferentiablePerturbed2020, elmachtoubSmartPredictThen2022, huang2024decisionfocusedPG} is that cost is a linear inner product $c(z, y) = 
 \langle z, y\rangle$. This is to say that the optimization problem can be written as a linear program (LP).
-We note that this is not a restrictive assumption: for any score function $s$ which maps a decision vector $z \in \mathcal{Z}$ to a real-valued scalar, we can write $\max_{z \in \mathcal{Z}} s(z)$ as a linear program for some embedding of $\mathcal{Z}$ \citep{berthetLearningDifferentiablePerturbed2020}.
-Even for methods which depend on a linear program formulation for the optimization problem, it is not required to know the LP formulation to apply these methods \citep{berthetLearningDifferentiablePerturbed2020}.
+We note that this is not a restrictive assumption: for any score function $s$ which maps a decision vector $z \in \mathcal{Z}$ to a real-valued scalar, we can write $\max_{z \in \mathcal{Z}} s(z)$ as a linear program for some embedding of $\mathcal{Z}$ \citep{berthetLearningDifferentiablePerturbed2020}, though this embedding may be nonlinear and grow with $|\mathcal{Z}|$ (and need not be known explicitly to apply these methods, given a blackbox optimization oracle). As a worst case, a vacuous embedding places each feasible decision on its own dimension, recovering an LP over the simplex of $|\mathcal{Z}|$ vertices.
 
-For the rest of this paper, we will assume a linear cost objective.
-Here $z$ and $y$ are vectors of size $D$ and  decisions simplify due to linearity of expectation: $z^*(x,\theta) = \arg\!\min_{z \in \mathcal{Z}} 
-\langle z, \hat{y}_{\theta}(x) \rangle$, where $\hat{y}_{\theta}(x)$ denotes the mean of $Y$ under $p_{\theta}(Y | X=x)$.
+For most of this chapter we will assume a linear cost objective; the notable exception is the budget allocation task in Section~\ref{sec:bench-budget}, which has a submodular (nonlinear) cost.
+Here $z$ and $y$ are vectors of size $D$. Linearity of the cost in $y$ allows the expectation to collapse: $\mathbb{E}[\langle z, Y\rangle\mid X{=}x] = \langle z, \hat{y}_{\theta}(x)\rangle$, where $\hat{y}_{\theta}(x)$ denotes the mean of $Y$ under $p_{\theta}(Y | X=x)$. Decisions then depend only on the conditional mean, and the inner minimization reduces to $z^*(x,\theta) = \arg\!\min_{z \in \mathcal{Z}} \langle z, \hat{y}_{\theta}(x) \rangle$, a linear program. Linearity in $y$ alone is enough for this expectation step. We note that the portfolio task in Section~\ref{sec:bench-portfolio} has a cost $\langle z, y\rangle - z^\top A z$ that is linear in $y$ but quadratic in $z$, so the inner minimization is a quadratic program rather than an LP.
 Here we see the key challenge in decision-aware learning: the decision problem is  piecewise constant as a function of $\hat{y}_{\theta}$. Its flatness yields all-zero gradients which break gradient-based learning of $\theta$.
 
-\subsection{Two-Stage, Decision-unaware learning}
-Given that our decision problem does not have informative gradients, a natural choice is to not model the decision problem at all, and only train the prediction model by minimizing error between $y$ and $\hat{y}_\theta$ (for this reason, this approach is called MSE (mean squared error) by \citeauthor{gengBenchmarkingPtOPnO2024}'s benchmark). Once a value for $\hat{y}_{\theta}$ is obtained, the optimization solver is called and we obtain our decision. This choice is well-motivated; it is obvious that $\theta$ only enters our decision objective via $\hat{y}_\theta$. Indeed, for well-specified models, a two-stage approach has advantages over decision-aware methods by learning the simpler predictive model and computing the more expensive optimization problem \cite{elmachtoubDissectingImpactModel2025}. However, for interesting real-world decision problems our model will always be misspecified, and training with a decision aware objective can lead to better downstream decisions.
+\subsection{Training: Decision-unaware vs Decision-aware}
 
-\subsection{A taxonomy of Predict-And-Optimize}
+The training problem is to estimate $\theta$ given observed data $\{(x_i,y_i)\}_{i=1}^n$ assumed drawn i.i.d.\ from the joint distribution of $(X,Y)$.
+
+\textbf{Decision-unaware training.}
+One natural choice is to learn $\theta$ to maximize the likelihood $p_{\theta}(Y|X)$ given the $N$ observed data pairs. Under a Gaussian likelihood, this corresponds to minimizing the mean squared error (MSE):
+\begin{align}
+    \theta^* \gets \arg\!\min_{\theta} \frac{1}{N} \sum_{n=1}^N (y_n - \hat{y}_{\theta}(x_n) )^2.
+\end{align}
+Here, neither decision variable $z$ nor the cost function $c$ has any direct role in determining $\theta$. This approach is called MSE by \citeauthor{gengBenchmarkingPtOPnO2024}'s benchmark.
+
+This estimation strategy can be used in a simple two-stage approach for decision-making. First, estimate $\theta$ by minimizing MSE. Once $\theta$ has been estimated, in the second stage we make instance-specific decisions via Eq.~\eqref{eq:decisions}. We use ``two-stage'' to denote the decoupled training pipeline, where $\theta$ is fit without reference to the cost $c$. Decision-aware methods, by contrast, fold $c$ into training even though they too solve Eq.~\eqref{eq:decisions} at test time.
+
+When the probabilistic model is \emph{well-specified}, meaning the chosen parametric model class contains the true data-generating process, this two-stage approach is well-founded. In fact, it may have two distinct advantages over decision-aware methods. First, it is a simple way to bypass the lack of informative gradients. Second, it can offer provably better convergence rates~\citep{elmachtoubDissectingImpactModel2025, huFastRatesContextual2022}. However, for interesting real-world decision problems, our parametric model $\hat{y}_{\theta}(x)$ will always be misspecified, especially if we select a simpler model class to address interpretability or data scarcity. In these more realistic cases, training with a decision-aware objective can lead to better downstream decisions.
+
+\textbf{Decision-aware training.}
+End-to-end decision-aware methods seek an estimated $\theta$ that is deliberately steered to deliver good decisions via Eq.~\eqref{eq:decisions}. Methods that pursue this kind of objective are interchangeably called decision-aware learning, decision-focused learning, or predict-and-optimize (PnO) in the literature. This approach to training directly seeks to minimize the decision cost
+\begin{align}
+    \theta^* \gets \arg\!\min_{\theta} ~~ \frac{1}{N} \sum_{i=1}^n c(z^*(x_i,\theta), y_i).
+\end{align}
+This generic parameter estimation framework faces the technical hurdle that its cost $c$ is piecewise constant as a function of $\theta$. Below, we survey a variety of approaches to overcoming this hurdle.
+
+\subsection{A taxonomy of Predict-And-Optimize methods}
 We will use the same taxonomy of methods used by \citeauthor{gengBenchmarkingPtOPnO2024}, which we will briefly describe here. Some taxonomy category names have been changed to better clarify their qualities.
 
 \textbf{Surrogate Gradients}
