@@ -28,8 +28,7 @@
 \textit{Left: }Here we evaluate each objective at every possible decision boundary for the synthetic data task. 
 In black, we plot oracle decision regret. 
 Methods which closely align with the oracle will learn parameters that also optimize for decision regret.
-\textit{Center, Right:} Here we show how the DPO and PG objectives change as we vary key hyperparameters.
- Both methods approach the true decision loss when their hyperparameter is 0.
+\textit{Center, Right:} Here we show how the DPO and PG surrogate losses change as we vary key hyperparameters $\sigma$ and $h$. The surrogate-loss landscape (as a function of decision threshold) aligns with oracle regret across all hyperparameter values.
 }%end caption
 \label{fig:noisy_synth_sweep}
 \end{figure*}
