@@ -6,7 +6,7 @@ $\mathcal Z$. The reported decision is
 $z^{\star}(x,\theta)=\arg\min_{z\in\mathcal Z}\,
 \mathbb{E}_{p_\theta(Y\mid X=x)}[c(z,Y)]$ (or the analogous $\arg\max$ when
 the objective is to be maximized). Sizes are train/val/test instance counts
-(real-world tasks measured in years).}
+(real-world tasks measured in years). $^\dagger$For these top-$K$ tasks the unnormalized cost $\langle z,y\rangle$ shown above is reported as a decision-quality metric, but training and reported BPR results use the normalized ratio objective described in Chapter~\ref{chap:daml} and Sec.~\ref{sec:expt_topK}.}
 \label{tab:decision-problems}
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.15}
@@ -22,8 +22,8 @@ Budget allocation & $\hat y\in[0,1]^{I\times T}$ & $z\in\{0,1\}^{I}$ & $\max_z\,
 Cubic Top-$K$ & $\hat y\in\mathbb{R}^{50}$ & $z\in\{0,1\}^{50}$ & $\max_z\,\langle z,y\rangle$ & $\sum_i z_i = K$, $K{=}5$ & 200 / 50 / 400 & $y_i=10x_i^{3}-6.5x_i$ \\
 Bipartite matching & $\hat y\in\mathbb{R}^{50\times 50}$ & $z\in\{0,1\}^{50\times 50}$ & $\max_z\,\sum_{i,j} y_{ij}\,z_{ij}$ & $\sum_j z_{ij}\le 1$, $\sum_i z_{ij}\le 1$ & 16 / 4 / 6 & Cora citation network \\
 Portfolio optim. & $\hat y\in\mathbb{R}^{50}$ & $z\in\Delta^{49}\subset[0,1]^{50}$ & $\max_z\,\langle z,y\rangle - \alpha\,z^{\!\top}\!\Sigma z$ & $\sum_i z_i = 1$, $z\succeq 0$; $\alpha{=}0.1$ & 320 / 80 / 200 & S\&P\,500 daily returns (Quandl) \\
-Cook County opioid & $\hat y\in\mathbb{R}_{\ge 0}^{1328}$ & $z\in\{0,1\}^{1328}$ & $\max_z\,\langle z,y\rangle$ & $\sum_i z_i\le 100$ & 4 / 1 / 2 yrs & opioid deaths, 1328 tracts \\
-Aerial survey & $\hat y\in\mathbb{R}_{\ge 0}^{1338}$ & $z\in\{0,1\}^{1338}$ & $\max_z\,\langle z,y\rangle$ & $\sum_i z_i\le 50$ & 15 / 6 / 6 yrs & wildlife counts, 1338 sites \\
+Cook County opioid$^\dagger$ & $\hat y\in\mathbb{R}_{\ge 0}^{1328}$ & $z\in\{0,1\}^{1328}$ & $\max_z\,\langle z,y\rangle$ & $\sum_i z_i\le 100$ & 4 / 1 / 2 yrs & opioid deaths, 1328 tracts \\
+Aerial survey$^\dagger$ & $\hat y\in\mathbb{R}_{\ge 0}^{1338}$ & $z\in\{0,1\}^{1338}$ & $\max_z\,\langle z,y\rangle$ & $\sum_i z_i\le 50$ & 15 / 6 / 6 yrs & wildlife counts, 1338 sites \\
 \bottomrule
 \end{tabular}%
 }
