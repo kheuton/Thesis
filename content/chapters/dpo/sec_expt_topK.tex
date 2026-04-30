@@ -6,20 +6,24 @@
 \vspace{-0.3em}
 \setlength{\abovecaptionskip}{2pt}
 \setlength{\belowcaptionskip}{0pt}
-\caption[Top-K site selection: loss landscape on the affine hyperplane spanning $\theta_{DPO}$, $\theta_{PG}$, and $\theta_{SPO^+}$.]{
+\caption[Top-K site selection: loss landscape on the affine hyperplane spanning $\theta_{DPO}$, $\theta_{PG}$, and $\theta_{SPO+}$.]{
 \textbf{Top-K site selection on Cook County, IL ($K{=}100$).}
-Heldout-test losses (BPR, with higher being better; NLL; SPO\textsuperscript{+} surrogate; and PG surrogate) evaluated on the affine hyperplane $\theta(s,t)=(1-s-t)\theta_{DPO}+s\,\theta_{PG}+t\,\theta_{SPO^+}$. $s$ and $t$ are extended beyond $[0,1]$ to expose the surrounding landscape; stars mark the three trained solutions. Surrogate hyperparameters appear in the figure footer. MA and aerial-survey panels in App.~\ref{app:topK} (Fig.~\ref{fig:topK_interpolation_6panel}).
+Heldout-test metrics on the affine hyperplane $\theta(s,t)=(1{-}s{-}t)\theta_{DPO}+s\,\theta_{PG}+t\,\theta_{SPO+}$. From left: BPR (higher better); SPO+ surrogate on per-instance decision loss $\langle z, \bm{y}_t\rangle$; SPO+ surrogate on per-instance BPR objective $\langle z, \bm{y}_t\rangle/C_t$; PG surrogate on $\langle z, \bm{y}_t\rangle$; PG surrogate on $\langle z, \bm{y}_t\rangle/C_t$. Lower is better for the surrogate panels. $s, t$ extended beyond $[0,1]$ to expose the surrounding landscape; stars mark the three trained solutions. The BPR task setup is given in App.~\ref{app:bpr_setup}.
 }%endcaption
-% \caption{\textbf{Interpolation between DPO-learned and Surrogate-learned solutions} \textit{Top Row:} PG loss and regret evaluated using models with parameters uniformly interpolated between the solution learned by DPO and the solution learned by PG on two public health and one wildlife datasets. \textit{Bottom Row:} The same for SPO+. We see that the DPO loss universally learned model parameters that result in lower decision regret on the heldout dataset. Additionally, the DPO solution almost always has a higher surrogate loss value, indicating that the surrogate methods would prefer the higher regret model to the one with lower decision regret.}
 \label{fig:topK_interpolation_main}
 \end{figure}
 
-In Chapter~\ref{chap:daml} \citep{heuton2025decisionaware}, we studied top-K site selection problems on real data from public health and wildlife conservation. We found that a method based on DPO performs well on a heldout decision-making task, while both SPO+ and PG score worse than DPO. Yet \emph{why} DPO wins is unexplained in the original work. Does DPO achieve superior results because it has better agreement with decision loss? Or are PG and SPO+ stuck in local minima (although SPO+ is a convex upper bound on regret as a function of $\hat{y}$, composing it with a non-linear prediction model makes the loss non-convex in the model parameters $\theta$, and the same applies to PG)? Or did PG and SPO+ simply generalize less well from the validation to the test set?
+In Section~\ref{sec:synth} we considered two complementary questions about decision-aware methods: which solutions a method's loss landscape prefers, and which solutions the method is capable of reaching by gradient descent. We turn the same lens on the real-world top-K tasks of Chapter~\ref{chap:daml}~\citep{heuton2025decisionaware}, where direct minimization of BPR via a perturbed-optimizer estimator (which we call ``DPO'' in this section) was reported to outperform two alternative surrogate methods, PG and SPO+.
 
-We attempt to answer these questions in a manner similar to the decision-threshold sweep experiment in Section \ref{sec:synth}. Because the model used in these tasks has many more parameters than the simple linear model, we cannot effectively explore all of parameter space. However, we can interpolate between the learned parameters $\theta$ from each method.
-This will illuminate if the methods arrived at the different solutions due to their objectives inherently preferring a parameter setting with higher decision loss, or if there were local minima which made learning the better solution difficult.
+Are PG and SPO+ unable to reach as low a BPR as DPO because of their landscape (they prefer a $\theta$ with worse BPR), because of their optimization (they get stuck in a local minimum), or because they were applied to a different objective (they reach the right $\theta$ for the wrong loss)?
 
-Fig.~\ref{fig:topK_interpolation_main} shows results for the overdose death prevention task in Illinois.
-Expanded results for all tasks are in Fig.~\ref{fig:topK_interpolation_6panel}. 
-Across 2 methods and 3 tasks, the DPO estimated $\theta$ always has lower decision regret while almost always having higher surrogate loss (PG or SPO+). This means the \textbf{surrogate loss itself appears inadequate} in these tasks.
-%decision regret because they prefer higher regret solutions than DPO.
+The distinction between BPR and the surrogates' default objective is normalization. BPR is the per-instance ratio
+\begin{align}
+\text{BPR}(z, \bm{y}_t) = \frac{\langle z, \bm{y}_t\rangle}{C_t},
+\quad C_t = \sum_{s \in \textsc{TopKIDs}(\bm{y}_t, K)} y_{s,t},
+\end{align}
+where $C_t$ is the oracle's reach at time $t$. Off-the-shelf PG and SPO+ surrogates are derived for the unnormalized $\langle z, \bm{y}\rangle$ and have no built-in division by $C_t$. Per-instance the two objectives have identical argmin in $\theta$, but at the dataset level $C_t$ varies considerably across timesteps and tracts, so the two averaged objectives reweight instances differently and prefer different $\theta$.
+
+Fig.~\ref{fig:topK_interpolation_main} resolves which explanation applies on the Cook County opioid task. Applied to the unnormalized per-instance decision loss (panels 2 and 4), both SPO+ and PG produce landscapes whose argmin sits away from $\theta_{DPO}$. Applied to the BPR-normalized per-instance objective (panels 3 and 5), the same surrogates produce landscapes that closely resemble the BPR landscape (panel 1), with their argmin near $\theta_{DPO}$. The same pattern holds for Massachusetts and the aerial-survey wildlife task in App.~\ref{app:topK} (Fig.~\ref{fig:topK_interpolation_6panel}).
+
+PG and SPO+ are capable of reaching the same kind of solution as direct BPR optimization on these tasks, provided they are given the BPR-normalized per-instance objective. What appeared in Chapter~\ref{chap:daml} as a method-intrinsic advantage of DPO is, on these tasks, training-objective alignment with the evaluation metric. The practical recommendation is to derive the surrogate's training signal from the normalized per-instance objective when the evaluation metric is normalized.

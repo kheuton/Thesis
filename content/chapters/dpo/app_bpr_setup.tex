@@ -1,0 +1,30 @@
+\section{BPR Task: Setup, Oracle, and Predicted Quantities}
+\label{app:bpr_setup}
+
+This appendix gives the underlying problem definition for the top-K site-selection task analyzed in this chapter (Fig.~\ref{fig:topK_interpolation_main}), drawing from \citet{heuton2025decisionaware}.
+
+\textbf{Setup.} We model events occurring across $S$ spatial sites over time. At each time $t$, each site $s$ produces a non-negative scalar count $y_{s,t} \geq 0$. In the public-health applications, $y_{s,t}$ is the number of fatal opioid-related overdoses in census tract $s$ during time period $t$; in the wildlife application, it is a count of rare-animal sightings at survey location $s$. We stack per-time observations into vectors $\bm{y}_t \in \mathbb{R}_{\geq 0}^S$. The data-generating distribution is assumed stationary across train and test periods. We denote a probabilistic forecasting model by $p_{\bm{\phi}}(\bm{y}_t \mid \bm{y}_{1:t-1})$, parameterized by $\bm{\phi}$. In this chapter and in \citet{heuton2025decisionaware}, $p_{\bm{\phi}}$ is a Negative Binomial regression with location-specific random effects.
+
+\textbf{Decision problem.} At time $t$, before $\bm{y}_{t+1}$ is observed, the practitioner chooses a subset $\mathcal{R} \subset \{1, \ldots, S\}$ of $K$ sites to receive intervention. The realized utility is the count of relevant events at the chosen sites, $\sum_{s \in \mathcal{R}} y_{s,t+1}$.
+
+\textbf{Oracle (full-information) problem.} If $\bm{y}_{t+1}$ were known at decision time, the optimal subset would solve $\textsc{TopKIDs}(\bm{y}_{t+1}, K) = \arg\max_{|R|=K} \sum_{s \in R} y_{s, t+1}$. This is a 0-1 knapsack with unit weights and budget $K$, solvable in $O(S \log K)$ time. The oracle's reach is $C_t = \sum_{s \in \textsc{TopKIDs}(\bm{y}_{t+1}, K)} y_{s, t+1}$.
+
+\textbf{BPR metric.} Best Possible Reach is the ratio of realized to oracle reach,
+\begin{align}
+\text{BPR}(\mathcal{R}, \bm{y}) = \frac{\sum_{s \in \mathcal{R}} y_s}{\sum_{s \in \textsc{TopKIDs}(\bm{y}, K)} y_s}.
+\end{align}
+BPR ranges in $[0, 1]$; higher is better. Both numerator (events captured by the model's selection) and denominator ($C_t$, events captured by the oracle) can only be computed in hindsight, after $\bm{y}$ is realized.
+
+\textbf{Predicted quantities.} The unknown at decision time is the future observation vector $\bm{y}_{t+1}$. The model $p_{\bm{\phi}}$ provides a distribution over $\bm{y}_{t+1}$ given history $\bm{y}_{1:t}$ and any exogenous features. \citet{heuton2025decisionaware} ranks sites using the \emph{ratio estimator}
+\begin{align}
+\bm{r}^*(\bm{\phi}) = \mathbb{E}_{\bm{y} \sim p_{\bm{\phi}}}\!\left[\frac{\bm{y}}{\bm{1} \cdot \bm{y}}\right] \approx \frac{1}{M} \sum_{m=1}^M \frac{\bm{y}^{(m)}}{\bm{1} \cdot \bm{y}^{(m)}}, \quad \bm{y}^{(m)} \sim p_{\bm{\phi}},
+\end{align}
+which upper-bounds negative-BPR more tightly than the per-site mean. The recommended subset is $\mathcal{R} = \textsc{TopKIDs}(\bm{r}^*, K)$.
+
+\textbf{Training as direct BPR minimization (``DPO'' in this chapter).} The DPO method of \citet{heuton2025decisionaware} fits $\bm{\phi}$ by minimizing
+\begin{align}
+\mathcal{J}^{\text{BPR}}(\bm{\phi}) = -\sum_{t=1}^T \text{BPR}(\textsc{TopKIDs}(\bm{r}^*_t(\bm{\phi}), K), \bm{y}_{t+1}).
+\end{align}
+Gradients are estimated via the score-function trick (for $\nabla_{\bm{\phi}} \bm{r}^*$) composed with a differentiable perturbed-optimizer estimator~\citep{berthetLearningDifferentiablePerturbed2020} for $\nabla_{\bm{r}} \textsc{TopKMask}$. Hyperparameters include the score-function sample count $M$, the perturbation sample count $J$, and the perturbation noise $\sigma$.
+
+\textbf{Training PG and SPO+ as applied here.} PG and SPO+, as conventionally implemented, are derived for an unnormalized linear decision loss $\langle z, \bm{y}\rangle$. Applying them off-the-shelf to a top-K task gives a per-instance training signal proportional to $\langle z, \bm{y}_t\rangle$, not $\langle z, \bm{y}_t\rangle/C_t$. The discussion in this chapter (Fig.~\ref{fig:topK_interpolation_main}) examines the consequence of this difference and the effect of replacing the per-instance loss with the BPR-normalized form.
