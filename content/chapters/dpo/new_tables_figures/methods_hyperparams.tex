@@ -1,6 +1,6 @@
 \begin{table}[t]
 \centering
-\caption{Hyperparameters per method. All methods share fixed training settings: $\texttt{n\_epochs}{=}300$, $\texttt{patience}{=}40$, $\texttt{seed}{=}2023$, $\texttt{n\_ptr\_epochs}{=}0$, prediction model = 2-layer dense MLP with 32 hidden units (\texttt{Resnet18} for the Warcraft shortest-path task only), Adam optimiser. Selection criterion for every cell of the search grid is minimum validation decision regret. The top block ($\eta$, $b$) is shared by every method; the bottom block lists each method-specific hyperparameter swept during Phase 2 after the Phase-1 $(\eta, b)$ winner is fixed. Baseline methods that have no method-specific hyperparameter: MSE, Identity, SPO\textsuperscript{+}, NCE, ptLTR, prLTR, cpLayer, differ only in their choice of $(\eta, b)$.}
+\caption{Hyperparameters per method. All methods share fixed training settings: $\texttt{n\_epochs}{=}300$, $\texttt{patience}{=}40$, $\texttt{seed}{=}2023$, $\texttt{n\_ptr\_epochs}{=}0$, prediction model = 2-layer dense MLP with 32 hidden units (\texttt{Resnet18} for the Warcraft shortest-path task only), Adam optimiser. Selection criterion for every cell of the search grid is minimum validation decision regret. The top block ($\eta$, $b$) is shared by every method; the bottom block lists each method-specific hyperparameter swept during Phase 2 after the Phase-1 $(\eta, b)$ winner is fixed. Baseline methods that have no method-specific hyperparameter: MSE, Identity, SPO\textsuperscript{+}, NCE, ptLTR, prLTR, cpLayer, differ only in their choice of $(\eta, b)$. For DPO, ``held'' means the other DPO hyperparameter is fixed at the listed value while we sweep the named one: we search $\sigma$ with $M{=}10$ fixed, and search $M$ with $\sigma{=}1$ fixed, then use the resulting $(\sigma, M)$ pair. The $M$ sweep is exploratory; in practice $M$ would simply be set as large as compute allows.}
 \label{tab:methods-hyperparams}
 \setlength{\tabcolsep}{6pt}
 \renewcommand{\arraystretch}{1.1}
@@ -10,7 +10,7 @@
 Method & Symbol & Description & Val search grid \\
 \midrule
 \multirow{2}{*}{\textit{all methods}} & $\eta$ & Adam learning rate & $\{10^{-2},\,5{\!\times\!}10^{-3},\,10^{-3}\}$ \\
- & $b$ & batch (full vs minibatch) & $\{\mathrm{full},\,\mathrm{mini}\}$ \\
+ & $b$ & batch (full vs minibatch) & $\{\mathrm{full},\,\mathrm{minibatch\;32}\}$ (4 for bipartite matching) \\
 \midrule
 DFL & $\alpha$ & MSE-blend weight added to decision loss & $\{10^{-3},\,10^{-2},\,10^{-1},\,1,\,10\}$ \\
 \midrule
