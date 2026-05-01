@@ -31,6 +31,16 @@
 \newcommand{\xobs}{\mathbf{X}^{\mathcal{O}}}
 \newcommand{\compactsum}[2]{\smashoperator[r]{\sum_{#1}} {#2}}
 
+% Float placement: allow more figures per page so chapters with many figure*s
+% don't overflow the float queue and dump everything at chapter end.
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.7}
+
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -121,6 +131,7 @@ Our code and select datasets are available at \url{https://github.com/tufts-ml/d
 \section{Introduction}
 \label{sec:dpo_intro}
 \input{content/chapters/dpo/sec_intro}
+\input{content/chapters/dpo/fig_rank_transition}
 \input{content/chapters/dpo/fig_benchmark_bump}
 
 \section{Background: End-to-end Methods}
