@@ -91,8 +91,7 @@
 	\bigskip
 	\@author\\
 	\bigskip
-	in partial fulfillment of the requirements\\[-.1em]
-	for the degree of\\
+	in partial fulfillment of the requirements for the degree of\\
 	\bigskip
 	Doctor of Philosophy\\
 	\bigskip
@@ -104,7 +103,7 @@
 	\bigskip
 	\@degreedate\\
 	\bigskip
-	\copyright\ Copyright \@copyrightyear\space by \@author\\
+	\copyright\ \@copyrightyear, \@author\\
 	\bigskip
 	Adviser: \@adviser\\
         % Dissertation Committee : \@committee\\
