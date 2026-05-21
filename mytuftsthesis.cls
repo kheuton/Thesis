@@ -85,9 +85,7 @@
   \begin{center}
     {\huge\MakeUppercase \@title}\\
 	\bigskip
-	\Large A dissertation\\
-	\bigskip
-	submitted by\\
+	\Large A dissertation submitted by\\
 	\bigskip
 	\@author\\
 	\bigskip
